@@ -19,4 +19,17 @@ export default {
   padding: 0;
   box-sizing: border-box;
 }
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+ul,
+li {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
 </style>
