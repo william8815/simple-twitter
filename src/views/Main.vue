@@ -11,7 +11,9 @@
         <h4>首頁</h4>
         <div class="tweet-board">
           <div class="tweet-board__user">
-            <img src="~@/assets/img/userImg.png" alt="userImg" />
+            <router-link :to="{ name: 'main' }">
+              <img src="~@/assets/img/userImg.png" alt="userImg" />
+            </router-link>
             <form action="">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
@@ -30,16 +32,32 @@
           <div class="tweet-board__otherUser">
             <ul>
               <li class="list-item" v-for="tweet in tweets" :key="tweet.id">
-                <img src="~@/assets/img/otherUserImg.png" alt="otherUserImg" />
+                <router-link :to="{ name: 'main' }">
+                  <img
+                    src="~@/assets/img/otherUserImg.png"
+                    alt="otherUserImg"
+                  />
+                </router-link>
                 <div>
                   <div class="user">
-                    <div class="user__name">{{ tweet.name }}</div>
-                    <div class="user__account">
-                      {{ tweet.account }}・{{ tweet.createAt }}
-                    </div>
+                    <router-link :to="{ name: 'main' }" class="user__name">
+                      {{ tweet.name }}
+                    </router-link>
+                    <router-link :to="{ name: 'main' }" class="user__account">
+                      {{ tweet.account }} ・
+                    </router-link>
+
+                    <router-link
+                      :to="{ name: 'replylist' }"
+                      class="user__posttime"
+                    >
+                      {{ tweet.createAt }}
+                    </router-link>
                   </div>
                   <div class="post">
-                    {{ tweet.post }}
+                    <router-link :to="{ name: 'replylist' }">
+                      {{ tweet.post }}
+                    </router-link>
                   </div>
                   <div class="extra-info">
                     <div class="btn comment">
@@ -177,13 +195,12 @@ export default {
   height: 100vh;
   overflow-y: scroll;
   h4 {
-    position: relative;
     width: 100%;
     padding: 24px;
     border-bottom: 1px solid #e6ecf0;
     position: sticky;
     top: 0;
-    z-index: 99;
+    z-index: 1;
   }
   h4::before {
     content: "";
@@ -204,7 +221,6 @@ export default {
     margin-right: 8px;
   }
   .tweet-board {
-    // height: calc(100% - 90px);
     &__user {
       display: flex;
       padding: 16px 24px;
@@ -254,10 +270,14 @@ export default {
           font-weight: 700;
           margin-right: 8px;
         }
-        &__account {
+        &__account,
+        &__posttime {
           font-size: 14px;
           font-weight: 400;
           color: #6c757d;
+        }
+        &__posttime:hover {
+          border-bottom: 1px solid #e6ecf0;
         }
       }
       .post {

@@ -4,7 +4,7 @@
     <div class="recommend__list">
       <ul>
         <li v-for="user in recommendUsers" :key="user.id" class="list-item">
-          <div class="user">
+          <router-link :to="{ name: 'main' }" class="user">
             <img
               src="~@/assets/img/otherUserImg.png"
               alt="otherUser"
@@ -16,7 +16,7 @@
               </div>
               <div class="user__account">{{ user.account }}</div>
             </div>
-          </div>
+          </router-link>
           <button
             @click.stop.prevent="deleteFollow(user.id)"
             v-if="user.isFollowed"
@@ -76,7 +76,6 @@ export default {
       this.recommendUsers = recommendUsers;
     },
     addFollow(userId) {
-      console.log(this.recommendUser);
       this.recommendUsers = this.recommendUsers.map((user) => {
         if (user.id === userId) {
           return {
