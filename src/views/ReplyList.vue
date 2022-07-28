@@ -42,23 +42,46 @@
           <div class="tweet__icon">
             <div class="comment">
               <svg
+                @click="makeReply"
                 class="icon comment__icon"
-                viewBox="0 0 14 14"
+                viewBox="0 0 30 30"
+                fill="#657786"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M8.36401 0.49446L5.59867 0.487793H5.59734C2.68134 0.487793 0.397339 2.77246 0.397339 5.68913C0.397339 8.42113 2.52134 10.4931 5.37401 10.6025V13.1545C5.37401 13.2265 5.40334 13.3451 5.45401 13.4231C5.54867 13.5731 5.71001 13.6545 5.87534 13.6545C5.96734 13.6545 6.06001 13.6291 6.14334 13.5758C6.31934 13.4638 10.4587 10.8158 11.5353 9.90513C12.8033 8.83179 13.562 7.25846 13.564 5.69713V5.68579C13.56 2.77446 11.2773 0.49446 8.36401 0.493793V0.49446ZM10.8887 9.14246C10.1327 9.78246 7.64734 11.4125 6.37401 12.2378V10.1131C6.37401 9.83713 6.15067 9.61313 5.87401 9.61313H5.61001C3.17001 9.61313 1.39801 7.96246 1.39801 5.68913C1.39801 3.33313 3.24334 1.48779 5.59801 1.48779L8.36267 1.49446H8.36401C10.7187 1.49446 12.564 3.33846 12.5653 5.69179C12.5633 6.96513 11.9373 8.25446 10.8893 9.14246H10.8887Z"
+                  d="M17.5576 2.80254L12.3726 2.79004H12.3701C6.90262 2.79004 2.62012 7.07379 2.62012 12.5425C2.62012 17.665 6.60262 21.55 11.9514 21.755V26.54C11.9514 26.675 12.0064 26.8975 12.1014 27.0438C12.2789 27.325 12.5814 27.4775 12.8914 27.4775C13.0639 27.4775 13.2376 27.43 13.3939 27.33C13.7239 27.12 21.4851 22.155 23.5039 20.4475C25.8814 18.435 27.3039 15.485 27.3076 12.5575V12.5363C27.3001 7.07754 23.0201 2.80254 17.5576 2.80129V2.80254ZM22.2914 19.0175C20.8739 20.2175 16.2139 23.2738 13.8264 24.8213V20.8375C13.8264 20.32 13.4076 19.9 12.8889 19.9H12.3939C7.81887 19.9 4.49637 16.805 4.49637 12.5425C4.49637 8.12504 7.95637 4.66504 12.3714 4.66504L17.5551 4.67754H17.5576C21.9726 4.67754 25.4326 8.13504 25.4351 12.5475C25.4314 14.935 24.2576 17.3525 22.2926 19.0175H22.2914Z"
                 />
               </svg>
             </div>
             <div class="like">
               <svg
+                v-if="user.isLiked"
+                key="user"
+                @click="deleteLike"
                 class="icon like__icon"
-                viewBox="0 0 14 14"
+                viewBox="0 0 30 30"
+                fill="#f91880"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M7.00005 13.4253H6.99072C5.26872 13.3933 0.300049 8.90392 0.300049 4.65192C0.300049 2.60925 1.98338 0.815918 3.90205 0.815918C5.42872 0.815918 6.45538 1.86925 6.99938 2.63592C7.54205 1.87058 8.56871 0.815918 10.096 0.815918C12.016 0.815918 13.6987 2.60925 13.6987 4.65258C13.6987 8.90325 8.72938 13.3926 7.00738 13.4239H7.00005V13.4253ZM3.90272 1.81658C2.51605 1.81658 1.30072 3.14192 1.30072 4.65325C1.30072 8.47992 5.99005 12.3839 7.00072 12.4253C8.01272 12.3839 12.7007 8.48058 12.7007 4.65325C12.7007 3.14192 11.4854 1.81658 10.0987 1.81658C8.41338 1.81658 7.47205 3.77392 7.46405 3.79325C7.31072 4.16792 6.69338 4.16792 6.53938 3.79325C6.53005 3.77325 5.58938 1.81658 3.90338 1.81658H3.90272Z"
+                  d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                  fill="#f91880"
+                />
+              </svg>
+              <svg
+                v-else
+                key="user"
+                @click="addLike"
+                class="icon like__icon"
+                viewBox="0 0 30 30"
+                fill="#fff"
+                stroke="#657786"
+                stroke-width="2px"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                  fill="white"
                 />
               </svg>
             </div>
@@ -88,11 +111,16 @@
                 <div class="user__post">
                   {{ reply.post }}
                 </div>
-                <div></div>
               </div>
             </li>
           </ul>
         </div>
+        <!-- reply modal -->
+        <ReplyModal
+          :key="replyState.count"
+          :reply_state="replyState.state"
+          @handleReplyState="afterReplyState"
+        />
       </div>
     </section>
     <!-- recommend -->
@@ -105,8 +133,15 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
+import ReplyModal from "./../components/ReplyModal.vue";
 
 const dummyData = {
+  user: {
+    id: 1,
+    name: "Apple",
+    account: "@apple",
+    isLiked: false,
+  },
   reply: [
     {
       id: 1,
@@ -157,16 +192,24 @@ const dummyData = {
       post: "Michelin Challenges Creatives to Upcycle",
     },
   ],
+  replyState: {
+    count: 0,
+    state: false,
+  },
 };
 
 export default {
+  name: "ReplyList",
   components: {
     Navbar,
     RecommendUsers,
+    ReplyModal,
   },
   date() {
     return {
       replyList: [],
+      replyState: {},
+      user: {},
     };
   },
   created() {
@@ -174,9 +217,54 @@ export default {
   },
   methods: {
     fetchReply() {
-      const { reply } = dummyData;
+      const { reply, replyState, user } = dummyData;
+      const { count, state } = replyState;
+      const { id, name, account, isLiked } = user;
       this.replyList = reply;
       // console.log(this.replyList);
+      this.replyState = {
+        count,
+        state,
+      };
+      this.user = {
+        id,
+        name,
+        account,
+        isLiked,
+      };
+    },
+    // 跳出彈跳視窗
+    makeReply() {
+      this.replyState = {
+        count: 1,
+        state: true,
+      };
+      this.$forceUpdate();
+      // console.log(this.replyState);
+    },
+    afterReplyState(state) {
+      this.replyState = {
+        count: 0,
+        state: state,
+      };
+      this.$forceUpdate();
+      // console.log(this.replyState);
+    },
+    // 新增喜歡
+    addLike() {
+      this.user = {
+        ...this.user,
+        isLiked: true,
+      };
+      this.$forceUpdate();
+    },
+    // 移除喜歡
+    deleteLike() {
+      this.user = {
+        ...this.user,
+        isLiked: false,
+      };
+      this.$forceUpdate();
     },
   },
 };
@@ -225,7 +313,7 @@ img {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     z-index: -1;
   }
   .back {
@@ -297,7 +385,7 @@ img {
         fill: var(--main-color);
       }
       .like__icon:hover {
-        fill: #f91880;
+        stroke: #ff9ad5;
       }
     }
   }
