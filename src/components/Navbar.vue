@@ -45,7 +45,7 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link :to="{ name: 'user-edit' }" class="tag">
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
