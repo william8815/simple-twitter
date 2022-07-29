@@ -170,7 +170,8 @@ export default {
 <style lang="scss" scoped>
 .navbar {
   // min-width: 178px;
-  height: 100%;
+  // height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

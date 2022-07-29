@@ -6,7 +6,7 @@
       <div class="main__title">
         <h1>推文清單</h1>
       </div>
-      <div class="main__body">
+      <div class="main__body scrollbar">
         <!-- AdminTweetsList -->
         <AdminTweetsList 
         v-for="tweet in tweets" 
@@ -201,7 +201,7 @@ export default {
   min-height: 100vh;
   border-right: 1px solid #e6ecf0;
   border-left: 1px solid #e6ecf0;
-  margin-left: 24px;
+  margin-left: 24px;  
   overflow-y: scroll;
 }
 
@@ -209,12 +209,12 @@ export default {
   width: 0px;
   background: transparent;
 }
-
 .main__title {
+  margin-top: 24px;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
   h1 {
-    padding: 24px;
+    padding: 0 21px 25px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;
@@ -222,6 +222,9 @@ export default {
 }
 
 .main__body {
-  max-height: 100%;
+  max-height: 100vh;
+   overflow-y: scroll;
+  // overscroll-behavior: contain;
 }
+
 </style>

@@ -6,7 +6,7 @@
       <div class="main__title">
         <h1>使用者列表</h1>
       </div>
-      <div class="main__body">
+      <div class="main__body scrollbar">
         <!-- AdminUserCard -->
         <AdminUserCard v-for="user in users" :key="user.id" :user="user" />
       </div>
@@ -126,7 +126,7 @@ export default {
 <style lang="scss" scoped>
 .adminUsers {
   display: flex;
-  max-height: 100vh;
+  min-height: 100vh;
   width: auto;
 }
 
@@ -136,20 +136,20 @@ export default {
   min-height: 100vh;
   border-left: 1px solid #e6ecf0;
   margin-left: 24px;
-  padding-left: 15px;
   overflow-y: scroll;
 }
-
 ::-webkit-scrollbar {
+  /* make scrollbar transparent */
   width: 0px;
   background: transparent;
 }
 
 .main__title {
+  margin-top: 24px;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
   h1 {
-    padding: 24px;
+    padding: 0 21px 25px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;
@@ -160,5 +160,6 @@ export default {
   margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
+  overflow-y: scroll;
 }
 </style>
