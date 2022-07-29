@@ -211,7 +211,9 @@ export default {
 }
 
 .main__title {
-  width: 100%;
+  position: fixed;
+  width: 937px;
+  background: #FFF;
   border-bottom: 1px solid#E6ECF0;
   h1 {
     padding: 24px;
@@ -222,6 +224,8 @@ export default {
 }
 
 .main__body {
+  margin-top: 90px;
   max-height: 100%;
+  width: 937px;
 }
 </style>
