@@ -45,7 +45,7 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link :to="{ name: 'user-edit' , params: { id: 4 } }" class="tag">
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
@@ -170,7 +170,8 @@ export default {
 <style lang="scss" scoped>
 .navbar {
   // min-width: 178px;
-  height: 100%;
+  // height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
