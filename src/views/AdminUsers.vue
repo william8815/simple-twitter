@@ -136,7 +136,7 @@ export default {
   min-height: 100vh;
   border-left: 1px solid #e6ecf0;
   margin-left: 24px;
-  padding-left: 15px;
+  // padding-left: 15px;
   overflow-y: scroll;
 }
 
@@ -146,6 +146,8 @@ export default {
 }
 
 .main__title {
+  position: fixed;
+  background: #FFF;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
   h1 {
@@ -157,8 +159,10 @@ export default {
 }
 
 .main__body {
-  margin-top: 1rem;
+  z-index: 1;
+  margin-top: 90px;
   display: flex;
   flex-wrap: wrap;
+  padding-left: 1rem;
 }
 </style>
