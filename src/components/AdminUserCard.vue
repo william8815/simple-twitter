@@ -12,12 +12,12 @@
         <p class="card__text">@{{ user.text }}</p>
         <div class="click__panel ">
           <div class="click__icon">
-            <img src="https://imgur.com/KHXogUb.png" alt="" />{{
+            <img src="../assets/img/reply.svg" alt="" />{{
               user.Count.replyCount | changeCount
             }}
           </div>
           <div class="click__icon">
-            <img src="https://imgur.com/j9xpS8U.png" alt="" />{{
+            <img src="../assets/img/like.svg" alt="" />{{
               user.Count.likeCount | changeCount
             }}
           </div>

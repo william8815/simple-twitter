@@ -147,6 +147,7 @@ export default {
 
 .main__title {
   position: fixed;
+  z-index: 999;
   background: #FFF;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
@@ -159,7 +160,7 @@ export default {
 }
 
 .main__body {
-  z-index: 1;
+  z-index: -1;
   margin-top: 90px;
   display: flex;
   flex-wrap: wrap;

@@ -1,7 +1,7 @@
 <template>
   <div class="regist">
     <div class="brand__image">
-      <img src="https://i.imgur.com/LEdjhKe.png" alt="" />
+      <img src="../assets/img/logo.svg" alt="" />
     </div>
     <div class="brand__title">
       <h3>建立你的帳號</h3>
