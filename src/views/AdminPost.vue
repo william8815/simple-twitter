@@ -6,7 +6,7 @@
       <div class="main__title">
         <h1>推文清單</h1>
       </div>
-      <div class="main__body scrollbar">
+      <div class="main__body">
         <!-- AdminTweetsList -->
         <AdminTweetsList 
         v-for="tweet in tweets" 
@@ -191,7 +191,6 @@ export default {
 <style lang="scss" scoped>
 .adminPost {
   display: flex;
-  // justify-content: center;
   margin-right: 130px;
   max-height: 100vh;
   width: auto;
@@ -203,13 +202,21 @@ export default {
   border-right: 1px solid #e6ecf0;
   border-left: 1px solid #e6ecf0;
   margin-left: 24px;
+  overflow-y: scroll;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
 .main__title {
-  margin-top: 24px;
-  width: 100%;
+  position: fixed;
+  width: 937px;
+  background: #FFF;
   border-bottom: 1px solid#E6ECF0;
   h1 {
-    padding: 0 21px 25px;
+    padding: 24px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;
@@ -217,15 +224,8 @@ export default {
 }
 
 .main__body {
-  overflow-y: auto;
-  max-height: 100vh;
-  // overscroll-behavior: contain;
-}
-
-.scrollbar {
-  padding-left: 6px;
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
+  margin-top: 90px;
+  max-height: 100%;
+  width: 937px;
 }
 </style>

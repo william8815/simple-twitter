@@ -3,7 +3,7 @@
      <form action="" class="login__from" @@submit.prevent.stop="handleSubmit"> 
         <div class="from__brand">
           <div class="brand__image">
-            <img src="https://i.imgur.com/LEdjhKe.png" alt="" />
+            <img src="../assets/img/logo.svg" alt="" />
           </div>
           <div class="brand__title">
             <h3>後台登入</h3>

@@ -10,19 +10,19 @@
       <div class="card__body">
         <div class="card__title">{{ user.name }}</div>
         <p class="card__text">@{{ user.text }}</p>
-        <div class="click__panel row">
+        <div class="click__panel ">
           <div class="click__icon">
-            <img src="https://imgur.com/KHXogUb.png" alt="" />{{
+            <img src="../assets/img/reply.svg" alt="" />{{
               user.Count.replyCount | changeCount
             }}
           </div>
           <div class="click__icon">
-            <img src="https://imgur.com/j9xpS8U.png" alt="" />{{
+            <img src="../assets/img/like.svg" alt="" />{{
               user.Count.likeCount | changeCount
             }}
           </div>
         </div>
-        <div class="follow__panel row">
+        <div class="follow__panel ">
           <div class="follow__count">
             <span>{{ user.Count.following | changeFollow }} </span>跟隨中
           </div>
@@ -66,6 +66,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  position: relative;
   width: 249px;
   // margin: 1rem;
   margin: 0 1rem 1rem 0;
@@ -111,7 +112,8 @@ export default {
 }
 
 .click__panel {
-  width: 145px;
+  width: 155px;
+  display: flex;
   justify-content: space-between;
 }
 
@@ -131,6 +133,9 @@ export default {
   }
 }
 
+.follow__panel {
+  display: flex;
+}
 
 .follow__count {
   font-weight: 400;

@@ -49,10 +49,10 @@ export default {
   padding-bottom: 1rem;
   border-bottom: 1px solid #E6ECF0;
   min-width: 937px;
+  margin-left: 24px;
 }
 
 .list__avast {
-  margin-left: 24px;
   width: 50px;
   height: 50px;
     display: flex;

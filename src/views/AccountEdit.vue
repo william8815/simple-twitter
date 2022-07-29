@@ -11,7 +11,6 @@
         <div class="main__title">
           <h1>帳戶設定</h1>
         </div>
-
         <div class="main__body">
           <!-- AccountEditForm -->
           <AccountEditForm
@@ -26,15 +25,13 @@
 
 <script>
 /* eslint-disable */
-import UserSidbar from "../components/UserSidbar.vue";
+// import UserSidbar from '../components/UserSidbar.vue'
 import AccountEditForm from "../components/AccountEditForm.vue";
-import Navbar from "./../components/Navbar.vue";
-// import Navbar from '../components/Navbar.vue'
+import Navbar from "../components/Navbar.vue";
 export default {
   name: "AccountEdit",
   components: {
     AccountEditForm,
-    UserSidbar,
     Navbar,
   },
   data() {
@@ -77,6 +74,12 @@ export default {
   border-right: 1px solid #e6ecf0;
   // width: auto;
 }
+
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
 .main__title {
   border-bottom: 1px solid#E6ECF0;
   h1 {
