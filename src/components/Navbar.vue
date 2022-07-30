@@ -45,7 +45,10 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'user-edit' , params: { id: 4 } }" class="tag">
+            <router-link
+              :to="{ name: 'user-edit', params: { id: 4 } }"
+              class="tag"
+            >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
@@ -114,10 +117,13 @@
       </div>
 
       <!-- 推文彈跳視窗 -->
-      <div @click="cancalModel" v-if="tweetMode" class="tweetModal">
+      <div>
+        <div class="black" v-if="tweetMode" @click="cancelModel"></div>
+      </div>
+      <div v-if="tweetMode" class="tweetModal">
         <div class="modal">
           <div class="cancel">
-            <i @click="cancalModel" class="fa-solid fa-xmark"></i>
+            <i @click="cancelModel" class="fa-solid fa-xmark"></i>
           </div>
           <div class="tweet">
             <img src="~@/assets/img/userImg.png" alt="userImg" />
@@ -159,7 +165,7 @@ export default {
     };
   },
   methods: {
-    cancalModel() {
+    cancelModel() {
       this.tweetMode = false;
     },
     newlModel() {
@@ -254,7 +260,7 @@ img {
   border-radius: 50%;
   margin-right: 8px;
 }
-.tweetModal {
+.black {
   position: absolute;
   top: 0;
   left: 0;
@@ -262,6 +268,13 @@ img {
   height: 100%;
   z-index: 2;
   background: rgba($color: #333, $alpha: 0.5);
+}
+.tweetModal {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
   .modal {
     width: 50vw;
     background-color: #fff;
