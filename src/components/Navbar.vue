@@ -72,13 +72,13 @@
         <button @click="newlModel" class="navtabs__btn">推文</button>
       </div>
       <div v-else class="navtabs__list">
-        <ul>
+        <ul class="list">
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link :to="{ name: 'admin-post' }" class="tag">
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
-                :class="{ focus: $route.name === 'main' }"
+                :class="{ focus: $route.name === 'admin-post' }"
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -86,19 +86,20 @@
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  :class="{ focus: $route.name === 'main' }"
+                  :class="{ focus: $route.name === 'admin-post' }"
                   d="M22.58 7.34986L12.475 1.89686C12.178 1.73686 11.821 1.73686 11.525 1.89686L1.42496 7.34986C0.938957 7.61386 0.757957 8.21986 1.01996 8.70586C1.19996 9.04086 1.54496 9.23086 1.89996 9.23086C2.05996 9.23086 2.22396 9.19286 2.37496 9.11086L3.10896 8.71486L4.69896 19.9649C4.91496 21.1789 6.00896 22.0269 7.35896 22.0269H16.641C17.991 22.0269 19.085 21.1789 19.303 19.9389L20.891 8.71386L21.628 9.11186C22.113 9.37486 22.72 9.19386 22.982 8.70786C23.245 8.22186 23.062 7.61486 22.578 7.35286L22.58 7.34986ZM12 15.4349C10.205 15.4349 8.74996 13.9799 8.74996 12.1849C8.74996 10.3899 10.205 8.93486 12 8.93486C13.795 8.93486 15.25 10.3899 15.25 12.1849C15.25 13.9799 13.795 15.4349 12 15.4349Z"
                   fill="#fff"
                 />
               </svg>
-              <h5 :class="{ focus: $route.name === 'main' }">推文清單</h5>
+              <h5 :class="{ focus: $route.name === 'admin-post' }">推文清單</h5>
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link :to="{ name: 'admin-users' }" class="tag">
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
+                :class="{ focus: $route.name === 'admin-users' }"
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -106,11 +107,14 @@
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
+                  :class="{ focus: $route.name === 'admin-users' }"
                   d="M12.225 12.1649C10.869 12.1649 9.35301 12.0149 8.38501 10.9089C7.57101 9.97891 7.30801 8.54091 7.58001 6.51691C7.96001 3.69091 9.69601 2.00391 12.226 2.00391C14.756 2.00391 16.493 3.69091 16.872 6.51691C17.144 8.54091 16.88 9.97691 16.066 10.9089C15.096 12.0149 13.581 12.1639 12.226 12.1639L12.225 12.1649ZM18.074 22.0149H6.37601C5.71301 22.0149 5.12601 21.7349 4.72601 21.2289C4.30401 20.6949 4.15001 19.9589 4.31601 19.2609C5.15001 15.7309 8.40201 13.2639 12.224 13.2639C16.046 13.2639 19.298 15.7299 20.134 19.2609C20.298 19.9589 20.144 20.6949 19.722 21.2279C19.322 21.7329 18.737 22.0129 18.074 22.0129V22.0149Z"
                   fill="#fff"
                 />
               </svg>
-              <h5>使用者列表</h5>
+              <h5 :class="{ focus: $route.name === 'admin-users' }">
+                使用者列表
+              </h5>
             </router-link>
           </li>
         </ul>
@@ -161,7 +165,7 @@ export default {
       tab: ["首頁", "個人資料", "設定"],
       count: 7,
       tweetMode: false,
-      isAdmin: false,
+      isAdmin: true,
     };
   },
   methods: {

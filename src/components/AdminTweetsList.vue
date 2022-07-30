@@ -9,13 +9,16 @@
         <div class="title__date">@{{ tweet.text }} ‧ {{ tweet.tweetDate }}</div>
       </div>
 
-        <p>
-         {{ tweet.content}}
-        </p>
-
+      <p>
+        {{ tweet.content }}
+      </p>
     </div>
     <div class="list__icon">
-      <img src="https://imgur.com/zbiCCdk.png" alt="" @click.prevent.stop="handleDeleteButton(tweet.id)"/>
+      <img
+        src="https://imgur.com/zbiCCdk.png"
+        alt=""
+        @click.prevent.stop="handleDeleteButton(tweet.id)"
+      />
     </div>
   </div>
 </template>
@@ -23,21 +26,22 @@
 <script>
 /* eslint-disable */
 export default {
-  name: 'AdminTweetsList',
+  name: "AdminTweetsList",
   props: {
     tweet: {
       type: Object,
-      required: true
-    }
-  },methods: {
+      required: true,
+    },
+  },
+  methods: {
     handleDeleteButton(tweetId) {
-      this.$emit('after-delete-tweet', tweetId)
+      this.$emit("after-delete-tweet", tweetId);
     },
     test() {
-      console.log('test')
-    } 
+      console.log("test");
+    },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -45,23 +49,23 @@ export default {
   min-height: 120px;
   height: auto;
   display: flex;
-  margin-top: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #E6ECF0;
-  min-width: 937px;
-  margin-left: 24px;
+  border-bottom: 1px solid #e6ecf0;
+  // min-width: 937px;
+  padding-top: 16px;
+  padding-left: 24px;
 }
 
 .list__avast {
   width: 50px;
   height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   img {
-   width: 50px;
-  height: 50px;
+    width: 50px;
+    height: 50px;
   }
 }
 
@@ -69,33 +73,31 @@ export default {
   padding-left: 8px;
   p {
     font-weight: 400;
-font-size: 16px;
-line-height: 26px;
-color: #171725;
+    font-size: 16px;
+    line-height: 26px;
+    color: #171725;
   }
 }
 
 .info__title {
   display: flex;
   margin-bottom: 8px;
-
 }
 .title__name {
   margin-right: 8px;
   font-weight: 700;
-font-size: 16px;
-line-height: 26px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 .title__date {
   font-weight: 400;
-font-size: 14px;
-line-height: 22px;
-color: #6C757D;
+  font-size: 14px;
+  line-height: 22px;
+  color: #6c757d;
 }
 
 .list__icon {
   cursor: pointer;
 }
-
 </style>
