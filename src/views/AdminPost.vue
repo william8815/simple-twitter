@@ -1,13 +1,8 @@
 <template>
-  <div class="container row">
+  <div class="adminUsers">
     <!-- AdminSidbar -->
-    <!-- <AdminSidbar /> -->
-    <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
-      <Navbar />
-    </section>
+    <AdminSidbar />
     <!-- main -->
-    <section class="col-xl-10 col-lg-10">
       <div class="main">
         <div class="main__title">
           <h1>推文清單</h1>
@@ -22,7 +17,6 @@
           />
         </div>
       </div>
-    </section>
   </div>
 </template>
 
@@ -198,24 +192,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container {
-  // display: flex;
-  // margin-right: 130px;
-  // max-height: 100vh;
-  // width: auto;
-  max-width: 1144px;
-  height: 100vh;
-  margin: 0 auto;
+.adminUsers {
+  display: flex;
+  max-height: 100vh;
+  width: auto;;
 }
 
 .main {
-  // width: auto;
+  width: 937px;
   height: 100vh;
   border-right: 1px solid #e6ecf0;
   border-left: 1px solid #e6ecf0;
-  // margin-left: 24px;
+  margin-left: 24px;
   overflow-y: scroll;
-  position: relative;
 }
 
 ::-webkit-scrollbar {
@@ -242,9 +231,5 @@ export default {
   }
 }
 
-// .main__body {
-//   // margin-top: 90px;
-//   // max-height: 100%;
-//   // width: 937px;
-// }
+
 </style>
