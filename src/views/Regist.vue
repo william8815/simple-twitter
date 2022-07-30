@@ -57,7 +57,7 @@
         />
       </div>
       <div class="form__label">
-        <label for="passwordCheck">密碼確認</label>
+        <label for="">密碼確認</label>
         <input
           type="password"
           class="label__control"
@@ -81,6 +81,7 @@
 
 <script>
 import { Toast } from "../utils/helpers";
+import authorizationAPI from "../apis/authorization";
 export default {
   name: "Regist",
   data() {
@@ -93,27 +94,53 @@ export default {
     };
   },
   methods: {
-    handleSubmit(e) {
-      if (this.password !== this.passwordCheck) {
+    async handleSubmit() {
+      try {
+        if (
+          !this.name ||
+          !this.email ||
+          !this.password ||
+          !this.passwordCheck
+        ) {
+          Toast.fire({
+            icon: "warning",
+            title: "請填寫所有欄位",
+          });
+          return;
+        }
+        if (this.password !== this.passwordCheck) {
+          Toast.fire({
+            icon: "warning",
+            title: "兩次輸入的密碼不同",
+          });
+          this.passwordCheck = "";
+          return;
+        }
+        const { data } = await authorizationAPI.signUp({
+          account: this.account,
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+        Toast.fire({
+          icon: "success",
+          title: data.message,
+        });
+        this.$router.push("/login");
+      } catch (error) {
         Toast.fire({
           icon: "warning",
-          title: "密碼確認有誤，請重新輸入",
+          title: `無法註冊 - ${error.message}`,
         });
-
-        (this.password = ""), (this.passwordCheck = "");
-        return;
-      }
-      const form = e.target;
-      const formData = new FormData(form);
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
       }
     },
   },
 };
 </script>
-
-
 
 <style lang="scss" scoped>
 .regist {
@@ -171,6 +198,7 @@ export default {
   width: 356px;
   height: 52px;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .btn {
