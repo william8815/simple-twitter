@@ -1,52 +1,55 @@
 <template>
-  <div class="reply-modal" @click="cancelModal" v-if="replyState">
-    <div class="modal">
-      <div class="cancel">
-        <i class="fa-solid fa-xmark" @click="cancelModal"></i>
-      </div>
-      <!-- 留言對象 -->
-      <div class="sent-user">
-        <router-link :to="{ name: 'main' }" class="avator">
-          <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
-        </router-link>
-        <div class="user">
-          <div class="user__info">
-            <router-link :to="{ name: 'main' }">
-              <span class="user__name">Apple</span>
-              <span class="user__account">@apple ・</span>
-            </router-link>
-            <router-link :to="{ name: 'main' }">
-              <span class="user__posttime">3 小時</span>
-            </router-link>
-          </div>
-          <div class="user__post">
-            Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco
-            cillum dolor. Voluptate exercitation incididunt aliquip deserunt
-            reprehenderit elit laborum.
-          </div>
-          <div class="user__sent">
-            <span>回覆&nbsp;&nbsp;</span>
-            <span class="sent-account">@apple</span>
+  <div>
+    <div class="black" @click="cancelModal" v-if="replyState"></div>
+    <div class="reply-modal" v-if="replyState">
+      <div class="modal">
+        <div class="cancel">
+          <i class="fa-solid fa-xmark" @click.stop="cacelModal"></i>
+        </div>
+        <!-- 留言對象 -->
+        <div class="sent-user">
+          <router-link :to="{ name: 'main' }" class="avator">
+            <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
+          </router-link>
+          <div class="user">
+            <div class="user__info">
+              <router-link :to="{ name: 'main' }">
+                <span class="user__name">Apple</span>
+                <span class="user__account">@apple ・</span>
+              </router-link>
+              <router-link :to="{ name: 'main' }">
+                <span class="user__posttime">3 小時</span>
+              </router-link>
+            </div>
+            <div class="user__post">
+              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
+              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
+              deserunt reprehenderit elit laborum.
+            </div>
+            <div class="user__sent">
+              <span>回覆&nbsp;&nbsp;</span>
+              <span class="sent-account">@apple</span>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- 回覆留言區 -->
-      <div class="tweet">
-        <img src="~@/assets/img/userImg.png" alt="userImg" />
-        <form action="">
-          <div>
-            <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
-            <textarea
-              class="tweet-content"
-              name="tweet"
-              id=""
-              cols="30"
-              :rows="count"
-              placeholder="推你的回覆"
-            ></textarea>
-          </div>
-          <button type="submit" class="tweet-btn">推文</button>
-        </form>
+        <!-- 回覆留言區 -->
+        <div class="tweet">
+          <img src="~@/assets/img/userImg.png" alt="userImg" />
+          <form action="">
+            <div>
+              <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
+              <textarea
+                class="tweet-content"
+                name="tweet"
+                id=""
+                cols="30"
+                :rows="count"
+                placeholder="推你的回覆"
+              ></textarea>
+            </div>
+            <button type="submit" class="tweet-btn">推文</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -91,7 +94,7 @@ img {
   border-radius: 50%;
   margin-right: 8px;
 }
-.reply-modal {
+.black {
   position: absolute;
   top: 0;
   left: 0;
@@ -99,6 +102,13 @@ img {
   height: 100%;
   z-index: 2;
   background: rgba($color: #333, $alpha: 0.5);
+}
+.reply-modal {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
   .modal {
     width: 50vw;
     background-color: #fff;
