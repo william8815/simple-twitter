@@ -6,7 +6,7 @@ import AdminLogin from '../views/AdminLogin.vue'
 Vue.use(VueRouter)
 
 const routes = [
-  }
+  {
     path: '/',
     name: 'root',
     redirect: '/login'
