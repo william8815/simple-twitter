@@ -10,7 +10,7 @@
       <div class="card__body">
         <div class="card__title">{{ user.name }}</div>
         <p class="card__text">@{{ user.text }}</p>
-        <div class="click__panel ">
+        <div class="click__panel">
           <div class="click__icon">
             <img src="../assets/img/reply.svg" alt="" />{{
               user.Count.replyCount | changeCount
@@ -22,7 +22,7 @@
             }}
           </div>
         </div>
-        <div class="follow__panel ">
+        <div class="follow__panel">
           <div class="follow__count">
             <span>{{ user.Count.following | changeFollow }} </span>跟隨中
           </div>
@@ -56,10 +56,9 @@ export default {
     },
     changeFollow(count) {
       if (count >= 100000) {
-        return Math.round(count / 10000).toLocaleString() + ' W'
-       
-      } else return count.toLocaleString()
-    }
+        return Math.round(count / 10000).toLocaleString() + " W";
+      } else return count.toLocaleString();
+    },
   },
 };
 </script>
@@ -124,7 +123,6 @@ export default {
   line-height: 15px;
   color: #1c1c1c;
   margin-bottom: 0.5rem;
-  
 
   img {
     width: 24px;
@@ -143,7 +141,6 @@ export default {
   line-height: 22px;
   color: #6c757d;
   margin-bottom: 24px;
-
 
   span {
     color: #171725;
