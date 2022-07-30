@@ -165,7 +165,7 @@ export default {
       tab: ["首頁", "個人資料", "設定"],
       count: 7,
       tweetMode: false,
-      isAdmin: true,
+      isAdmin: false,
     };
   },
   methods: {

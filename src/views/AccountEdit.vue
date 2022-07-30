@@ -1,12 +1,10 @@
 <template>
   <div class="container row">
-    <!--UserSidbar -->
-    <!-- <UserSidbar /> -->
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
-    <section class="col-xl-7 col-lg-7">
+    <section class="set-section col-7">
       <div class="main">
         <div class="main__title">
           <h1>帳戶設定</h1>
@@ -57,11 +55,15 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  // display: flex;
-  max-width: 1144px;
+  width: calc(100vw - 260px);
+  max-width: 1400px;
   height: 100vh;
-  // margin: 0 130px;
-   margin: 0 auto;
+  margin: 0 auto;
+}
+@media screen and (max-width: 960px) {
+  .set-section {
+    flex-grow: 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {
