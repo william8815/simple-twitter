@@ -23,6 +23,8 @@
 <script>
 /* eslint-disable */
 import { v4 as uuidv4 } from "uuid";
+import tweetAPI from '../apis/tweets'
+import { Toast } from '../utils/helpers'
 const dammyData = {
   tweets: [
     {
@@ -174,12 +176,30 @@ export default {
   },
   data() {
     return {
-      tweets: [],
+      // tweets: {
+      //   id: -1,
+      //   name:'',
+      //   text: '',
+      //   tweetDate: '',
+      //   content: ''
+      // },
+      tweets:[],
     };
   },
   methods: {
-    fetchTweets() {
-      this.tweets = dammyData.tweets;
+    async fetchTweets() {
+      try {
+        const { data } = await tweetAPI.getTweets()
+        console.log(data)
+        console.log('hi')
+          this.tweets = dammyData.tweets
+      } catch(error) {
+        Toast.fire({
+          icon: 'error',
+          title: '載入失敗，請稍後再試'
+        })
+      }
+    
     },
     afterDeleteTweet(tweetId) {
       this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);

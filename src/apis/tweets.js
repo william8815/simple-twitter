@@ -1,7 +1,7 @@
-import { apiHelper  } from "../utils/helpers";
+import { apiHelper } from "../utils/helpers";
 
-export default{
-  getTewwts() {
+export default {
+  getTweets() {
     return apiHelper.get('/tweets')
   }
 }
