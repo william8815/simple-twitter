@@ -1,8 +1,8 @@
 <template>
-  <div class="reply-modal" @click="cacelModal" v-if="replyState">
+  <div class="reply-modal" @click="cancelModal" v-if="replyState">
     <div class="modal">
       <div class="cancel">
-        <i class="fa-solid fa-xmark" @click="cacelModal"></i>
+        <i class="fa-solid fa-xmark" @click="cancelModal"></i>
       </div>
       <!-- 留言對象 -->
       <div class="sent-user">
@@ -74,7 +74,7 @@ export default {
       this.replyState = this.reply_state;
       // console.log(this.replyState);
     },
-    cacelModal() {
+    cancelModal() {
       // this.replyState = false;
       this.$emit("handleReplyState", false);
     },
