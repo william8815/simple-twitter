@@ -60,7 +60,8 @@ export default {
   // display: flex;
   max-width: 1144px;
   height: 100vh;
-  margin: 0 auto;
+  // margin: 0 130px;
+   margin: 0 auto;
 }
 // 取消滾輪
 ::-webkit-scrollbar {
@@ -72,7 +73,7 @@ export default {
   height: 100vh;
   border-left: 1px solid #e6ecf0;
   border-right: 1px solid #e6ecf0;
-  // width: auto;
+  overflow-y: scroll;
 }
 
 ::-webkit-scrollbar {
@@ -82,8 +83,9 @@ export default {
 
 .main__title {
   border-bottom: 1px solid#E6ECF0;
+  padding: 24px;
+
   h1 {
-    padding: 24px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;

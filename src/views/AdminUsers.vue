@@ -151,8 +151,12 @@ export default {
   background: #FFF;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  opacity: 0.95;
   h1 {
-    padding: 24px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;
