@@ -19,89 +19,89 @@
 /* eslint-disable */
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminUserCard from "../components/AdminUserCard.vue";
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from "uuid";
 const dammyData = {
   users: [
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 150011,
         likeCount: 300011,
         following: 314441,
         follower: 54449,
-      }
+      },
     },
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 22345,
         likeCount: 14257841,
         following: 34,
         follower: 59,
-      }
+      },
     },
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 110,
         likeCount: 3000,
         following: 34,
         follower: 59,
-      }
+      },
     },
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 10,
         likeCount: 3000,
         following: 34,
         follower: 59,
-      }
+      },
     },
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 1500,
         likeCount: 3000,
         following: 34,
         follower: 59,
-      }
+      },
     },
     {
       id: uuidv4(),
-      name: 'John Doe',
-      image: 'https://imgur.com/GrO4gR6.png',
-      background: 'https://i.imgur.com/NPIq5gR.png',
-      text: 'heyjohn',
+      name: "John Doe",
+      image: "https://imgur.com/GrO4gR6.png",
+      background: "https://i.imgur.com/NPIq5gR.png",
+      text: "heyjohn",
       Count: {
         replyCount: 1500,
         likeCount: 3000,
         following: 34,
         follower: 59,
-      }
+      },
     },
-  ]
-}
+  ],
+};
 export default {
   name: "AdminUsers",
   components: {
@@ -110,17 +110,17 @@ export default {
   },
   data() {
     return {
-      users: []
-    }
+      users: [],
+    };
   },
   methods: {
     fetchUsers() {
-      this.users = dammyData.users
-    }
-   },
-   created() {
-    this.fetchUsers()
-   }
+      this.users = dammyData.users;
+    },
+  },
+  created() {
+    this.fetchUsers();
+  },
 };
 </script>
 
@@ -149,13 +149,14 @@ export default {
   position: sticky;
   top: 0;
   z-index: 999;
-  background: #FFF;
+  background: #fff;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
   height: 74px;
   padding: 24px;
   opacity: 0.95;
   h1 {
+    padding: 24px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;

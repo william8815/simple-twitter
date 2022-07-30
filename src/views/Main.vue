@@ -1,12 +1,12 @@
 <template>
   <!-- 首頁 -->
-  <div class="container row">
+  <div class="container row row-cols-3">
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
     <!-- main -->
-    <section class="col-xl-7 col-lg-7">
+    <section class="main-section col-7">
       <div class="main .scrollbar">
         <h4>首頁</h4>
         <div class="tweet-board">
@@ -120,7 +120,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-xl-3 col-lg-3">
+    <section class="col-3" style="min-width:274px;'">
       <RecommendUsers />
     </section>
   </div>
@@ -259,9 +259,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1144px;
+  width: calc(100vw - 260px);
+  max-width: 1400px;
   height: 100vh;
   margin: 0 auto;
+  .main-section {
+    flex: 1 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {
@@ -269,6 +273,7 @@ export default {
   width: 0px;
   background: transparent;
 }
+
 .main {
   border-left: 1px solid #e6ecf0;
   border-right: 1px solid #e6ecf0;
