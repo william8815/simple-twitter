@@ -94,22 +94,18 @@ export default {
   methods: {
     handleSubmit(e) {
       if (this.user.password !== this.user.passwordCheck) {
-
         Toast.fire({
           icon: "warning",
           title: "密碼確認有誤，請重新輸入",
         });
 
-        this.user.password = '',
-        this.user.passwordCheck = ''
+        (this.user.password = ""), (this.user.passwordCheck = "");
         return;
-
       }
 
       const form = e.target;
       const formDate = new FormData(form);
       this.$emit("handle-after-submit", formDate);
-
     },
   },
 };
@@ -117,7 +113,8 @@ export default {
 
 <style lang="scss" scoped>
 .form {
-  min-width: 593px;
+  width: 100%;
+  // min-width: 593px;
   display: flex;
   flex-direction: column;
   align-items: center;

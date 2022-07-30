@@ -1,16 +1,16 @@
 <template>
   <div class="container row">
     <!--UserSidbar -->
+    <!-- <UserSidbar /> -->
+    <!-- navbar -->
     <section class="col-xl-2 col-lg-2">
       <Navbar />
     </section>
-    <!-- main -->
     <section class="col-xl-7 col-lg-7">
       <div class="main">
         <div class="main__title">
           <h1>帳戶設定</h1>
         </div>
-
         <div class="main__body">
           <!-- AccountEditForm -->
           <AccountEditForm
@@ -57,12 +57,18 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  // display: flex;
   max-width: 1144px;
   height: 100vh;
   // margin: 0 130px;
    margin: 0 auto;
 }
-
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .main {
   height: 100vh;
   border-left: 1px solid #e6ecf0;
@@ -76,9 +82,6 @@ export default {
 }
 
 .main__title {
-  height: 74px;
-  display: flex;
-  align-items: center;
   border-bottom: 1px solid#E6ECF0;
   padding: 24px;
 
@@ -90,10 +93,9 @@ export default {
 }
 
 .main__body {
-  margin-top: 1rem;
+  padding: 24px 23px 0;
   display: flex;
   flex-wrap: wrap;
-  max-height: 100vh;
-  padding-left: 1rem;
+  // max-height: 100vh;
 }
 </style>
