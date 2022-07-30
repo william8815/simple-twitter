@@ -71,9 +71,7 @@ export default {
 .adminSidbar {
   margin-left: 130px;
   width: 178px;
-  height: auto;
-  // height: 1400px;
-  // max-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -81,7 +79,7 @@ export default {
 .nav__brand {
   margin: 13px 13px 30px;
   img {
-    width: px;
+    width: 40px;
     height: 40px;
   }
 }

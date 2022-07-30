@@ -1,97 +1,95 @@
 <template>
-    <div class="adminLogin">
-     <form action="" class="login__from" @submit.prevent.stop="handleSubmit"> 
-        <div class="from__brand">
-          <div class="brand__image">
-            <img src="../assets/img/logo.svg" alt="" />
-          </div>
-          <div class="brand__title">
-            <h3>後台登入</h3>
-          </div>
+  <div class="adminLogin">
+    <form action="" class="login__from" @submit.prevent.stop="handleSubmit">
+      <div class="from__brand">
+        <div class="brand__image">
+          <img src="../assets/img/logo.svg" alt="" />
         </div>
-        <div class="from__label">
-          <label for="account">帳號</label>
-          <input
-            type="text"
-            class="label__control"
-            name="account"
-            id="account"
-            style="border-style: none"
-            v-model="account"
-          />
+        <div class="brand__title">
+          <h3>後台登入</h3>
         </div>
-        <div class="from__label">
-          <label for="password">密碼</label>
-          <input
-            type="password"
-            class="label__control"
-            name="password"
-            id="password"
-            style="border-style: none"
-            v-model="password"
-          />
+      </div>
+      <div class="from__label">
+        <label for="account">帳號</label>
+        <input
+          type="text"
+          class="label__control"
+          name="account"
+          id="account"
+          style="border-style: none"
+          v-model="account"
+        />
+      </div>
+      <div class="from__label">
+        <label for="password">密碼</label>
+        <input
+          type="password"
+          class="label__control"
+          name="password"
+          id="password"
+          style="border-style: none"
+          v-model="password"
+        />
+      </div>
+      <button class="from__btn" type="submit">登入</button>
+      <div class="from__btn--link">
+        <div class="btns">
+          <router-link class="btn__link" to="/login">前台登入</router-link>
         </div>
-        <button class="from__btn" type="submit">登入</button>
-        <div class="from__btn--link">
-          <div class="btns">
-            <router-link class="btn__link" to="/login">前台登入</router-link>
-          </div>
-        </div>
-      </form>
-       
-    </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-import { Toast } from './../utils/helpers'
-import authorizationAPI from './../apis/authorization'
+import { Toast } from "./../utils/helpers";
+import authorizationAPI from "./../apis/authorization";
 export default {
-  name: 'AdminLogin',
+  name: "AdminLogin",
   data() {
     return {
-      account: '',
-      password: '',
+      account: "",
+      password: "",
       isProcessing: false,
-    } 
+    };
   },
   methods: {
     async handleSubmit() {
       try {
-        if(!this.account | !this.password) {
+        if (!this.account | !this.password) {
           Toast.fire({
-            icon: 'warning',
-            title: '請輸入帳號或密碼'
-          })
-          return
+            icon: "warning",
+            title: "請輸入帳號或密碼",
+          });
+          return;
         }
 
         const { data } = await authorizationAPI.adminLogin({
           account: this.account,
-          password: this.password
-        })
+          password: this.password,
+        });
 
-        if(data.status !== 'success') {
-          throw new Error(data.message)
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        console.log(data)
-         // 等後端修改login data API包裝修改data路徑
-         this.$store.commit('setCurrentUser', data.data.user)
-        localStorage.setItem('token', data.data.token)
-        this.$router.push('/admin')
-      } catch(error) {
-       Toast.fire({
-        icon: 'error',
-        title: '登入失敗，稍後再試'
-       })
+        this.$store.commit("setCurrentUser", data.user);
+        localStorage.setItem("token", data.token);
+        this.$router.push("/admin");
+        // error info
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "帳號 或 密碼錯誤，請重新輸入",
+        });
+        (this.account = ""), (this.password = "");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 
 <style lang="scss" scoped>
-
 .adminLogin {
   display: flex;
   flex-direction: column;
@@ -180,5 +178,4 @@ export default {
   line-height: 26px;
   color: #ffffff;
 }
-
 </style>

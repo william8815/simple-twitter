@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="login">
-     <form action="" class="login__from" @submit.prevent.stop="handleSubmit">
+      <form action="" class="login__from" @submit.prevent.stop="handleSubmit">
         <div class="from__brand">
           <div class="brand__image">
             <img src="../assets/img/logo.svg" alt="" />
@@ -34,79 +34,86 @@
             required
           />
         </div>
-        <button class="from__btn" type="submit" :disabled="isProcessing">登入</button>
+        <button class="from__btn" type="submit" :disabled="isProcessing">
+          登入
+        </button>
         <div class="from__btn--link">
           <div class="btns">
             <router-link class="btn__link" to="/regist"
               >註冊 Alphitter</router-link
             >
             <span> &#xb7; </span>
-            <router-link class="btn__link" to="/admin/login">後台登入</router-link>
+            <router-link class="btn__link" to="/admin/login"
+              >後台登入</router-link
+            >
           </div>
         </div>
         <div class="btns">
-            <router-link class="btn__link" to="/admin"
-              >測試頁面 - admin</router-link
-            >
-            <span> &#xb7; </span>
-            <router-link class="btn__link" to="/user/4/edit">測試頁面 - userEdit</router-link>
-          </div>
+          <router-link class="btn__link" to="/admin"
+            >測試頁面 - admin</router-link
+          >
+          <span> &#xb7; </span>
+          <router-link class="btn__link" to="/user/4/edit"
+            >測試頁面 - userEdit</router-link
+          >
+        </div>
       </form>
-       
     </div>
   </div>
 </template>
 
 <script>
-import { Toast } from './../utils/helpers'
-import authorizationAPI from './../apis/authorization'
+import { Toast } from "./../utils/helpers";
+import authorizationAPI from "./../apis/authorization";
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
-      account: '',
-      password: '',
+      account: "",
+      password: "",
       isProcessing: false,
-    } 
+    };
   },
   methods: {
     async handleSubmit() {
       try {
-        if(!this.account | !this.password) {
+        if (!this.account | !this.password) {
           Toast.fire({
-            icon: 'warning',
-            title: '請輸入帳號 和 密碼'
-          })
-          return
+            icon: "warning",
+            title: "請輸入帳號 和 密碼",
+          });
+          return;
         }
-        this.isProcessing = true
+
+        this.isProcessing = true;
         const { data } = await authorizationAPI.login({
           account: this.account,
-          password: this.password
-        })
-        if(data.status !== 'success') {
-          throw new Error(data.message)
+          password: this.password,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        // 等後端修改login data API包裝修改data路徑
-        console.log(data)
-      this.$store.commit('setCurrentUser', data.data.user)
-       localStorage.setItem('token', data.data.token)
-        this.$router.push('/main')
-      } catch(error) {
-        this.isProcessing = false
-       Toast.fire({
-        icon: 'error',
-        title: '登入失敗，稍後再試'
-       })
+        this.$store.commit("setCurrentUser", data.user);
+        localStorage.setItem("token", data.token);
+        this.$router.push("/main");
+        // error info
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "帳號 或 密碼錯誤，請重新輸入",
+        });
+
+        (this.account = ""), (this.password = "");
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 
 <style lang="scss" scoped>
-
 .container {
   display: flex;
   flex-direction: column;
@@ -195,5 +202,4 @@ export default {
   line-height: 26px;
   color: #ffffff;
 }
-
 </style>

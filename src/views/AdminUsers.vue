@@ -2,6 +2,7 @@
   <div class="adminUsers">
     <!-- AdminSidbar -->
     <AdminSidbar />
+    <!-- main -->
     <div class="main">
       <div class="main__title">
         <h1>使用者列表</h1>
@@ -131,12 +132,11 @@ export default {
 }
 
 .main {
-  min-width: 1076px;
+  width: 1076px;
   flex: 1;
-  min-height: 100vh;
+  height: 100vh;
   border-left: 1px solid #e6ecf0;
   margin-left: 24px;
-  // padding-left: 15px;
   overflow-y: scroll;
 }
 
@@ -146,11 +146,15 @@ export default {
 }
 
 .main__title {
-  position: fixed;
+  position: sticky;
+  top: 0;
   z-index: 999;
   background: #fff;
   width: 100%;
   border-bottom: 1px solid#E6ECF0;
+  height: 74px;
+  padding: 24px;
+  opacity: 0.95;
   h1 {
     padding: 24px;
     font-weight: 700;
@@ -160,8 +164,6 @@ export default {
 }
 
 .main__body {
-  z-index: -1;
-  margin-top: 90px;
   display: flex;
   flex-wrap: wrap;
   padding-left: 1rem;
