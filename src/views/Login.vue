@@ -19,6 +19,7 @@
             id="account"
             style="border-style: none"
             v-model="account"
+            required
           />
         </div>
         <div class="from__label">
@@ -30,9 +31,10 @@
             id="password"
             style="border-style: none"
             v-model="password"
+            required
           />
         </div>
-        <button class="from__btn" type="submit">登入</button>
+        <button class="from__btn" type="submit" :disabled="isProcessing">登入</button>
         <div class="from__btn--link">
           <div class="btns">
             <router-link class="btn__link" to="/regist"
@@ -57,6 +59,7 @@
 
 <script>
 import { Toast } from './../utils/helpers'
+import authorizationAPI from './../apis/authorization'
 export default {
   name: 'Login',
   data() {
@@ -72,15 +75,28 @@ export default {
         if(!this.account | !this.password) {
           Toast.fire({
             icon: 'warning',
-            title: '請輸入帳號或密碼'
+            title: '請輸入帳號 和 密碼'
           })
+          return
         }
-
+        this.isProcessing = true
+        const { data } = await authorizationAPI.login({
+          account: this.account,
+          password: this.password
+        })
+        if(data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        // 等後端修改login data API包裝修改data路徑
+        console.log(data)
+      this.$store.commit('setCurrentUser', data.data.user)
+       localStorage.setItem('token', data.data.token)
         this.$router.push('/main')
       } catch(error) {
+        this.isProcessing = false
        Toast.fire({
         icon: 'error',
-        titel: '登入失敗，稍後再試'
+        title: '登入失敗，稍後再試'
        })
       }
     }

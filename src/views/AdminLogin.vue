@@ -1,6 +1,6 @@
 <template>
     <div class="adminLogin">
-     <form action="" class="login__from" @@submit.prevent.stop="handleSubmit"> 
+     <form action="" class="login__from" @submit.prevent.stop="handleSubmit"> 
         <div class="from__brand">
           <div class="brand__image">
             <img src="../assets/img/logo.svg" alt="" />
@@ -17,6 +17,7 @@
             name="account"
             id="account"
             style="border-style: none"
+            v-model="account"
           />
         </div>
         <div class="from__label">
@@ -27,6 +28,7 @@
             name="password"
             id="password"
             style="border-style: none"
+            v-model="password"
           />
         </div>
         <button class="from__btn" type="submit">登入</button>
@@ -42,6 +44,7 @@
 
 <script>
 import { Toast } from './../utils/helpers'
+import authorizationAPI from './../apis/authorization'
 export default {
   name: 'AdminLogin',
   data() {
@@ -59,11 +62,26 @@ export default {
             icon: 'warning',
             title: '請輸入帳號或密碼'
           })
+          return
         }
+
+        const { data } = await authorizationAPI.adminLogin({
+          account: this.account,
+          password: this.password
+        })
+
+        if(data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        console.log(data)
+         // 等後端修改login data API包裝修改data路徑
+         this.$store.commit('setCurrentUser', data.data.user)
+        localStorage.setItem('token', data.data.token)
+        this.$router.push('/admin')
       } catch(error) {
        Toast.fire({
         icon: 'error',
-        titel: '登入失敗，稍後再試'
+        title: '登入失敗，稍後再試'
        })
       }
     }

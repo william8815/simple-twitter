@@ -5,8 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    currentUser: {
+      "id": -1,
+      "account": "",
+      "name": "",
+      "email": "",
+      "roel" : 'user'
+    },
+    isAuthenticated: false
   },
   mutations: {
+    setCurrentUser(state, currentUser) {
+      state.currentUser = {
+        ...state.currentUser,
+        ...currentUser
+      }
+      state.isAuthenticated = true
+    }
   },
   actions: {
   },
