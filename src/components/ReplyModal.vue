@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="black" @click="cacelModal" v-if="replyState"></div>
+    <div class="black" @click="cancelModal" v-if="replyState"></div>
     <div class="reply-modal" v-if="replyState">
       <div class="modal">
         <div class="cancel">
@@ -77,7 +77,7 @@ export default {
       this.replyState = this.reply_state;
       // console.log(this.replyState);
     },
-    cacelModal() {
+    cancelModal() {
       // this.replyState = false;
       this.$emit("handleReplyState", false);
     },
