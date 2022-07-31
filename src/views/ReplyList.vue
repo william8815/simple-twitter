@@ -1,11 +1,11 @@
 <template>
   <div class="container row">
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
     <!-- reply-list -->
-    <section class="col-xl-7 col-lg-7">
+    <section class="col-7 reply-section">
       <div class="reply">
         <!-- 開頭 -->
         <div class="title">
@@ -124,7 +124,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-xl-3 col-lg-3">
+    <section class="col-3" style="min-width:274px;'">
       <RecommendUsers />
     </section>
   </div>
@@ -272,9 +272,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1144px;
+  width: calc(100vw - 260px);
+  max-width: 1400px;
   height: 100vh;
   margin: 0 auto;
+  .reply-section {
+    flex: 1 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {

@@ -17,14 +17,26 @@
             <form action="">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
-                <textarea
+                <!-- <textarea
+                  v-model="content"
+                  @keydown="setCount"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
                   :rows="count"
                   placeholder="有甚麼新鮮事?"
-                ></textarea>
+                ></textarea> -->
+                <input
+                  type="text"
+                  class="tweet-content"
+                  v-for="input in tweet"
+                  :key="input.id"
+                  @keydown.stop="setInput(input.id, $event)"
+                  v-model="input.content"
+                  :placeholder="input.placeholder"
+                  :autofocus="input.autofocus"
+                />
               </div>
               <button type="submit" class="tweet-btn">推文</button>
             </form>
@@ -34,29 +46,29 @@
               <li class="list-item" v-for="tweet in tweets" :key="tweet.id">
                 <router-link :to="{ name: 'main' }">
                   <img
-                    src="~@/assets/img/otherUserImg.png"
+                    :src="tweet.User.avatar | emptyImage"
                     alt="otherUserImg"
                   />
                 </router-link>
                 <div>
                   <div class="user">
                     <router-link :to="{ name: 'main' }" class="user__name">
-                      {{ tweet.name }}
+                      {{ tweet.User.name }}
                     </router-link>
                     <router-link :to="{ name: 'main' }" class="user__account">
-                      {{ tweet.account }} ・
+                      @{{ tweet.User.account }} ・
                     </router-link>
 
                     <router-link
                       :to="{ name: 'replylist' }"
                       class="user__posttime"
                     >
-                      {{ tweet.createAt }}
+                      {{ tweet.createdAt | fromNow }}
                     </router-link>
                   </div>
                   <div class="post">
                     <router-link :to="{ name: 'replylist' }">
-                      {{ tweet.post }}
+                      {{ tweet.description }}
                     </router-link>
                   </div>
                   <div class="extra-info">
@@ -72,7 +84,7 @@
                           d="M17.5576 2.80254L12.3726 2.79004H12.3701C6.90262 2.79004 2.62012 7.07379 2.62012 12.5425C2.62012 17.665 6.60262 21.55 11.9514 21.755V26.54C11.9514 26.675 12.0064 26.8975 12.1014 27.0438C12.2789 27.325 12.5814 27.4775 12.8914 27.4775C13.0639 27.4775 13.2376 27.43 13.3939 27.33C13.7239 27.12 21.4851 22.155 23.5039 20.4475C25.8814 18.435 27.3039 15.485 27.3076 12.5575V12.5363C27.3001 7.07754 23.0201 2.80254 17.5576 2.80129V2.80254ZM22.2914 19.0175C20.8739 20.2175 16.2139 23.2738 13.8264 24.8213V20.8375C13.8264 20.32 13.4076 19.9 12.8889 19.9H12.3939C7.81887 19.9 4.49637 16.805 4.49637 12.5425C4.49637 8.12504 7.95637 4.66504 12.3714 4.66504L17.5551 4.67754H17.5576C21.9726 4.67754 25.4326 8.13504 25.4351 12.5475C25.4314 14.935 24.2576 17.3525 22.2926 19.0175H22.2914Z"
                         />
                       </svg>
-                      <span class="num">{{ tweet.commentLength }}</span>
+                      <span class="num">{{ tweet.replyCount }}</span>
                     </div>
                     <div class="btn like">
                       <svg
@@ -103,7 +115,7 @@
                           fill="white"
                         />
                       </svg>
-                      <span class="num">{{ tweet.likedLength }}</span>
+                      <span class="num">{{ tweet.likeCount }}</span>
                     </div>
                   </div>
                 </div>
@@ -130,63 +142,22 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
+import { v4 as uuidv4 } from "uuid";
+import tweetsAPI from "./../apis/tweet";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
+import { emptyImageFilter } from "./../utils/mixins";
+import { fromNowFilter } from "./../utils/mixins";
+
 const dummyData = {
-  tweets: [
-    {
-      id: 1,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: true,
-    },
-    {
-      id: 2,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: true,
-    },
-    {
-      id: 3,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: false,
-    },
-    {
-      id: 4,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: false,
-    },
-  ],
   replyState: {
     count: 0,
     state: false,
   },
 };
 export default {
+  name: "main-component",
+  mixins: [emptyImageFilter, fromNowFilter],
   components: {
     Navbar,
     RecommendUsers,
@@ -196,13 +167,26 @@ export default {
     return {
       count: 1,
       tweets: [],
+      tweet: [
+        {
+          id: uuidv4(),
+          content: "",
+          placeholder: "有甚麼新鮮事?",
+          autofocus: false,
+        },
+      ],
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
-    this.fetchTweet();
+    this.fetchTweet({
+      limit: 10,
+    });
   },
   methods: {
-    fetchTweet() {
+    async fetchTweet({ limit }) {
       const { tweets, replyState } = dummyData;
       const { count, state } = replyState;
       this.tweets = tweets;
@@ -210,6 +194,19 @@ export default {
         count,
         state,
       };
+      try {
+        const { data } = await tweetsAPI.getTweets({
+          limit,
+        });
+        console.log(data);
+        this.tweets = data;
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文資料，請稍後再試",
+        });
+      }
     },
     // 新增喜歡
     addLike(tweetId) {
@@ -252,6 +249,34 @@ export default {
       };
       this.$forceUpdate();
       // console.log(this.replyState);
+    },
+    setInput(inputId, event) {
+      event.target.blur();
+      if (event.key === "Enter") {
+        this.tweet.push({
+          id: uuidv4(),
+          content: "",
+          placeholder: "",
+          autofocus: false,
+        });
+        let index = this.tweet.findIndex((input) => inputId === input.id);
+        console.log(index);
+        this.tweet = this.tweet.map((input) => {
+          if (this.tweet[index + 1].id === input.id) {
+            return {
+              ...input,
+              autofocus: true,
+            };
+          } else {
+            return {
+              ...input,
+              autofocus: false,
+            };
+          }
+        });
+        console.log(this.tweet);
+        // this.$forceUpdate();
+      }
     },
   },
 };
@@ -381,6 +406,7 @@ export default {
             fill: #6c757d;
             background-size: cover;
             margin-right: 9px;
+            cursor: pointer;
           }
           .num {
             color: #6c757d;
