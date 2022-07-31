@@ -23,8 +23,11 @@
 <script>
 /* eslint-disable */
 import { v4 as uuidv4 } from "uuid";
-import tweetAPI from '../apis/tweets'
 import { Toast } from '../utils/helpers'
+import adminAPI from '../apis/admin'
+import AdminSidbar from "../components/AdminSidbar.vue";
+import AdminTweetsList from "../components/AdminTweetsList.vue";
+import Navbar from "./../components/Navbar.vue";
 const dammyData = {
   tweets: [
     {
@@ -164,9 +167,7 @@ const dammyData = {
     },
   ],
 };
-import AdminSidbar from "../components/AdminSidbar.vue";
-import AdminTweetsList from "../components/AdminTweetsList.vue";
-import Navbar from "./../components/Navbar.vue";
+
 export default {
   name: "AdminPost",
   components: {
@@ -189,7 +190,7 @@ export default {
   methods: {
     async fetchTweets() {
       try {
-        const { data } = await tweetAPI.getTweets()
+        const { data } = await adminAPI.getTweets()
         console.log(data)
         console.log('hi')
           this.tweets = dammyData.tweets
