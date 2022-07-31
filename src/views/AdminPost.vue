@@ -3,28 +3,28 @@
     <!-- AdminSidbar -->
     <AdminSidbar />
     <!-- main -->
-      <div class="main">
-        <div class="main__title">
-          <h1>推文清單</h1>
-        </div>
-        <div class="main__body">
-          <!-- AdminTweetsList -->
-          <AdminTweetsList
-            v-for="tweet in tweets"
-            :key="tweet.id"
-            :tweet="tweet"
-            @after-delete-tweet="afterDeleteTweet"
-          />
-        </div>
+    <div class="main">
+      <div class="main__title">
+        <h1>推文清單</h1>
       </div>
+      <div class="main__body">
+        <!-- AdminTweetsList -->
+        <AdminTweetsList
+          v-for="tweet in tweets"
+          :key="tweet.id"
+          :tweet="tweet"
+          @after-delete-tweet="afterDeleteTweet"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import { v4 as uuidv4 } from "uuid";
-import { Toast } from '../utils/helpers'
-import adminAPI from '../apis/admin'
+import { Toast } from "../utils/helpers";
+import adminAPI from "../apis/admin";
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminTweetsList from "../components/AdminTweetsList.vue";
 import Navbar from "./../components/Navbar.vue";
@@ -177,30 +177,21 @@ export default {
   },
   data() {
     return {
-      // tweets: {
-      //   id: -1,
-      //   name:'',
-      //   text: '',
-      //   tweetDate: '',
-      //   content: ''
-      // },
-      tweets:[],
+      tweets: {},
     };
   },
   methods: {
     async fetchTweets() {
       try {
-        const { data } = await adminAPI.getTweets()
-        console.log(data)
-        console.log('hi')
-          this.tweets = dammyData.tweets
-      } catch(error) {
+        const { data } = await adminAPI.getTweets();
+        console.log(data);
+        this.tweets = data
+      } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: '載入失敗，請稍後再試'
-        })
+          icon: "error",
+          title: "載入失敗，請稍後再試",
+        });
       }
-    
     },
     afterDeleteTweet(tweetId) {
       this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
@@ -216,7 +207,7 @@ export default {
 .adminUsers {
   display: flex;
   max-height: 100vh;
-  width: auto;;
+  width: auto;
 }
 
 .main {
@@ -251,6 +242,4 @@ export default {
     line-height: 26px;
   }
 }
-
-
 </style>
