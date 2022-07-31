@@ -6,7 +6,7 @@
         <li v-for="user in recommendUsers" :key="user.id" class="list-item">
           <router-link :to="{ name: 'main' }" class="user">
             <img
-              src="~@/assets/img/otherUserImg.png"
+              :src="user.avatar | emptyImage"
               alt="otherUser"
               class="user__image"
             />
@@ -14,7 +14,7 @@
               <div class="user__name">
                 <a href="#">{{ user.name }}</a>
               </div>
-              <div class="user__account">{{ user.account }}</div>
+              <div class="user__account">@{{ user.account }}</div>
             </div>
           </router-link>
           <button
@@ -38,29 +38,12 @@
 </template>
 
 <script>
-const dummyUser = {
-  recommendUsers: [
-    {
-      id: 1,
-      name: "Pizza Hut",
-      account: "@pizzahut",
-      isFollowed: true,
-    },
-    {
-      id: 2,
-      name: "Pizza Hut",
-      account: "@pizzahut",
-      isFollowed: false,
-    },
-    {
-      id: 3,
-      name: "Pizza Hut",
-      account: "@pizzahut",
-      isFollowed: false,
-    },
-  ],
-};
+import userAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+import { emptyImageFilter } from "./../utils/mixins";
+
 export default {
+  mixins: [emptyImageFilter],
   data() {
     return {
       // 少了用戶圖片
@@ -71,9 +54,19 @@ export default {
     this.fetchUser();
   },
   methods: {
-    fetchUser() {
-      const { recommendUsers } = dummyUser;
-      this.recommendUsers = recommendUsers;
+    async fetchUser() {
+      try {
+        const { data } = await userAPI.getRecommendUsers();
+        const { users } = data;
+        this.recommendUsers = users;
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推薦用戶資料",
+        });
+      }
     },
     addFollow(userId) {
       this.recommendUsers = this.recommendUsers.map((user) => {

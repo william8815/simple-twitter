@@ -43,10 +43,10 @@
           </div>
           <div class="tweet-board__otherUser">
             <ul>
-              <li class="list-item" v-for="tweet in userTweet" :key="tweet.id">
+              <li class="list-item" v-for="tweet in tweets" :key="tweet.id">
                 <router-link :to="{ name: 'main' }">
                   <img
-                    :src="tweet.User.image | emptyImage"
+                    :src="tweet.User.avatar | emptyImage"
                     alt="otherUserImg"
                   />
                 </router-link>
@@ -56,7 +56,7 @@
                       {{ tweet.User.name }}
                     </router-link>
                     <router-link :to="{ name: 'main' }" class="user__account">
-                      {{ tweet.User.account }} ・
+                      @{{ tweet.User.account }} ・
                     </router-link>
 
                     <router-link
@@ -150,56 +150,6 @@ import { emptyImageFilter } from "./../utils/mixins";
 import { fromNowFilter } from "./../utils/mixins";
 
 const dummyData = {
-  tweets: [
-    {
-      id: 1,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: true,
-    },
-    {
-      id: 2,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: true,
-    },
-    {
-      id: 3,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: false,
-    },
-    {
-      id: 4,
-      name: "Apple",
-      account: "@apple",
-      createAt: "3小時",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-                    ullamco cillum dolor. Voluptate exercitation incididunt
-                    aliquip deserunt reprehenderit elit laborum.`,
-      commentLength: 0,
-      likedLength: 0,
-      isLiked: false,
-    },
-  ],
   replyState: {
     count: 0,
     state: false,
@@ -216,7 +166,6 @@ export default {
   data() {
     return {
       count: 1,
-      userTweet: [],
       tweets: [],
       tweet: [
         {
@@ -250,12 +199,12 @@ export default {
           limit,
         });
         console.log(data);
-        this.userTweet = data;
+        this.tweets = data;
       } catch (error) {
         console.log(error);
         Toast.fire({
           icon: "error",
-          title: "無法取得餐廳資料，請稍後再試",
+          title: "無法取得推文資料，請稍後再試",
         });
       }
     },
