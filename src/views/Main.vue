@@ -17,14 +17,26 @@
             <form action="">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
-                <textarea
+                <!-- <textarea
+                  v-model="content"
+                  @keydown="setCount"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
                   :rows="count"
                   placeholder="有甚麼新鮮事?"
-                ></textarea>
+                ></textarea> -->
+                <input
+                  type="text"
+                  class="tweet-content"
+                  v-for="input in tweet"
+                  :key="input.id"
+                  @keydown.stop="setInput(input.id, $event)"
+                  v-model="input.content"
+                  :placeholder="input.placeholder"
+                  :autofocus="input.autofocus"
+                />
               </div>
               <button type="submit" class="tweet-btn">推文</button>
             </form>
@@ -130,6 +142,11 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
+import { v4 as uuidv4 } from "uuid";
+import tweetsAPI from "./../apis/tweet";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
+
 const dummyData = {
   tweets: [
     {
@@ -187,6 +204,7 @@ const dummyData = {
   },
 };
 export default {
+  name: "main-component",
   components: {
     Navbar,
     RecommendUsers,
@@ -195,14 +213,28 @@ export default {
   data() {
     return {
       count: 1,
+      userTweet: {},
       tweets: [],
+      tweet: [
+        {
+          id: uuidv4(),
+          content: "",
+          placeholder: "有甚麼新鮮事?",
+          autofocus: false,
+        },
+      ],
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
-    this.fetchTweet();
+    this.fetchTweet({
+      limit: 10,
+    });
   },
   methods: {
-    fetchTweet() {
+    async fetchTweet({ limit }) {
       const { tweets, replyState } = dummyData;
       const { count, state } = replyState;
       this.tweets = tweets;
@@ -210,6 +242,18 @@ export default {
         count,
         state,
       };
+      try {
+        const { data } = await tweetsAPI.getTweets({
+          limit,
+        });
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得餐廳資料，請稍後再試",
+        });
+      }
     },
     // 新增喜歡
     addLike(tweetId) {
@@ -252,6 +296,34 @@ export default {
       };
       this.$forceUpdate();
       // console.log(this.replyState);
+    },
+    setInput(inputId, event) {
+      event.target.blur();
+      if (event.key === "Enter") {
+        this.tweet.push({
+          id: uuidv4(),
+          content: "",
+          placeholder: "",
+          autofocus: false,
+        });
+        let index = this.tweet.findIndex((input) => inputId === input.id);
+        console.log(index);
+        this.tweet = this.tweet.map((input) => {
+          if (this.tweet[index + 1].id === input.id) {
+            return {
+              ...input,
+              autofocus: true,
+            };
+          } else {
+            return {
+              ...input,
+              autofocus: false,
+            };
+          }
+        });
+        console.log(this.tweet);
+        // this.$forceUpdate();
+      }
     },
   },
 };
@@ -381,6 +453,7 @@ export default {
             fill: #6c757d;
             background-size: cover;
             margin-right: 9px;
+            cursor: pointer;
           }
           .num {
             color: #6c757d;
