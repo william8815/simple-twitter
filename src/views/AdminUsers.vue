@@ -19,6 +19,8 @@
 /* eslint-disable */
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminUserCard from "../components/AdminUserCard.vue";
+import adminAPI from "../apis/admin";
+import { Toast } from "../utils/helpers";
 import { v4 as uuidv4 } from "uuid";
 const dammyData = {
   users: [
@@ -110,12 +112,22 @@ export default {
   },
   data() {
     return {
-      users: [],
+      users: {},
     };
   },
   methods: {
-    fetchUsers() {
-      this.users = dammyData.users;
+    async fetchUsers() {
+      try {
+        const { data } = await adminAPI.getUsers();
+        
+        this.users = data
+        console.log(this.users);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: `載入失敗 - ${error.message}`,
+        });
+      }
     },
   },
   created() {
