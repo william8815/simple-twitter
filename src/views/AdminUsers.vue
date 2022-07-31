@@ -160,6 +160,8 @@ export default {
 .main__title {
   position: sticky;
   top: 0;
+  display: flex;
+  align-items: center;
   z-index: 999;
   background: #fff;
   width: 100%;
@@ -168,7 +170,6 @@ export default {
   padding: 24px;
   opacity: 0.95;
   h1 {
-    padding: 24px;
     font-weight: 700;
     font-size: 24px;
     line-height: 26px;
