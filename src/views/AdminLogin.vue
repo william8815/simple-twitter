@@ -79,7 +79,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "帳號 或 密碼錯誤，請重新輸入",
+          title: `登入失敗 - ${error.message}`,
         });
         (this.account = ""), (this.password = "");
       }
