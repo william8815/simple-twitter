@@ -2,32 +2,32 @@
   <div class="container">
     <div class="card">
       <div class="user__background">
-        <img :src="user.background" alt="" />
+        <img src="../assets/img/userBackground.png" alt="" />
       </div>
       <div class="card__avatar">
-        <img :src="user.image" alt="" />
+        <img src="../assets/img/userAvatar.png" alt="" />
       </div>
       <div class="card__body">
         <div class="card__title">{{ user.name }}</div>
-        <p class="card__text">@{{ user.text }}</p>
+        <p class="card__text">@</p>
         <div class="click__panel">
           <div class="click__icon">
             <img src="../assets/img/reply.svg" alt="" />{{
-              user.Count.replyCount | changeCount
+              user.tweetsCount | changeCount
             }}
           </div>
           <div class="click__icon">
             <img src="../assets/img/like.svg" alt="" />{{
-              user.Count.likeCount | changeCount
+              user.likedTweetsCount | changeCount
             }}
           </div>
         </div>
         <div class="follow__panel">
           <div class="follow__count">
-            <span>{{ user.Count.following | changeFollow }} </span>跟隨中
+            <span>{{ user.followingsCount | changeFollow }} </span>跟隨中
           </div>
           <div class="follow__count">
-            <span>{{ user.Count.follower | changeFollow }} </span>跟隨者
+            <span>{{ user.followersCount | changeFollow }} </span>跟隨者
           </div>
         </div>
       </div>
