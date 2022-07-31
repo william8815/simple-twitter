@@ -10,7 +10,7 @@ export default new Vuex.Store({
       "account": "",
       "name": "",
       "email": "",
-      "roel" : 'user'
+      "roel": 'user'
     },
     isAuthenticated: false
   },
