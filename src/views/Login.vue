@@ -48,15 +48,6 @@
             >
           </div>
         </div>
-        <div class="btns">
-          <router-link class="btn__link" to="/admin"
-            >測試頁面 - admin</router-link
-          >
-          <span> &#xb7; </span>
-          <router-link class="btn__link" to="/user/4/edit"
-            >測試頁面 - userEdit</router-link
-          >
-        </div>
       </form>
     </div>
   </div>
