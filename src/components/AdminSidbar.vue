@@ -50,7 +50,6 @@ export default {
   },
   created() {
     const location = this.$route.path.split("/")[2];
-    console.log(location);
     this.setCurrentLocation(location);
   },
   methods: {
