@@ -16,9 +16,9 @@ export default {
     })
   },
 
-  signUp(payload) {
+  signUp(data) {
     return apiHelper.post('/users', {
-      payload
+      ...data
     })
   }
 }
