@@ -6,5 +6,12 @@ export default {
     return apiHelper.get(`/users`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  }
+  },
+  // 追蹤用戶
+  addFollowing({ id }) {
+    return apiHelper.post(`/followships`, { id }, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  // 退追用戶
 }

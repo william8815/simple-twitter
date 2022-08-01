@@ -17,26 +17,17 @@
             <form action="">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
-                <!-- <textarea
+                <textarea
                   v-model="content"
-                  @keydown="setCount"
+                  @keydown.stop="setCount"
                   class="tweet-content"
                   name="tweet"
                   id=""
+                  maxlength="140"
                   cols="30"
                   :rows="count"
                   placeholder="有甚麼新鮮事?"
-                ></textarea> -->
-                <input
-                  type="text"
-                  class="tweet-content"
-                  v-for="input in tweet"
-                  :key="input.id"
-                  @keydown.stop="setInput(input.id, $event)"
-                  v-model="input.content"
-                  :placeholder="input.placeholder"
-                  :autofocus="input.autofocus"
-                />
+                ></textarea>
               </div>
               <button type="submit" class="tweet-btn">推文</button>
             </form>
@@ -60,14 +51,16 @@
                     </router-link>
 
                     <router-link
-                      :to="{ name: 'replylist' }"
+                      :to="{ name: 'replylist', params: { id: tweet.id } }"
                       class="user__posttime"
                     >
                       {{ tweet.createdAt | fromNow }}
                     </router-link>
                   </div>
                   <div class="post">
-                    <router-link :to="{ name: 'replylist' }">
+                    <router-link
+                      :to="{ name: 'replylist', params: { id: tweet.id } }"
+                    >
                       {{ tweet.description }}
                     </router-link>
                   </div>
@@ -166,6 +159,7 @@ export default {
   data() {
     return {
       count: 1,
+      content: "",
       tweets: [],
       tweet: [
         {
@@ -198,7 +192,7 @@ export default {
         const { data } = await tweetsAPI.getTweets({
           limit,
         });
-        console.log(data);
+        // console.log(data);
         this.tweets = data;
       } catch (error) {
         console.log(error);
@@ -250,32 +244,11 @@ export default {
       this.$forceUpdate();
       // console.log(this.replyState);
     },
-    setInput(inputId, event) {
-      event.target.blur();
+    setCount(event) {
       if (event.key === "Enter") {
-        this.tweet.push({
-          id: uuidv4(),
-          content: "",
-          placeholder: "",
-          autofocus: false,
-        });
-        let index = this.tweet.findIndex((input) => inputId === input.id);
-        console.log(index);
-        this.tweet = this.tweet.map((input) => {
-          if (this.tweet[index + 1].id === input.id) {
-            return {
-              ...input,
-              autofocus: true,
-            };
-          } else {
-            return {
-              ...input,
-              autofocus: false,
-            };
-          }
-        });
-        console.log(this.tweet);
-        // this.$forceUpdate();
+        this.count += 1;
+        // let reg = /^[\w*][\s*]\/n$/gi;
+        // console.log(reg.exec(this.content));
       }
     },
   },
@@ -320,7 +293,7 @@ export default {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(5px);
     z-index: -1;
   }
   // 圖片共同樣式
@@ -342,6 +315,7 @@ export default {
       }
       .tweet-content {
         width: 100%;
+        height: 100px;
         resize: none;
         font-size: 18px;
         font-weight: 700;

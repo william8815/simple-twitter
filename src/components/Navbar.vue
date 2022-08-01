@@ -216,11 +216,13 @@ export default {
       align-items: center;
       color: #44444f;
     }
-    .tag:hover .icon > path,
     .tag .icon > path.focus {
       fill: var(--main-color);
     }
-    .tag:hover .icon,
+    .tag:hover .icon {
+      stroke-width: 2px;
+      stroke: var(--main-color);
+    }
     .tag .icon.focus {
       stroke-width: 1px;
       stroke: #fff;
