@@ -58,8 +58,14 @@ export default {
       try {
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
-        this.recommendUsers = users;
-        console.log(data);
+        this.recommendUsers = users.map((user) => ({
+          id: user.id,
+          name: user.name,
+          account: user.account,
+          avatar: user.avatar,
+          followersCount: user.followersCount,
+        }));
+        // console.log(data);
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -68,16 +74,29 @@ export default {
         });
       }
     },
-    addFollow(userId) {
-      this.recommendUsers = this.recommendUsers.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isFollowed: true,
-          };
+    async addFollow(userId) {
+      try {
+        const { data } = await userAPI.addFollowing({ userId });
+        if (data.status !== "success") {
+          console.log(data.message);
         }
-        return user;
-      });
+        this.recommendUsers = this.recommendUsers.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isFollowed: true,
+              followersCount: user.followersCount + 1,
+            };
+          }
+          return user;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "追蹤用戶請求失敗",
+        });
+      }
     },
     deleteFollow(userId) {
       this.recommendUsers = this.recommendUsers.map((user) => {

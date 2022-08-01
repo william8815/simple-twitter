@@ -7,5 +7,12 @@ export default {
     return apiHelper.get(`/tweets?${searchParams.toString()}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  // 瀏覽個別推文資料
+  getUserTweet(tweetId) {
+    return apiHelper.get(`/tweets/${tweetId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
+
 }

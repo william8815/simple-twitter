@@ -7,7 +7,13 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
-
+  // 追蹤用戶
+  addFollowing({ id }) {
+    return apiHelper.post(`/followships`, { id }, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  // 退追用戶
   getCurrentUser() {
     return apiHelper.get('/users/currentUser')
   }

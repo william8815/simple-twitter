@@ -17,25 +17,23 @@
           <router-link :to="{ name: 'replylist' }" class="tweet__user">
             <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
             <div class="user">
-              <div class="name">Apple</div>
-              <div class="account">@apple</div>
+              <div class="name">{{ user2.User.name }}</div>
+              <div class="account">@{{ user2.User.account }}</div>
             </div>
           </router-link>
           <div class="tweet__post">
             <div class="post">
-              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-              deserunt.
+              {{ user2.description }}
             </div>
-            <div class="post-time">上午 10:05・2021年11月10日</div>
+            <div class="post-time">{{ user2.createdAt }}</div>
           </div>
           <div class="tweet__info">
             <div class="comments">
-              <span class="num">34</span>
+              <span class="num">{{ user2.replyCount }}</span>
               <span class="text">&nbsp;回覆</span>
             </div>
             <div class="liked">
-              <span class="num">808</span>
+              <span class="num">{{ user2.likeCount }}</span>
               <span class="text">&nbsp;喜歡次數</span>
             </div>
           </div>
@@ -55,7 +53,7 @@
             </div>
             <div class="like">
               <svg
-                v-if="user.isLiked"
+                v-if="user2.isLiked"
                 key="user"
                 @click="deleteLike"
                 class="icon like__icon"
@@ -134,6 +132,8 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
+import tweetAPI from "./../apis/tweet";
+import { Toast } from "./../utils/helpers";
 
 const dummyData = {
   user: {
@@ -210,13 +210,16 @@ export default {
       replyList: [],
       replyState: {},
       user: {},
+      user2: {},
     };
   },
   created() {
-    this.fetchReply();
+    const { id: tweetId } = this.$route.params;
+    console.log(this.$route.params);
+    this.fetchReply(tweetId);
   },
   methods: {
-    fetchReply() {
+    async fetchReply(tweetId) {
       const { reply, replyState, user } = dummyData;
       const { count, state } = replyState;
       const { id, name, account, isLiked } = user;
@@ -232,6 +235,34 @@ export default {
         account,
         isLiked,
       };
+      try {
+        console.log(tweetId);
+        const { data } = await tweetAPI.getUserTweet(tweetId);
+        const {
+          description,
+          createdAt,
+          User,
+          Replies,
+          replyCount,
+          likeCount,
+          isLiked,
+        } = data;
+        this.user2 = {
+          description,
+          createdAt,
+          User,
+          Replies,
+          replyCount,
+          likeCount,
+          isLiked,
+        };
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文資料，請稍後再試",
+        });
+      }
     },
     // 跳出彈跳視窗
     makeReply() {
