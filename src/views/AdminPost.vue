@@ -184,17 +184,27 @@ export default {
     async fetchTweets() {
       try {
         const { data } = await adminAPI.getTweets();
-        console.log(data);
         this.tweets = data
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: "載入失敗，請稍後再試",
+          title: `載入失敗 - ${error.message}`,
         });
       }
     },
-    afterDeleteTweet(tweetId) {
-      this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+    async afterDeleteTweet(tweetId) {
+      try {
+        const { data } = await adminAPI.deleteTweet({tweetId})
+        if(data.statu === 'error') {
+          throw new Error(data.message)
+        }
+        this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+      } catch(error) {
+        Toast.fire({
+          icon: 'warning',
+          title: `刪除失敗 - ${error.message}`
+        })
+      }
     },
   },
   created() {

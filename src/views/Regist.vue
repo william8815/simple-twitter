@@ -16,7 +16,7 @@
           name="account"
           id="account"
           placeholder="請輸入帳號"
-          v-model="form.account"
+          v-model="account"
           required
         />
       </div>
@@ -28,7 +28,8 @@
           name="name"
           id="name"
           placeholder="請輸入名稱"
-          v-model="form.name"
+          maxlength="50"
+          v-model="name"
           required
         />
       </div>
@@ -40,7 +41,7 @@
           name="email"
           id="email"
           placeholder="請輸入email"
-          v-model="form.email"
+          v-model="email"
           required
         />
       </div>
@@ -52,7 +53,7 @@
           name="password"
           id="password"
           placeholder="請輸入密碼"
-          v-model="form.password"
+          v-model="password"
           required
         />
       </div>
@@ -64,7 +65,7 @@
           name="checkPassword"
           id="checkPassword"
           placeholder="請再次輸入密碼"
-          v-model="form.checkPassword"
+          v-model="checkPassword"
           required
         />
       </div>
@@ -80,200 +81,74 @@
 </template>
 
 <script>
-/* eslint-disable */
 import { Toast } from "../utils/helpers";
 import authorizationAPI from "../apis/authorization";
-import { mapState } from "vuex";
 export default {
-  name: "Regist",
-  created() {
-    this.fetchCurrentUser(this.currentUser);
-  },
-  data() {
+  data () {
     return {
-      form: {
-        name: "",
-        account: "",
-        email: "",
-        password: "",
-        checkPassword: "",
-      },
-      isProcessing: false,
-      isSaved: true,
-      userChanged: false,
-    };
+      name: '',
+      account: '',
+      email: '',
+      password: '',
+      checkPassword: ''
+    }
   },
   methods: {
-    fetchCurrentUser(newVal) {
-      const { name, email, account } = newVal;
-      this.form = {
-        ...this.form,
-        name,
-        email,
-        account,
-      };
-    },
-    goBackToSignIn() {
-      this.$router.push("/login");
-    },
-    handleSubmit(e) {
-      console.log(this.form)
-      // console.log(e)
-      const formDataCheckResult = this.formDataCheck();
-      if (!formDataCheckResult) {
-        return (this.isProcessing = false);
-      }
-       this.handleSignUpSubmit(e);
-      // if (this.isSignUp) {
-      //   this.handleSignUpSubmit(e);
-      // } else {
-      //   this.handleSaveSetting(e);
-      // }
-    },
-    formDataCheck() {
-      let result = false;
-      if (!this.form.account) {
-        Toast.fire({
-          icon: "info",
-          title: "請填寫帳號！",
-        });
-        return result;
-      }
-      if (!this.form.name) {
-        Toast.fire({
-          icon: "info",
-          title: "請填寫名稱！",
-        });
-        return result;
-      }
-      if (!this.form.email) {
-        Toast.fire({
-          icon: "info",
-          title: "請填寫 Email！",
-        });
-        return result;
-      }
-      if (!this.form.password) {
-        Toast.fire({
-          icon: "info",
-          title: "請填寫密碼！",
-        });
-        return result;
-      }
-      if (this.form.password.length > 12 || this.form.password.length < 4) {
-        Toast.fire({
-          icon: "info",
-          title: "密碼長度不得小於 4 或超過 12！",
-        });
-        return result;
-      }
-      if (!this.form.checkPassword) {
-        Toast.fire({
-          icon: "info",
-          title: "請填寫密碼確認！",
-        });
-        return result;
-      }
-      if (this.form.password !== this.form.checkPassword) {
-        Toast.fire({
-          icon: "error",
-          title: "密碼不相符！",
-        });
-        return result;
-      }
-      console.log("Data check passed");
-      return (result = true);
-    },
-    async handleSignUpSubmit() {
+    async handleSubmit () {
       try {
-         
-        this.isProcessing = true;
-        const formData = this.form;
-        // call api to post formData
-        const { data } = await authorizationAPI.signUp(JSON.stringify(formData));
-        console.log('formData : ', formData )
-      //   for (let [name, value] of formData.entries()) {
-      //   console.log(name + ': ' + value)
-      // }
-
-      
-        // if (data.status !== "success") {
-        //   throw new Error(data);
-        // }
-        // Toast.fire({
-        //   icon: "success",
-        //   title: "註冊成功！",
-        // });
-        // 轉址
-        // this.$router.push("");
-      } catch (error) {
-        console.log(error);
-        let message = "無法註冊，請稍後再試！";
-        if (error.response.status === 409) {
-          message = "該 Email 已被註冊，請選擇其他 Email！";
+        if (
+          !this.name ||
+          !this.account ||
+          !this.email ||
+          !this.password ||
+          !this.checkPassword
+        ) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請填寫所有欄位'
+          })
+          return
         }
-        this.isProcessing = false;
+        if(this.password.length < 4) {
+          Toast.fire({
+            icon: 'warning',
+            title: '密碼長度不得小於 4 '
+          })
+          return
+        }
+        if (this.password !== this.checkPassword) {
+          Toast.fire({
+            icon: 'warning',
+            title: '兩次填寫密碼不相符'
+          })
+          this.password = ''
+          this.checkPassword = ''
+          return
+        }
+        const { data } = await authorizationAPI.signUp({
+          name: this.name,
+          account: this.account,
+          email: this.email,
+          password: this.password,
+          checkPassword: this.checkPassword
+        })
+        if (data.status === 'error') {
+          throw new Error(data.message)
+        }
         Toast.fire({
-          icon: "error",
-          title: message,
-        });
+          icon: 'success',
+          title: '帳號建立完成'
+        })
+       this.$router.push('/login')
+      } catch (error) {
+        Toast.fire({
+          icon: 'warning',
+          title: `無法註冊 - ${error.message}`
+        })
       }
-    },
-    // async handleSaveSetting() {
-    //   const formDataCheckResult = this.formDataCheck();
-    //   if (!formDataCheckResult) {
-    //     return;
-    //   }
-    //   try {
-    //     this.isProcessing = true;
-    //     const userId = this.currentUser.id;
-    //     const formData = {
-    //       ...this.form,
-    //       page: "setting",
-    //     };
-    //     const { data } = await usersAPI.putUser(userId, formData);
-    //     console.log(data);
-    //     if (data.status !== "success") {
-    //       throw new Error(data.message);
-    //     }
-    //     Toast.fire({
-    //       icon: "success",
-    //       title: "資料修改成功！",
-    //     });
-    //     this.isProcessing = false;
-    //     this.isSaved = true;
-    //     this.userChanged = true;
-    //     this.form.password = "";
-    //     this.form.checkPassword = "";
-    //   } catch (error) {
-    //     console.log(error);
-    //     this.isProcessing = false;
-    //     Toast.fire({
-    //       icon: "error",
-    //       title: "無法變更使用者資訊，請稍候再試！",
-    //     });
-    //   }
-    // },
-  },
-  watch: {
-    currentUser(newVal) {
-      this.fetchCurrentUser(newVal);
-    },
-    form: {
-      handler: function () {
-        if (!this.userChanged) {
-          // true
-          return (this.userChanged = true);
-        }
-        this.isSaved = false;
-      },
-      deep: true,
-    },
-  },
-  computed: {
-    ...mapState(["currentUser"]),
-  },
-};
+    }
+  }
+}
 </script>
 
 
