@@ -184,7 +184,6 @@ export default {
     async fetchTweets() {
       try {
         const { data } = await adminAPI.getTweets();
-        console.log(data);
         this.tweets = data
       } catch (error) {
         Toast.fire({
