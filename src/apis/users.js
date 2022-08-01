@@ -14,4 +14,7 @@ export default {
     })
   },
   // 退追用戶
+  getCurrentUser() {
+    return apiHelper.get('/users/currentUser')
+  }
 }

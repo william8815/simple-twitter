@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
 import AdminLogin from '../views/AdminLogin.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -106,3 +107,25 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach(async (to, from, next) => {
+  const tokenInLocalStorage = localStorage.getItem('token')
+  const tokenInStore = store.state.token
+
+  let userRoel = ''
+
+  if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
+    userRoel = store.state.currentUser.role
+  }
+
+  const pathsWithoutAuthentication = ['login', 'admin-login', 'regist']
+
+  if (!userRoel && !pathsWithoutAuthentication.includes(to.name)) {
+    next('/login')
+  } else if (userRoel === 'user' && pathsWithoutAuthentication.includes(to.name)) {
+    next('/main')
+  } else if (userRoel === 'admin' && pathsWithoutAuthentication.includes(to.name)) {
+    next('/admin/post')
+  }
+  next()
+})

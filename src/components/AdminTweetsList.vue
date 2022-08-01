@@ -1,21 +1,23 @@
 <template>
   <div class="tweets__list">
     <div class="list__avast">
-      <img :src="tweet.image" alt="" />
+      <img :src="tweet.User.avatar" alt="" />
     </div>
     <div class="list__info">
       <div class="info__title">
-        <div class="title__name">{{ tweet.name }}</div>
-        <div class="title__date">@{{ tweet.text }} ‧ {{ tweet.tweetDate }}</div>
+        <div class="title__name">{{ tweet.User.name }}</div>
+        <div class="title__date">
+          @{{ tweet.User.text }} ‧ {{ tweet.createdAt |  fromNow }}
+        </div>
       </div>
 
       <p>
-        {{ tweet.content }}
+        {{ tweet.description }}
       </p>
     </div>
     <div class="list__icon">
       <img
-        src="https://imgur.com/zbiCCdk.png"
+        src="../assets/img/delete.svg"
         alt=""
         @click.prevent.stop="handleDeleteButton(tweet.id)"
       />
@@ -25,21 +27,54 @@
 
 <script>
 /* eslint-disable */
+import { fromNowFilter } from './../utils/mixins'
 export default {
   name: "AdminTweetsList",
+  mixins: [ fromNowFilter ],
   props: {
-    tweet: {
+    Tweet: {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      tweet: {
+        id: -1,
+        description: "",
+        createdAt: "",
+        updatedAt: "",
+        User: {
+          id: -1,
+          name: "user1",
+          text: "",
+          avatar: null,
+        },
+      },
+    };
   },
   methods: {
     handleDeleteButton(tweetId) {
       this.$emit("after-delete-tweet", tweetId);
     },
-    test() {
-      console.log("test");
+    fetchTweet() {
+      const { id, description, createdAt, updatedAt, User } = this.Tweet;
+      const { name, text, avatar } = User;
+      this.tweet = {
+        id,
+        description,
+        createdAt,
+        updatedAt,
+        User: {
+          name,
+          text: text ? text : "apple",
+          avatar: avatar ? avatar : "https://imgur.com/2P4VlXI.png",
+        },
+      };
     },
+  },
+  created() {
+    this.fetchTweet();
   },
 };
 </script>
@@ -51,7 +86,6 @@ export default {
   display: flex;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e6ecf0;
-  // min-width: 937px;
   padding-top: 16px;
   padding-left: 24px;
 }
@@ -71,6 +105,7 @@ export default {
 
 .list__info {
   padding-left: 8px;
+  flex: 1;
   p {
     font-weight: 400;
     font-size: 16px;
@@ -99,5 +134,9 @@ export default {
 
 .list__icon {
   cursor: pointer;
+  img {
+    width: 15px;
+    height: 15px;
+  }
 }
 </style>

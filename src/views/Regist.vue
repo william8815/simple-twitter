@@ -190,7 +190,7 @@ export default {
         this.isProcessing = true;
         const formData = this.form;
         // call api to post formData
-        const { data } = await authorizationAPI.signUp(formData);
+        const { data } = await authorizationAPI.signUp(JSON.stringify(formData));
         console.log('formData : ', formData )
       //   for (let [name, value] of formData.entries()) {
       //   console.log(name + ': ' + value)
@@ -209,9 +209,9 @@ export default {
       } catch (error) {
         console.log(error);
         let message = "無法註冊，請稍後再試！";
-        if (error.response.status === 409) {
-          message = "該 Email 已被註冊，請選擇其他 Email！";
-        }
+        // if (error.response.status === 409) {
+        //   message = "該 Email 已被註冊，請選擇其他 Email！";
+        // }
         this.isProcessing = false;
         Toast.fire({
           icon: "error",
