@@ -39,7 +39,7 @@
 export default {
   name: "AdminUserCard",
   props: {
-    User: {
+    userInfo: {
       type: Object,
       required: true,
     },
@@ -73,7 +73,7 @@ export default {
         followersCount,
         front_cover,
         text
-      } = this.User;
+      } = this.userInfo;
       this.user = {
         ...this.user,
         id,

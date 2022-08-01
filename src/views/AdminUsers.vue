@@ -9,7 +9,7 @@
       </div>
       <div class="main__body">
         <!-- AdminUserCard -->
-        <AdminUserCard v-for="user in users" :key="user.id" :user="user" />
+        <AdminUserCard v-for="user in users" :key="user.id" :user-info="user" />
       </div>
     </div>
   </div>

@@ -32,7 +32,7 @@ export default {
   name: "AdminTweetsList",
   mixins: [ fromNowFilter ],
   props: {
-    Tweet: {
+    tweetInfo: {
       type: Object,
       required: true,
     },
@@ -58,7 +58,7 @@ export default {
       this.$emit("after-delete-tweet", tweetId);
     },
     fetchTweet() {
-      const { id, description, createdAt, updatedAt, User } = this.Tweet;
+      const { id, description, createdAt, updatedAt, User } = this.tweetInfo;
       const { name, text, avatar } = User;
       this.tweet = {
         id,

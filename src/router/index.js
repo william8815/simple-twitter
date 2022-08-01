@@ -111,13 +111,11 @@ export default router
 router.beforeEach(async (to, from, next) => {
   const tokenInLocalStorage = localStorage.getItem('token')
   const tokenInStore = store.state.token
-
-  let userRoel = ''
+  let userRoel = store.state.currentUser.role
 
   if (tokenInLocalStorage && tokenInLocalStorage !== tokenInStore) {
-    userRoel = store.state.currentUser.role
+    userRoel = await store.dispatch('fetchCurrentUser')
   }
-
   const pathsWithoutAuthentication = ['login', 'admin-login', 'regist']
 
   if (!userRoel && !pathsWithoutAuthentication.includes(to.name)) {

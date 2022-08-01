@@ -12,7 +12,7 @@
         <AdminTweetsList
           v-for="tweet in tweets"
           :key="tweet.id"
-          :tweet="tweet"
+          :tweet-info="tweet"
           @after-delete-tweet="afterDeleteTweet"
         />
       </div>
