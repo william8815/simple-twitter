@@ -12,9 +12,10 @@ export default new Vuex.Store({
       "account": "",
       "name": "",
       "email": "",
-      "roel": 'user'
+      "role": 'user'
     },
-    isAuthenticated: false
+    isAuthenticated: false,
+    token: ''
   },
   mutations: {
     setCurrentUser(state, currentUser) {
@@ -23,10 +24,12 @@ export default new Vuex.Store({
         ...currentUser
       }
       state.isAuthenticated = true
+      state.token = localStorage.getItem('token')
     },
     revokeAuthentication(state) {
       state.currentUser = '',
       state.isAuthenticated = false,
+      state.token = ''
       localStorage.removeItem('token')
     }
   },
@@ -35,11 +38,14 @@ export default new Vuex.Store({
       try {
         const { data } = await usersAPI.getCurrentUser()
         commit('setCurrentUser', data.user)
+        return this.state.currentUser.role
       } catch (error) {
         Toast.fire({
           icon: 'warning',
           title: `載入失敗 - ${error.massage}`
         })
+        commit('revokeAuthentication')
+        return false
       }
     }
   },
