@@ -12,7 +12,7 @@ export default new Vuex.Store({
       "account": "",
       "name": "",
       "email": "",
-      "role": 'user'
+      "role": ''
     },
     isAuthenticated: false,
     token: ''
