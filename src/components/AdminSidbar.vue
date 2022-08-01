@@ -146,6 +146,4 @@ export default {
   color: #ff6600;
 }
 
-.btn__logout {
-}
 </style>
