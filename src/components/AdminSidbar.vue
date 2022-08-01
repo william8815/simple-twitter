@@ -19,9 +19,12 @@
       </div>
       <div class="nav__row">
         <div class="row__icon">
-          <img src="../assets/img/profile@active.svg" alt="" v-if="isUsersView" />
+          <img
+            src="../assets/img/profile@active.svg"
+            alt=""
+            v-if="isUsersView"
+          />
           <img src="../assets/img/profile.svg" alt="" v-else />
-          
         </div>
         <div class="row__title">
           <router-link to="/admin/users">
@@ -34,7 +37,8 @@
       <div class="row__icon out__icon">
         <img src="../assets/img/Vectoroutlog.svg" alt="" />
       </div>
-      <div class="row__title"><router-link to="/login">登出</router-link></div>
+      <!-- <div class="row__title"><button type="button" class="btn__logout" @click="logout">登出</button></div> -->
+      <button class="row__title" type="button" @click="logout">登出</button>
     </div>
   </div>
 </template>
@@ -61,6 +65,10 @@ export default {
         this.isTweetsView = false;
         this.isUsersView = true;
       }
+    },
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
     },
   },
 };
@@ -112,12 +120,15 @@ export default {
 }
 
 .row__title {
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
   font-weight: 700;
   font-size: 18px;
   line-height: 26px;
-  a {
-    color: #44444f;
-  }
+  color: #44444f;
+  border: none;
+  background: #fff;
 }
 
 .out__icon {
@@ -133,5 +144,8 @@ export default {
 
 .active {
   color: #ff6600;
+}
+
+.btn__logout {
 }
 </style>
