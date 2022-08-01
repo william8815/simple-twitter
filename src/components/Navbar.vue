@@ -150,7 +150,7 @@
       </div>
     </nav>
     <div class="logout">
-      <a href="#">
+      <a href="#" @click="logout">
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
         <span>登出</span>
       </a>
@@ -162,7 +162,6 @@
 export default {
   data() {
     return {
-      tab: ["首頁", "個人資料", "設定"],
       count: 7,
       tweetMode: false,
       isAdmin: false,
@@ -174,6 +173,10 @@ export default {
     },
     newlModel() {
       this.tweetMode = true;
+    },
+    logout() {
+      this.$store.commit("revokeAuthentication");
+      this.$router.push("/login");
     },
   },
 };
@@ -216,11 +219,13 @@ export default {
       align-items: center;
       color: #44444f;
     }
-    .tag:hover .icon > path,
     .tag .icon > path.focus {
       fill: var(--main-color);
     }
-    .tag:hover .icon,
+    .tag:hover .icon {
+      stroke-width: 2px;
+      stroke: var(--main-color);
+    }
     .tag .icon.focus {
       stroke-width: 1px;
       stroke: #fff;
