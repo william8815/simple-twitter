@@ -8,7 +8,7 @@
     </div>
 
     <form action="" class="form" @submit.prevent.stop="handleSubmit($event)">
-      <div class="form__label">
+      <!-- <div class="form__label">
         <label for="account">帳號</label>
         <input
           type="text"
@@ -19,7 +19,7 @@
           v-model="account"
           required
         />
-      </div>
+      </div> -->
       <div class="form__label">
         <label for="name">名稱</label>
         <input
@@ -62,10 +62,10 @@
         <input
           type="password"
           class="label__control"
-          name="checkPassword"
-          id="checkPassword"
+          name="passwordCheck"
+          id="passwordCheck"
           placeholder="請再次輸入密碼"
-          v-model="checkPassword"
+          v-model="passwordCheck"
           required
         />
       </div>
@@ -87,10 +87,10 @@ export default {
   data () {
     return {
       name: '',
-      account: '',
+      // account: '',
       email: '',
       password: '',
-      checkPassword: ''
+      passwordCheck: ''
     }
   },
   methods: {
@@ -99,9 +99,9 @@ export default {
         if (
           !this.name ||
           !this.email ||
-          !this.account ||
+          // !this.account ||
           !this.password ||
-          !this.checkPassword
+          !this.passwordCheck
         ) {
           Toast.fire({
             icon: 'warning',
@@ -109,30 +109,31 @@ export default {
           })
           return
         }
-        if (this.password !== this.checkPassword) {
+        if (this.password !== this.passwordCheck) {
           Toast.fire({
             icon: 'warning',
             title: '兩次輸入的密碼不同'
           })
-          this.checkPassword = ''
+          this.passwordCheck = ''
           return
         }
-        const { data } =  await authorizationAPI.signUp({
+        const { data } =  await authorizationAPI.test({
           name: this.name,
-          account: this.account,
+          // account: this.account,
           email: this.email,
           password: this.password,
-          checkPassword: this.checkPassword
+          passwordCheck: this.passwordCheck
         })
-        if (data.status === 'error') {
-          throw new Error(data.message)
-        }
+        // if (data.status === 'error') {
+        //   throw new Error(data.message)
+        // }
         Toast.fire({
           icon: 'success',
           title: data.message
         })
+        console.log('帳號重複 但有繼續執行try區塊code')
         // 成功登入後轉址到登入頁
-        this.$router.push('/login')
+        // this.$router.push('/login')
       } catch (error) {
         Toast.fire({
           icon: 'warning',
