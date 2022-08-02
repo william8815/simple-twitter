@@ -6,6 +6,26 @@ import store from '../store'
 
 Vue.use(VueRouter)
 
+const authorizeIsAdmin = (to, from, next) => {
+  const currentUser = store.state.currentUser
+  if (currentUser && currentUser.role !== 'admin') {
+    next('/404')
+    return
+  }
+
+  next()
+}
+
+const authorizeIsUser = (to, from, next) => {
+  const currentUser = store.state.currentUser
+  if (currentUser && currentUser.role !== 'user') {
+    next('/404')
+    return
+  }
+
+  next()
+}
+
 const routes = [
   {
     path: '/',
@@ -16,6 +36,7 @@ const routes = [
     path: '/user/:id',
     name: 'user-profile',
     component: () => import('../views/User.vue'),
+    beforeEnter: authorizeIsUser,
     redirect: to => {
       return { name: 'user-post', params: { id: to.params.id } }
     },
@@ -24,20 +45,29 @@ const routes = [
         path: 'post',
         name: 'user-post',
         component: () => import('../components/UserPost.vue'),
+        beforeEnter: authorizeIsUser
       },
 
       {
         path: 'reply',
         name: 'user-reply',
         component: () => import('../components/UserReply.vue'),
+        beforeEnter: authorizeIsUser
       },
 
       {
         path: 'favorite',
         name: 'user-favorite',
         component: () => import('../components/UserFavorite.vue'),
+        beforeEnter: authorizeIsUser
       }
     ]
+  },
+  {
+    path: '/user/:id/edit',
+    name: 'user-edit',
+    component: () => import('../views/AccountEdit.vue'),
+    beforeEnter: authorizeIsUser
   },
   {
     path: '/login',
@@ -49,30 +79,36 @@ const routes = [
     name: 'regist',
     component: () => import('../views/Regist.vue')
   },
-  {
-    path: '/admin',
-    exact: true,
-    redirect: '/admin/post'
-  },
+
   {
     path: '/main',
     name: 'main',
-    component: () => import('../views/Main.vue')
+    component: () => import('../views/Main.vue'),
+    beforeEnter: authorizeIsUser
   },
   {
     path: '/replylist/:id',
     name: 'replylist',
-    component: () => import('../views/ReplyList.vue')
+    component: () => import('../views/ReplyList.vue'),
+    beforeEnter: authorizeIsUser
   },
   {
     path: '/followers',
     name: 'followers',
-    component: () => import('../views/Followers.vue')
+    component: () => import('../views/Followers.vue'),
+    beforeEnter: authorizeIsUser
   },
   {
     path: '/following',
     name: 'following',
-    component: () => import('../views/Following.vue')
+    component: () => import('../views/Following.vue'),
+    beforeEnter: authorizeIsUser
+  },
+  {
+    path: '/admin',
+    exact: true,
+    redirect: '/admin/post',
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/login',
@@ -82,17 +118,14 @@ const routes = [
   {
     path: '/admin/post',
     name: 'admin-post',
-    component: () => import('../views/AdminPost.vue')
+    component: () => import('../views/AdminPost.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '/admin/users',
     name: 'admin-users',
-    component: () => import('../views/AdminUsers.vue')
-  },
-  {
-    path: '/user/:id/edit',
-    name: 'user-edit',
-    component: () => import('../views/AccountEdit.vue')
+    component: () => import('../views/AdminUsers.vue'),
+    beforeEnter: authorizeIsAdmin
   },
   {
     path: '*',
