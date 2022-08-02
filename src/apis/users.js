@@ -21,5 +21,17 @@ export default {
   },
   getCurrentUser() {
     return apiHelper.get('/users/currentUser')
+  },
+  // 取得用戶追隨清單
+  getUserFollowing(id) {
+    return apiHelper.get(`/users/${id}/followings`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  // 取得用戶粉絲清單
+  getUserFollowers(id) {
+    return apiHelper.get(`/users/${id}/followers`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }

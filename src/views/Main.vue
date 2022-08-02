@@ -139,6 +139,7 @@ import ReplyModal from "./../components/ReplyModal.vue";
 // import { v4 as uuidv4 } from "uuid";
 // api
 import tweetsAPI from "./../apis/tweet";
+// 共用區
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -187,28 +188,62 @@ export default {
       }
     },
     // 新增喜歡
-    addLike(tweetId) {
-      this.tweets = this.tweets.map((tweet) => {
-        if (tweet.id === tweetId) {
-          return {
-            ...tweet,
-            isLiked: true,
-          };
+    async addLike(tweetId) {
+      try {
+        const { data } = await tweetsAPI.addTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        return tweet;
-      });
+        this.tweets = this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            return {
+              ...tweet,
+              isLiked: true,
+              likeCount: tweet.likeCount + 1,
+            };
+          }
+          return tweet;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "已按讚",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "按讚失敗",
+        });
+      }
     },
     // 移除喜歡
-    deleteLike(tweetId) {
-      this.tweets = this.tweets.map((tweet) => {
-        if (tweet.id === tweetId) {
-          return {
-            ...tweet,
-            isLiked: false,
-          };
+    async deleteLike(tweetId) {
+      try {
+        const { data } = await tweetsAPI.cancelTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        return tweet;
-      });
+        this.tweets = this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            return {
+              ...tweet,
+              isLiked: false,
+              likeCount: tweet.likeCount - 1,
+            };
+          }
+          return tweet;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "已取消讚",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消讚失敗",
+        });
+      }
       this.$forceUpdate();
     },
     // 跳出彈跳視窗

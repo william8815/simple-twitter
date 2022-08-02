@@ -25,5 +25,17 @@ export default {
     return apiHelper.post(`/tweets/${tweetId}/replies`, { comment }, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  }
+  },
+  // 貼文按讚
+  addTweetLike(id) {
+    return apiHelper.post(`/tweets/${id}/like`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
+  // 貼文取消讚
+  cancelTweetLike(id) {
+    return apiHelper.post(`/tweets/${id}/unlike`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
 }
