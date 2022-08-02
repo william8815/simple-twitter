@@ -12,8 +12,8 @@
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
             <div>
-              <h5>John Doe</h5>
-              <span>25 貼文</span>
+              <h5>{{ user.name }}</h5>
+              <span>{{ user.tweetsCount }} 貼文</span>
             </div>
           </div>
           <!-- 追蹤切換 -->
@@ -103,6 +103,7 @@ export default {
   data() {
     return {
       followings: [],
+      user: {},
     };
   },
   computed: {
@@ -110,9 +111,18 @@ export default {
   },
   created() {
     const { id: userId } = this.$route.params;
+    this.fetchUser(userId);
     this.fetchfollowing(userId);
   },
   methods: {
+    async fetchUser(userId) {
+      const { data } = await userAPI.getOtherUser(userId);
+      const { name, tweetsCount } = data;
+      this.user = {
+        name,
+        tweetsCount,
+      };
+    },
     async fetchfollowing(userId) {
       try {
         const { data } = await userAPI.getUserFollowing(userId);
@@ -212,6 +222,7 @@ img {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 100%;
     padding: 16px 28px;
     border-bottom: 1px solid #e6ecf0;
 

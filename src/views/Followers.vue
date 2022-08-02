@@ -12,8 +12,8 @@
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
             <div>
-              <h5>John Doe</h5>
-              <span>25 貼文</span>
+              <h5>{{ user.name }}</h5>
+              <span>{{ user.tweetsCount }} 貼文</span>
             </div>
           </div>
           <!-- 追蹤切換 -->
@@ -100,6 +100,7 @@ export default {
   data() {
     return {
       followers: [],
+      user: {},
     };
   },
   computed: {
@@ -107,9 +108,18 @@ export default {
   },
   created() {
     const { id: userId } = this.$route.params;
+    this.fetchUser(userId);
     this.fetchFollower(userId);
   },
   methods: {
+    async fetchUser(userId) {
+      const { data } = await userAPI.getOtherUser(userId);
+      const { name, tweetsCount } = data;
+      this.user = {
+        name,
+        tweetsCount,
+      };
+    },
     async fetchFollower(userId) {
       try {
         const { data } = await userAPI.getUserFollowers(userId);
