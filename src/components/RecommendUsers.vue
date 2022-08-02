@@ -85,8 +85,6 @@ export default {
             };
           }
         });
-        console.log(this.recommendUsers);
-        // console.log(data);
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -96,7 +94,6 @@ export default {
       }
     },
     async addFollow(userId) {
-      console.log(userId);
       try {
         const { data } = await userAPI.addFollowing(userId);
         if (data.status !== "success") {
@@ -108,7 +105,6 @@ export default {
             return {
               ...user,
               isFollowed: true,
-              followersCount: user.followersCount + 1,
             };
           }
           return user;
@@ -222,7 +218,7 @@ export default {
       .btn {
         border: none;
         font-size: 16px;
-
+        cursor: pointer;
         height: 40px;
         border-radius: 50px;
       }

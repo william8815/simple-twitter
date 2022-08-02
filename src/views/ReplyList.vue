@@ -6,13 +6,13 @@
     </section>
     <!-- reply-list -->
     <section class="col-7 reply-section">
-      <div class="reply" v-if="isLoading">
+      <div class="reply">
         <!-- 開頭 -->
         <div class="title">
           <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
           <h4>推文</h4>
         </div>
-        <template>
+        <template v-if="isLoading">
           <!-- 推文區 -->
           <div class="tweet">
             <router-link :to="{ name: 'main' }" class="tweet__user">
@@ -183,6 +183,14 @@ export default {
   mounted() {
     const { id: tweetId } = this.$route.params;
     this.fetchReply(tweetId);
+  },
+  watch: {
+    tweet(newVal) {
+      this.tweet = {
+        ...this.tweet,
+        ...newVal,
+      };
+    },
   },
   methods: {
     async fetchReply(tweetId) {

@@ -65,12 +65,12 @@ const routes = [
     component: () => import('../views/ReplyList.vue')
   },
   {
-    path: '/followers',
+    path: '/user/:id/followers',
     name: 'followers',
     component: () => import('../views/Followers.vue')
   },
   {
-    path: '/following',
+    path: '/user/:id/followings',
     name: 'following',
     component: () => import('../views/Following.vue')
   },
