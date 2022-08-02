@@ -33,5 +33,11 @@ export default {
     return apiHelper.get(`/users/${id}/followers`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  // 取得特定用戶資料
+  getOtherUser(id) {
+    return apiHelper.get(`/users/${id}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
