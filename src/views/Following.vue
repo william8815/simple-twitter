@@ -233,7 +233,7 @@ img {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
     z-index: -1;
   }
   .back {

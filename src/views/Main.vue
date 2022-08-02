@@ -12,7 +12,7 @@
         <div class="tweet-board">
           <div class="tweet-board__user">
             <router-link :to="{ name: 'main' }">
-              <img src="~@/assets/img/userImg.png" alt="userImg" />
+              <img :src="currentUser.avatar | emptyImage" alt="userImg" />
             </router-link>
             <form action="">
               <div>
@@ -25,7 +25,7 @@
                   id=""
                   maxlength="140"
                   cols="30"
-                  :rows="count"
+                  rows="auto"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -67,7 +67,7 @@
                   <div class="extra-info">
                     <div class="btn comment">
                       <svg
-                        @click="makeReply"
+                        @click="makeReply(tweet.id)"
                         class="icon comment__icon"
                         viewBox="0 0 30 30"
                         fill="#657786"
@@ -112,16 +112,17 @@
                     </div>
                   </div>
                 </div>
+                <!-- reply modal -->
+                <ReplyModal
+                  v-if="tweet.replyState"
+                  :initial_tweet="tweet"
+                  @handleReplyState="afterReplyState"
+                  @after-submit="afterHandleSubmit"
+                />
               </li>
             </ul>
           </div>
         </div>
-        <!-- reply modal -->
-        <ReplyModal
-          :key="replyState.count"
-          :reply_state="replyState.state"
-          @handleReplyState="afterReplyState"
-        />
       </div>
     </section>
     <!-- recommend -->
@@ -135,19 +136,14 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+// api
 import tweetsAPI from "./../apis/tweet";
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
 import { emptyImageFilter } from "./../utils/mixins";
 import { fromNowFilter } from "./../utils/mixins";
 
-const dummyData = {
-  replyState: {
-    count: 0,
-    state: false,
-  },
-};
 export default {
   name: "main-component",
   mixins: [emptyImageFilter, fromNowFilter],
@@ -161,14 +157,6 @@ export default {
       count: 1,
       content: "",
       tweets: [],
-      tweet: [
-        {
-          id: uuidv4(),
-          content: "",
-          placeholder: "有甚麼新鮮事?",
-          autofocus: false,
-        },
-      ],
     };
   },
   computed: {
@@ -181,19 +169,15 @@ export default {
   },
   methods: {
     async fetchTweet({ limit }) {
-      const { tweets, replyState } = dummyData;
-      const { count, state } = replyState;
-      this.tweets = tweets;
-      this.replyState = {
-        count,
-        state,
-      };
       try {
         const { data } = await tweetsAPI.getTweets({
           limit,
         });
-        // console.log(data);
         this.tweets = data;
+        this.tweets = this.tweets.map((tweet) => ({
+          ...tweet,
+          replyState: false,
+        }));
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -228,21 +212,55 @@ export default {
       this.$forceUpdate();
     },
     // 跳出彈跳視窗
-    makeReply() {
-      this.replyState = {
-        count: 1,
-        state: true,
-      };
-      this.$forceUpdate();
-      // console.log(this.replyState);
+    makeReply(tweetId) {
+      this.tweets = this.tweets.map((tweet) => {
+        if (tweetId === tweet.id) {
+          return {
+            ...tweet,
+            replyState: true,
+          };
+        }
+        return tweet;
+      });
     },
-    afterReplyState(state) {
-      this.replyState = {
-        count: 0,
-        state: state,
-      };
-      this.$forceUpdate();
-      // console.log(this.replyState);
+    afterReplyState(tweetId) {
+      this.tweets = this.tweets.map((tweet) => {
+        if (tweetId === tweet.id) {
+          return {
+            ...tweet,
+            replyState: false,
+          };
+        }
+        return tweet;
+      });
+    },
+    async afterHandleSubmit({ tweetId, comment }) {
+      try {
+        const { data } = await tweetsAPI.addNewComment({ tweetId, comment });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則留言",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "新增留言失敗，請稍後再試",
+        });
+      }
+      this.tweets = this.tweets.map((tweet) => {
+        if (tweetId === tweet.id) {
+          return {
+            ...tweet,
+            replyState: false,
+            replyCount: tweet.replyCount + 1,
+          };
+        }
+        return tweet;
+      });
     },
     setCount(event) {
       if (event.key === "Enter") {
@@ -293,7 +311,7 @@ export default {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
     z-index: -1;
   }
   // 圖片共同樣式
@@ -315,7 +333,6 @@ export default {
       }
       .tweet-content {
         width: 100%;
-        height: 100px;
         resize: none;
         font-size: 18px;
         font-weight: 700;

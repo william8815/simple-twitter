@@ -41,6 +41,7 @@
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
+import { mapState } from "vuex";
 
 export default {
   mixins: [emptyImageFilter],
@@ -50,6 +51,9 @@ export default {
       recommendUsers: [],
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
     this.fetchUser();
   },
@@ -58,13 +62,30 @@ export default {
       try {
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
-        this.recommendUsers = users.map((user) => ({
-          id: user.id,
-          name: user.name,
-          account: user.account,
-          avatar: user.avatar,
-          followersCount: user.followersCount,
-        }));
+        this.recommendUsers = users.filter((user) => {
+          if (user.Followers.length !== 0) {
+            for (let usesrSelf of user.Followers) {
+              if (usesrSelf.id !== this.currentUser.id) {
+                return {
+                  id: user.id,
+                  name: user.name,
+                  account: user.account,
+                  avatar: user.avatar,
+                  followersCount: user.followersCount,
+                };
+              }
+            }
+          } else {
+            return {
+              id: user.id,
+              name: user.name,
+              account: user.account,
+              avatar: user.avatar,
+              followersCount: user.followersCount,
+            };
+          }
+        });
+        console.log(this.recommendUsers);
         // console.log(data);
       } catch (error) {
         console.log(error);
@@ -75,11 +96,13 @@ export default {
       }
     },
     async addFollow(userId) {
+      console.log(userId);
       try {
-        const { data } = await userAPI.addFollowing({ userId });
+        const { data } = await userAPI.addFollowing(userId);
         if (data.status !== "success") {
           console.log(data.message);
         }
+
         this.recommendUsers = this.recommendUsers.map((user) => {
           if (user.id === userId) {
             return {
@@ -90,6 +113,10 @@ export default {
           }
           return user;
         });
+        Toast.fire({
+          icon: "success",
+          title: "已追蹤此用戶",
+        });
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -98,29 +125,67 @@ export default {
         });
       }
     },
-    deleteFollow(userId) {
-      this.recommendUsers = this.recommendUsers.map((user) => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isFollowed: false,
-          };
+    async deleteFollow(userId) {
+      try {
+        const { data } = await userAPI.deleteFollowing(userId);
+        if (data.status !== "success") {
+          console.log(data.message);
         }
-        return user;
-      });
+        this.recommendUsers = this.recommendUsers.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isFollowed: false,
+            };
+          }
+          return user;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "已取消追蹤此用戶",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消追蹤用戶請求失敗",
+        });
+      }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .recommend {
   margin-top: 16px;
   background-color: #fafafb;
   border-radius: 16px;
+  height: 90vh;
+  overflow-y: scroll;
   h4 {
     padding: 24px;
     border-bottom: 1px solid #e6ecf0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  h4::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    // 毛玻璃特效
+    backdrop-filter: blur(3px);
+    z-index: -1;
   }
   &__list {
     padding: 16px;

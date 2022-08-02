@@ -6,119 +6,124 @@
     </section>
     <!-- reply-list -->
     <section class="col-7 reply-section">
-      <div class="reply">
+      <div class="reply" v-if="isLoading">
         <!-- 開頭 -->
         <div class="title">
           <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
           <h4>推文</h4>
         </div>
-        <!-- 推文區 -->
-        <div class="tweet">
-          <router-link :to="{ name: 'replylist' }" class="tweet__user">
-            <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
-            <div class="user">
-              <div class="name">{{ user2.User.name }}</div>
-              <div class="account">@{{ user2.User.account }}</div>
-            </div>
-          </router-link>
-          <div class="tweet__post">
-            <div class="post">
-              {{ user2.description }}
-            </div>
-            <div class="post-time">{{ user2.createdAt }}</div>
-          </div>
-          <div class="tweet__info">
-            <div class="comments">
-              <span class="num">{{ user2.replyCount }}</span>
-              <span class="text">&nbsp;回覆</span>
-            </div>
-            <div class="liked">
-              <span class="num">{{ user2.likeCount }}</span>
-              <span class="text">&nbsp;喜歡次數</span>
-            </div>
-          </div>
-          <div class="tweet__icon">
-            <div class="comment">
-              <svg
-                @click="makeReply"
-                class="icon comment__icon"
-                viewBox="0 0 30 30"
-                fill="#657786"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M17.5576 2.80254L12.3726 2.79004H12.3701C6.90262 2.79004 2.62012 7.07379 2.62012 12.5425C2.62012 17.665 6.60262 21.55 11.9514 21.755V26.54C11.9514 26.675 12.0064 26.8975 12.1014 27.0438C12.2789 27.325 12.5814 27.4775 12.8914 27.4775C13.0639 27.4775 13.2376 27.43 13.3939 27.33C13.7239 27.12 21.4851 22.155 23.5039 20.4475C25.8814 18.435 27.3039 15.485 27.3076 12.5575V12.5363C27.3001 7.07754 23.0201 2.80254 17.5576 2.80129V2.80254ZM22.2914 19.0175C20.8739 20.2175 16.2139 23.2738 13.8264 24.8213V20.8375C13.8264 20.32 13.4076 19.9 12.8889 19.9H12.3939C7.81887 19.9 4.49637 16.805 4.49637 12.5425C4.49637 8.12504 7.95637 4.66504 12.3714 4.66504L17.5551 4.67754H17.5576C21.9726 4.67754 25.4326 8.13504 25.4351 12.5475C25.4314 14.935 24.2576 17.3525 22.2926 19.0175H22.2914Z"
-                />
-              </svg>
-            </div>
-            <div class="like">
-              <svg
-                v-if="user2.isLiked"
-                key="user"
-                @click="deleteLike"
-                class="icon like__icon"
-                viewBox="0 0 30 30"
-                fill="#f91880"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
-                  fill="#f91880"
-                />
-              </svg>
-              <svg
-                v-else
-                key="user"
-                @click="addLike"
-                class="icon like__icon"
-                viewBox="0 0 30 30"
-                fill="#fff"
-                stroke="#657786"
-                stroke-width="2px"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
-                  fill="white"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-        <!-- 留言區 -->
-        <div class="reply-board">
-          <ul>
-            <li class="list-item" v-for="reply in replyList" :key="reply.id">
-              <router-link :to="{ name: 'main' }" class="avator">
-                <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
-              </router-link>
+        <template>
+          <!-- 推文區 -->
+          <div class="tweet">
+            <router-link :to="{ name: 'main' }" class="tweet__user">
+              <img :src="tweet.User.avatar | emptyImage" alt="userImg" />
               <div class="user">
-                <div class="user__info">
-                  <router-link :to="{ name: 'main' }">
-                    <span class="user__name">{{ reply.name }}</span>
-                    <span class="user__account">{{ reply.account }} ・</span>
-                  </router-link>
-                  <router-link :to="{ name: 'main' }">
-                    <span class="user__posttime">{{ reply.createdAt }}</span>
-                  </router-link>
-                </div>
-                <div class="user__sent">
-                  <span>回覆&nbsp;&nbsp;</span>
-                  <span class="sent-account">{{ reply.sentAccount }}</span>
-                </div>
-                <div class="user__post">
-                  {{ reply.post }}
-                </div>
+                <div class="name">{{ tweet.User.name }}</div>
+                <div class="account">@{{ tweet.User.account }}</div>
               </div>
-            </li>
-          </ul>
-        </div>
-        <!-- reply modal -->
-        <ReplyModal
-          :key="replyState.count"
-          :reply_state="replyState.state"
-          @handleReplyState="afterReplyState"
-        />
+            </router-link>
+            <div class="tweet__post">
+              <div class="post">
+                {{ tweet.description }}
+              </div>
+              <div class="post-time">{{ tweet.createdAt }}</div>
+            </div>
+            <div class="tweet__info">
+              <div class="comments">
+                <span class="num">{{ tweet.replyCount }}</span>
+                <span class="text">&nbsp;回覆</span>
+              </div>
+              <div class="liked">
+                <span class="num">{{ tweet.likeCount }}</span>
+                <span class="text">&nbsp;喜歡次數</span>
+              </div>
+            </div>
+            <div class="tweet__icon">
+              <div class="comment">
+                <svg
+                  @click="makeReply"
+                  class="icon comment__icon"
+                  viewBox="0 0 30 30"
+                  fill="#657786"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M17.5576 2.80254L12.3726 2.79004H12.3701C6.90262 2.79004 2.62012 7.07379 2.62012 12.5425C2.62012 17.665 6.60262 21.55 11.9514 21.755V26.54C11.9514 26.675 12.0064 26.8975 12.1014 27.0438C12.2789 27.325 12.5814 27.4775 12.8914 27.4775C13.0639 27.4775 13.2376 27.43 13.3939 27.33C13.7239 27.12 21.4851 22.155 23.5039 20.4475C25.8814 18.435 27.3039 15.485 27.3076 12.5575V12.5363C27.3001 7.07754 23.0201 2.80254 17.5576 2.80129V2.80254ZM22.2914 19.0175C20.8739 20.2175 16.2139 23.2738 13.8264 24.8213V20.8375C13.8264 20.32 13.4076 19.9 12.8889 19.9H12.3939C7.81887 19.9 4.49637 16.805 4.49637 12.5425C4.49637 8.12504 7.95637 4.66504 12.3714 4.66504L17.5551 4.67754H17.5576C21.9726 4.67754 25.4326 8.13504 25.4351 12.5475C25.4314 14.935 24.2576 17.3525 22.2926 19.0175H22.2914Z"
+                  />
+                </svg>
+              </div>
+              <div class="like">
+                <svg
+                  v-if="tweet.isLiked"
+                  @click="deleteLike"
+                  class="icon like__icon"
+                  viewBox="0 0 30 30"
+                  fill="#f91880"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                    fill="#f91880"
+                  />
+                </svg>
+                <svg
+                  v-else
+                  @click="addLike"
+                  class="icon like__icon"
+                  viewBox="0 0 30 30"
+                  fill="#fff"
+                  stroke="#657786"
+                  stroke-width="2px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!-- 留言區 -->
+          <div class="reply-board">
+            <ul>
+              <li class="list-item" v-for="reply in replyList" :key="reply.id">
+                <router-link :to="{ name: 'main' }" class="avator">
+                  <img :src="reply.User.avatar | emptyImage" alt="userImg" />
+                </router-link>
+                <div class="user">
+                  <div class="user__info">
+                    <router-link :to="{ name: 'main' }">
+                      <span class="user__name">{{ reply.User.name }}</span>
+                      <span class="user__account"
+                        >{{ reply.User.account }} ・</span
+                      >
+                    </router-link>
+                    <router-link :to="{ name: 'main' }">
+                      <span class="user__posttime">{{
+                        reply.createdAt | fromNow
+                      }}</span>
+                    </router-link>
+                  </div>
+                  <div class="user__sent">
+                    <span>回覆&nbsp;&nbsp;</span>
+                    <span class="sent-account">@{{ tweet.User.account }}</span>
+                  </div>
+                  <div class="user__post">
+                    {{ reply.comment }}
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- reply modal -->
+          <ReplyModal
+            v-if="tweet.replyState"
+            :initial_tweet="tweet"
+            @handleReplyState="afterReplyState"
+            @after-submit="afterHandleSubmit"
+          />
+        </template>
       </div>
     </section>
     <!-- recommend -->
@@ -132,74 +137,16 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
-import tweetAPI from "./../apis/tweet";
+import tweetsAPI from "./../apis/tweet";
 import { Toast } from "./../utils/helpers";
-
-const dummyData = {
-  user: {
-    id: 1,
-    name: "Apple",
-    account: "@apple",
-    isLiked: false,
-  },
-  reply: [
-    {
-      id: 1,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "former apple engineer shares a simple DIY fix to seal your surgical mask",
-    },
-    {
-      id: 2,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "former apple engineer shares a simple DIY fix to seal your surgical mask",
-    },
-    {
-      id: 3,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "former apple engineer shares a simple DIY fix to seal your surgical mask",
-    },
-    {
-      id: 4,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "Michelin Challenges Creatives to Upcycle",
-    },
-    {
-      id: 5,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "Michelin Challenges Creatives to Upcycle",
-    },
-    {
-      id: 6,
-      name: "Devon Lane",
-      account: "@devon_lane",
-      createdAt: "12 小時",
-      setAccount: "@apple",
-      post: "Michelin Challenges Creatives to Upcycle",
-    },
-  ],
-  replyState: {
-    count: 0,
-    state: false,
-  },
-};
+import { emptyImageFilter } from "./../utils/mixins";
+import { fromNowFilter } from "./../utils/mixins";
+import { mapState } from "vuex";
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   name: "ReplyList",
+  mixins: [emptyImageFilter, fromNowFilter],
   components: {
     Navbar,
     RecommendUsers,
@@ -207,92 +154,136 @@ export default {
   },
   date() {
     return {
+      isLoading: true,
       replyList: [],
-      replyState: {},
-      user: {},
-      user2: {},
+      tweet: {
+        id: -1,
+        UserId: -1,
+        description: "",
+        createdAt: "",
+        replyCount: 0,
+        likeCount: 0,
+        isLiked: false,
+        User: {
+          account: "",
+          name: "",
+          avatar: "",
+        },
+      },
     };
   },
-  created() {
+  computed: {
+    ...mapState(["currentUser"]),
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchReply(id);
+    next();
+  },
+  mounted() {
     const { id: tweetId } = this.$route.params;
-    console.log(this.$route.params);
     this.fetchReply(tweetId);
   },
   methods: {
     async fetchReply(tweetId) {
-      const { reply, replyState, user } = dummyData;
-      const { count, state } = replyState;
-      const { id, name, account, isLiked } = user;
-      this.replyList = reply;
-      // console.log(this.replyList);
-      this.replyState = {
-        count,
-        state,
-      };
-      this.user = {
-        id,
-        name,
-        account,
-        isLiked,
-      };
       try {
-        console.log(tweetId);
-        const { data } = await tweetAPI.getUserTweet(tweetId);
-        const {
-          description,
-          createdAt,
-          User,
-          Replies,
-          replyCount,
-          likeCount,
-          isLiked,
-        } = data;
-        this.user2 = {
-          description,
-          createdAt,
-          User,
-          Replies,
-          replyCount,
-          likeCount,
-          isLiked,
+        this.isLoading = false;
+        const tweet = await tweetsAPI.getUserTweet(tweetId);
+        const replyList = await tweetsAPI.getUserComments(tweetId);
+        this.tweet = {
+          id: tweet.data.id,
+          UserId: tweet.data.UserId,
+          description: tweet.data.description,
+          createdAt: tweet.data.createdAt,
+          replyCount: tweet.data.replyCount,
+          likeCount: tweet.data.likeCount,
+          isLiked: tweet.data.isLiked,
+          replyState: false,
+          User: {
+            account: tweet.data.User.account,
+            name: tweet.data.User.name,
+            avatar: tweet.data.User.avatar,
+          },
         };
+        this.replyList = replyList.data;
+        console.log(this.tweet);
+        this.isLoading = true;
+        // console.log(this.tweet);
       } catch (error) {
+        this.isLoading = true;
         console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法取得推文資料，請稍後再試",
         });
       }
+      this.$forceUpdate();
     },
     // 跳出彈跳視窗
     makeReply() {
-      this.replyState = {
-        count: 1,
-        state: true,
+      this.tweet = {
+        ...this.tweet,
+        replyState: true,
+      };
+      // console.log(this.tweet);
+      this.$forceUpdate();
+      // console.log(this.replyState);
+    },
+    afterReplyState() {
+      this.tweet = {
+        ...this.tweet,
+        replyState: false,
       };
       this.$forceUpdate();
       // console.log(this.replyState);
     },
-    afterReplyState(state) {
-      this.replyState = {
-        count: 0,
-        state: state,
+    async afterHandleSubmit({ tweetId, comment }) {
+      try {
+        const { data } = await tweetsAPI.addNewComment({ tweetId, comment });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則留言",
+        });
+        this.replyList.unshift({
+          id: uuidv4(),
+          comment: comment,
+          createdAt: new Date(),
+          User: {
+            id: this.currentUser.id,
+            account: this.currentUser.account,
+            name: this.currentUser.name,
+            avatar: this.currentUser.avatar,
+          },
+        });
+        this.$forceUpdate();
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "新增留言失敗，請稍後再試",
+        });
+      }
+      this.tweet = {
+        ...this.tweet,
+        replyCount: this.tweet.replyCount + 1,
+        replyState: false,
       };
-      this.$forceUpdate();
-      // console.log(this.replyState);
     },
     // 新增喜歡
     addLike() {
-      this.user = {
-        ...this.user,
+      this.tweet = {
+        ...this.tweet,
         isLiked: true,
       };
       this.$forceUpdate();
     },
     // 移除喜歡
     deleteLike() {
-      this.user = {
-        ...this.user,
+      this.tweet = {
+        ...this.tweet,
         isLiked: false,
       };
       this.$forceUpdate();
@@ -348,7 +339,7 @@ img {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
     z-index: -1;
   }
   .back {
