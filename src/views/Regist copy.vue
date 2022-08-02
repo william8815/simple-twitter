@@ -124,9 +124,9 @@ export default {
           password: this.password,
           checkPassword: this.checkPassword
         })
-        if (data.status === 'error') {
-          throw new Error(data.message)
-        }
+        // if (data) {
+        //   console.log('hi')
+        // }
         Toast.fire({
           icon: 'success',
           title: data.message
