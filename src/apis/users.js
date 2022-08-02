@@ -8,12 +8,17 @@ export default {
     })
   },
   // 追蹤用戶
-  addFollowing({ id }) {
+  addFollowing(id) {
     return apiHelper.post(`/followships`, { id }, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
   // 退追用戶
+  deleteFollowing(id) {
+    return apiHelper.delete(`/followships/${id}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
   getCurrentUser() {
     return apiHelper.get('/users/currentUser')
   }
