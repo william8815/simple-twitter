@@ -136,7 +136,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: 'warning',
-          title: `無法註冊 - ${error.message}`
+          title: error.response.data.message
         })
       }
     }
