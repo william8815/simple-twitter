@@ -26,7 +26,7 @@
               <div class="post">
                 {{ tweet.description }}
               </div>
-              <div class="post-time">{{ tweet.createdAt }}</div>
+              <div class="post-time">{{ changeTime }}</div>
             </div>
             <div class="tweet__info">
               <div class="comments">
@@ -55,7 +55,7 @@
               <div class="like">
                 <svg
                   v-if="tweet.isLiked"
-                  @click="deleteLike"
+                  @click="deleteLike(tweet.id)"
                   class="icon like__icon"
                   viewBox="0 0 30 30"
                   fill="#f91880"
@@ -68,7 +68,7 @@
                 </svg>
                 <svg
                   v-else
-                  @click="addLike"
+                  @click="addLike(tweet.id)"
                   class="icon like__icon"
                   viewBox="0 0 30 30"
                   fill="#fff"
@@ -154,6 +154,7 @@ export default {
   },
   date() {
     return {
+      isComment: false,
       isLoading: true,
       replyList: [],
       tweet: {
@@ -169,54 +170,68 @@ export default {
           name: "",
           avatar: "",
         },
+        replyState: false,
       },
     };
   },
   computed: {
     ...mapState(["currentUser"]),
+    changeTime() {
+      console.log(Date.parse(this.tweet.createdAt));
+      let time = new Date(this.tweet.createdAt);
+      let year = time.getFullYear();
+      let month = time.getMonth();
+      let date = time.getDate();
+      let hour = time.getHours();
+      let minutes = time.getMinutes();
+      let text = "";
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      if (hour < 10) {
+        hour = `0${hour}`;
+      }
+      if (hour >= 0 && hour <= 11) {
+        text = "上午";
+      } else if (hour >= 12 && hour <= 23) {
+        text = "下午";
+      }
+      let timeString = `${text} ${hour}:${minutes}・${year}年${month}月${date}日`;
+      return timeString;
+    },
   },
   beforeRouteUpdate(to, from, next) {
-    const { id } = to.params;
-    this.fetchReply(id);
+    const { id: tweetId } = to.params;
+    this.fetchReply(tweetId);
     next();
   },
-  mounted() {
+  created() {
     const { id: tweetId } = this.$route.params;
     this.fetchReply(tweetId);
-  },
-  watch: {
-    tweet(newVal) {
-      this.tweet = {
-        ...this.tweet,
-        ...newVal,
-      };
-    },
   },
   methods: {
     async fetchReply(tweetId) {
       try {
         this.isLoading = false;
-        const tweet = await tweetsAPI.getUserTweet(tweetId);
+        const { data } = await tweetsAPI.getUserTweet(tweetId);
         const replyList = await tweetsAPI.getUserComments(tweetId);
         this.tweet = {
-          id: tweet.data.id,
-          UserId: tweet.data.UserId,
-          description: tweet.data.description,
-          createdAt: tweet.data.createdAt,
-          replyCount: tweet.data.replyCount,
-          likeCount: tweet.data.likeCount,
-          isLiked: tweet.data.isLiked,
+          id: data.id,
+          UserId: data.UserId,
+          description: data.description,
+          createdAt: data.createdAt,
+          replyCount: data.replyCount,
+          likeCount: data.likeCount,
+          isLiked: data.isLiked,
           replyState: false,
           User: {
-            account: tweet.data.User.account,
-            name: tweet.data.User.name,
-            avatar: tweet.data.User.avatar,
+            account: data.User.account,
+            name: data.User.name,
+            avatar: data.User.avatar,
           },
         };
         this.replyList = replyList.data;
-        console.log(this.tweet);
         this.isLoading = true;
-        // console.log(this.tweet);
       } catch (error) {
         this.isLoading = true;
         console.log(error);
@@ -281,19 +296,54 @@ export default {
       };
     },
     // 新增喜歡
-    addLike() {
-      this.tweet = {
-        ...this.tweet,
-        isLiked: true,
-      };
+    async addLike(tweetId) {
+      try {
+        const { data } = await tweetsAPI.addTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.tweet = {
+          ...this.tweet,
+          isLiked: true,
+          likeCount: this.tweet.likeCount + 1,
+        };
+        Toast.fire({
+          icon: "success",
+          title: "已按讚",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "按讚失敗",
+        });
+      }
       this.$forceUpdate();
     },
     // 移除喜歡
-    deleteLike() {
-      this.tweet = {
-        ...this.tweet,
-        isLiked: false,
-      };
+    async deleteLike(tweetId) {
+      try {
+        const { data } = await tweetsAPI.cancelTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.tweet = {
+          ...this.tweet,
+          isLiked: false,
+          likeCount: this.tweet.likeCount - 1,
+        };
+        Toast.fire({
+          icon: "success",
+          title: "已取消讚",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消讚失敗",
+        });
+      }
+
       this.$forceUpdate();
     },
   },
@@ -302,10 +352,10 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 260px);
+  width: calc(100vw - 130px);
   max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
   .reply-section {
     flex: 1 1;
   }

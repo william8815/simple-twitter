@@ -38,4 +38,10 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
+  // 新增推文
+  addTweet({ description }) {
+    return apiHelper.post(`/tweets`, { description }, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
 }
