@@ -84,6 +84,7 @@
 import { Toast } from "../utils/helpers";
 import authorizationAPI from "../apis/authorization";
 export default {
+  name: 'Regist',
   data () {
     return {
       name: '',

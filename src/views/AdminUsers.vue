@@ -21,89 +21,7 @@ import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminUserCard from "../components/AdminUserCard.vue";
 import adminAPI from "../apis/admin";
 import { Toast } from "../utils/helpers";
-import { v4 as uuidv4 } from "uuid";
-const dammyData = {
-  users: [
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 150011,
-        likeCount: 300011,
-        following: 314441,
-        follower: 54449,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 22345,
-        likeCount: 14257841,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 110,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 10,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 1500,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 1500,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-  ],
-};
+
 export default {
   name: "AdminUsers",
   components: {
@@ -120,11 +38,15 @@ export default {
       try {
         const { data } = await adminAPI.getUsers();
         this.users = data;
-      } catch (error) {
+      if(data.statu === 'error') {
+          throw new Error(data.message)
+        }
+        this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+      } catch(error) {
         Toast.fire({
-          icon: "error",
-          title: `載入失敗 - ${error.message}`,
-        });
+          icon: 'warning',
+          title: error.response.data.message
+        })
       }
     },
   },

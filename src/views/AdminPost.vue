@@ -21,159 +21,16 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../utils/helpers";
 import adminAPI from "../apis/admin";
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminTweetsList from "../components/AdminTweetsList.vue";
-import Navbar from "./../components/Navbar.vue";
-const dammyData = {
-  tweets: [
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "hello",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-  ],
-};
 
 export default {
   name: "AdminPost",
   components: {
     AdminSidbar,
     AdminTweetsList,
-    Navbar,
   },
   data() {
     return {
@@ -188,7 +45,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: `載入失敗 - ${error.message}`,
+          title: error.response.data.message,
         });
       }
     },
@@ -199,10 +56,14 @@ export default {
           throw new Error(data.message)
         }
         this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+        Toast.fire({
+          icon: 'success',
+          title: data.message
+        })
       } catch(error) {
         Toast.fire({
-          icon: 'warning',
-          title: `刪除失敗 - ${error.message}`
+          icon: 'error',
+          title: error.response.data.message
         })
       }
     },
