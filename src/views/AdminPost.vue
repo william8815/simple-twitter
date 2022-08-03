@@ -7,15 +7,18 @@
       <div class="main__title">
         <h1>推文清單</h1>
       </div>
-      <div class="main__body">
-        <!-- AdminTweetsList -->
-        <AdminTweetsList
-          v-for="tweet in tweets"
-          :key="tweet.id"
-          :tweet-info="tweet"
-          @after-delete-tweet="afterDeleteTweet"
-        />
-      </div>
+      <Spinner v-if="isLoading" />
+      <template v-else>
+        <div class="main__body">
+          <!-- AdminTweetsList -->
+          <AdminTweetsList
+            v-for="tweet in tweets"
+            :key="tweet.id"
+            :tweet-info="tweet"
+            @after-delete-tweet="afterDeleteTweet"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -25,24 +28,35 @@ import { Toast } from "../utils/helpers";
 import adminAPI from "../apis/admin";
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminTweetsList from "../components/AdminTweetsList.vue";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "AdminPost",
   components: {
     AdminSidbar,
     AdminTweetsList,
+    Spinner,
   },
   data() {
     return {
       tweets: {},
+      isLoading: true,
     };
   },
   methods: {
     async fetchTweets() {
       try {
+        this.isLoading = true;
         const { data } = await adminAPI.getTweets();
-        this.tweets = data
+
+        if (data.statu === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: error.response.data.message,
@@ -51,20 +65,20 @@ export default {
     },
     async afterDeleteTweet(tweetId) {
       try {
-        const { data } = await adminAPI.deleteTweet({tweetId})
-        if(data.statu === 'error') {
-          throw new Error(data.message)
+        const { data } = await adminAPI.deleteTweet({ tweetId });
+        if (data.statu === "error") {
+          throw new Error(data.message);
         }
         this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
         Toast.fire({
-          icon: 'success',
-          title: data.message
-        })
-      } catch(error) {
+          icon: "success",
+          title: data.message,
+        });
+      } catch (error) {
         Toast.fire({
-          icon: 'error',
-          title: error.response.data.message
-        })
+          icon: "error",
+          title: error.response.data.message,
+        });
       }
     },
   },

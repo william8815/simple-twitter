@@ -7,46 +7,60 @@
       <div class="main__title">
         <h1>使用者列表</h1>
       </div>
-      <div class="main__body">
-        <!-- AdminUserCard -->
-        <AdminUserCard v-for="user in users" :key="user.id" :user-info="user" />
-      </div>
+      <Spinner v-if="isLoading" />
+      <template v-else>
+        <div class="main__body">
+          <!-- AdminUserCard -->
+          <AdminUserCard
+            v-for="user in users"
+            :key="user.id"
+            :user-info="user"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable */
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminUserCard from "../components/AdminUserCard.vue";
 import adminAPI from "../apis/admin";
 import { Toast } from "../utils/helpers";
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "AdminUsers",
   components: {
     AdminSidbar,
     AdminUserCard,
+    Spinner,
   },
   data() {
     return {
       users: {},
+      isLoading: true,
     };
   },
   methods: {
     async fetchUsers() {
       try {
+        this.isLoading = true;
         const { data } = await adminAPI.getUsers();
-        this.users = data;
-      if(data.statu === 'error') {
-          throw new Error(data.message)
+
+        if (data.statu === "error") {
+          throw new Error(data.message);
         }
-        this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
-      } catch(error) {
+
+        this.users = data;
+        // this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
         Toast.fire({
-          icon: 'warning',
-          title: error.response.data.message
-        })
+          icon: "warning",
+          title: error.response.data.message,
+        });
       }
     },
   },
