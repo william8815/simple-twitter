@@ -9,7 +9,7 @@
       </div>
       <div class="card__body">
         <div class="card__title">{{ user.name }}</div>
-        <p class="card__text">@{{ user.text}}</p>
+        <p class="card__text">@{{ user.account }}</p>
         <div class="click__panel">
           <div class="click__icon">
             <img src="../assets/img/reply.svg" alt="" />{{
@@ -49,7 +49,6 @@ export default {
       user: {
         id: -1,
         name: "",
-        text: '',
         avatar: "",
         account: "",
         front_cover: "",
@@ -72,13 +71,11 @@ export default {
         followingsCount,
         followersCount,
         front_cover,
-        text
       } = this.userInfo;
       this.user = {
         ...this.user,
         id,
         name,
-        text: text ? text : 'heyjohn',
         front_cover: front_cover ? front_cover : 'https://imgur.com/s4rJStF.png',
         avatar: avatar ? avatar : "https://imgur.com/TYOq10P.png",
         account,

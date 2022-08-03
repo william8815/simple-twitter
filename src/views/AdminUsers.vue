@@ -7,123 +7,59 @@
       <div class="main__title">
         <h1>使用者列表</h1>
       </div>
-      <div class="main__body">
-        <!-- AdminUserCard -->
-        <AdminUserCard v-for="user in users" :key="user.id" :user-info="user" />
-      </div>
+      <Spinner v-if="isLoading" />
+      <template v-else>
+        <div class="main__body">
+          <!-- AdminUserCard -->
+          <AdminUserCard
+            v-for="user in users"
+            :key="user.id"
+            :user-info="user"
+          />
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable */
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminUserCard from "../components/AdminUserCard.vue";
 import adminAPI from "../apis/admin";
 import { Toast } from "../utils/helpers";
-import { v4 as uuidv4 } from "uuid";
-const dammyData = {
-  users: [
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 150011,
-        likeCount: 300011,
-        following: 314441,
-        follower: 54449,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 22345,
-        likeCount: 14257841,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 110,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 10,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 1500,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-    {
-      id: uuidv4(),
-      name: "John Doe",
-      image: "https://imgur.com/GrO4gR6.png",
-      background: "https://i.imgur.com/NPIq5gR.png",
-      text: "heyjohn",
-      Count: {
-        replyCount: 1500,
-        likeCount: 3000,
-        following: 34,
-        follower: 59,
-      },
-    },
-  ],
-};
+import Spinner from "../components/Spinner.vue";
+
 export default {
   name: "AdminUsers",
   components: {
     AdminSidbar,
     AdminUserCard,
+    Spinner,
   },
   data() {
     return {
       users: {},
+      isLoading: true,
     };
   },
   methods: {
     async fetchUsers() {
       try {
+        this.isLoading = true;
         const { data } = await adminAPI.getUsers();
+
+        if (data.statu === "error") {
+          throw new Error(data.message);
+        }
+
         this.users = data;
+        // this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
-          icon: "error",
-          title: `載入失敗 - ${error.message}`,
+          icon: "warning",
+          title: error.response.data.message,
         });
       }
     },

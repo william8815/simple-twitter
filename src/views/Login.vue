@@ -93,7 +93,7 @@ export default {
         this.isProcessing = false;
         Toast.fire({
           icon: "error",
-          title: `登入失敗 - ${error.message}`,
+          title: error.response.data.message
         });
 
         (this.account = ""), (this.password = "");

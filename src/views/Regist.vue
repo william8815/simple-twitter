@@ -84,6 +84,7 @@
 import { Toast } from "../utils/helpers";
 import authorizationAPI from "../apis/authorization";
 export default {
+  name: 'Regist',
   data () {
     return {
       name: '',
@@ -136,7 +137,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: 'warning',
-          title: `無法註冊 - ${error.message}`
+          title: error.response.data.message
         })
       }
     }
