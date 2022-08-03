@@ -111,6 +111,7 @@ export default {
 }
 
 .main__body {
+  margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
   padding-left: 1rem;
