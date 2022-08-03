@@ -53,7 +53,6 @@ export default {
         }
 
         this.users = data;
-        // this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
