@@ -131,10 +131,11 @@
           </div>
           <div class="tweet">
             <img src="~@/assets/img/userImg.png" alt="userImg" />
-            <form action="">
+            <form action="" @submit.stop.prevent="handleSubmit">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  v-model="text"
                   class="tweet-content"
                   name="tweet"
                   id=""
@@ -159,9 +160,12 @@
 </template>
 
 <script>
+// 共用區
+import { Toast } from "./../utils/helpers";
 export default {
   data() {
     return {
+      text: "",
       count: 7,
       tweetMode: false,
       isAdmin: false,
@@ -177,6 +181,26 @@ export default {
     logout() {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/login");
+    },
+    handleSubmit() {
+      if (this.text.length === 0) {
+        Toast.fire({
+          icon: "error",
+          title: "推文內容請勿空白",
+        });
+        return;
+      }
+      if (this.text.length > 140) {
+        Toast.fire({
+          icon: "error",
+          title: "推文字數超過 140 個字",
+        });
+        return;
+      }
+      this.$emit("submit-tweet", {
+        description: this.text,
+      });
+      this.cancelModel();
     },
   },
 };
