@@ -3,7 +3,7 @@
   <div class="container row row-cols-3">
     <!-- navbar -->
     <section class="col-2" style="min-width:176px;'">
-      <Navbar />
+      <Navbar @submit-tweet="handleSubmitTweet" :tweet_state="tweetState" />
     </section>
     <!-- main -->
     <section class="main-section col-7">
@@ -14,7 +14,7 @@
             <router-link :to="{ name: 'main' }">
               <img :src="currentUser.avatar | emptyImage" alt="userImg" />
             </router-link>
-            <form action="">
+            <form @submit.stop.prevent="submitTweet" action="">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
@@ -25,7 +25,7 @@
                   id=""
                   maxlength="140"
                   cols="30"
-                  rows="auto"
+                  :rows="count"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -158,6 +158,7 @@ export default {
       count: 1,
       content: "",
       tweets: [],
+      tweetState: false,
     };
   },
   computed: {
@@ -178,6 +179,7 @@ export default {
         this.tweets = this.tweets.map((tweet) => ({
           ...tweet,
           replyState: false,
+          tweetState: false,
         }));
       } catch (error) {
         console.log(error);
@@ -246,7 +248,7 @@ export default {
       }
       this.$forceUpdate();
     },
-    // 跳出彈跳視窗
+    // 跳出留言彈跳視窗
     makeReply(tweetId) {
       this.tweets = this.tweets.map((tweet) => {
         if (tweetId === tweet.id) {
@@ -258,6 +260,7 @@ export default {
         return tweet;
       });
     },
+    // 關閉留言彈跳視窗
     afterReplyState(tweetId) {
       this.tweets = this.tweets.map((tweet) => {
         if (tweetId === tweet.id) {
@@ -269,6 +272,7 @@ export default {
         return tweet;
       });
     },
+    // 新增留言
     async afterHandleSubmit({ tweetId, comment }) {
       try {
         const { data } = await tweetsAPI.addNewComment({ tweetId, comment });
@@ -297,6 +301,44 @@ export default {
         return tweet;
       });
     },
+    // 新增貼文
+    submitTweet() {
+      if (this.content.length === 0) {
+        Toast.fire({
+          icon: "error",
+          title: "推文內容請勿空白",
+        });
+        return;
+      }
+      if (this.content.length > 140) {
+        Toast.fire({
+          icon: "error",
+          title: "推文字數超過 140 個字",
+        });
+        return;
+      }
+      this.handleSubmitTweet({ description: this.content });
+      this.content = "";
+    },
+    // 新增貼文(請求)
+    async handleSubmitTweet({ description }) {
+      try {
+        const { data } = await tweetsAPI.addTweet({ description });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則貼文",
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "新增貼文失敗",
+        });
+      }
+      this.fetchTweet({ limit: 10 });
+    },
     setCount(event) {
       if (event.key === "Enter") {
         this.count += 1;
@@ -310,10 +352,10 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 260px);
+  width: calc(100vw - 130px);
   max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
   .main-section {
     flex: 1 1;
   }

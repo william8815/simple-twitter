@@ -62,8 +62,9 @@ export default {
       try {
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
+        console.log(data);
         this.recommendUsers = users.filter((user) => {
-          if (user.Followers.length !== 0) {
+          if (user.Followers.length !== 0 || user.id === this.currentUser.id) {
             for (let usesrSelf of user.Followers) {
               if (usesrSelf.id !== this.currentUser.id) {
                 return {
@@ -191,6 +192,7 @@ export default {
     .list-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       .user {
         display: flex;
         &__image {
@@ -199,20 +201,25 @@ export default {
           height: 50px;
           border-radius: 50%;
         }
+        .content {
+          width: 70px;
+        }
         &__name {
           font-size: 16px;
           font-weight: 700;
           // 溢出文字以...替代
           overflow: hidden;
           text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
+          white-space: nowrap;
         }
         &__account {
           color: #92929d;
           font-size: 14px;
           font-weight: 400;
+          // 溢出文字以...替代
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
       .btn {

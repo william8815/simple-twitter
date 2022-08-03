@@ -1,11 +1,11 @@
 <template>
   <div class="container row">
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
     <!-- followers -->
-    <section class="col-xl-7 col-lg-7">
+    <section class="col-7 follower-section">
       <div class="follow">
         <div class="follow-head">
           <!-- 開頭 -->
@@ -76,7 +76,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-xl-3 col-lg-3">
+    <section class="col-3" style="min-width:274px;'">
       <RecommendUsers />
     </section>
   </div>
@@ -105,6 +105,12 @@ export default {
   },
   computed: {
     ...mapState(["currentUser"]),
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchUser(id);
+    this.fetchFollower(id);
+    next();
   },
   created() {
     const { id: userId } = this.$route.params;
@@ -187,9 +193,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1144px;
+  width: calc(100vw - 130px);
+  max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
+  .follower-section {
+    flex: 1 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {
