@@ -7,7 +7,7 @@
       <h3>建立你的帳號</h3>
     </div>
 
-    <form action="" class="form" @submit.prevent.stop="handleSubmit">
+    <form action="" class="form" @submit.prevent.stop="handleSubmit($event)">
       <div class="form__label">
         <label for="account">帳號</label>
         <input
@@ -28,6 +28,7 @@
           name="name"
           id="name"
           placeholder="請輸入名稱"
+          maxlength="50"
           v-model="name"
           required
         />
@@ -61,10 +62,10 @@
         <input
           type="password"
           class="label__control"
-          name="passwordCheck"
-          id="passwordCheck"
+          name="checkPassword"
+          id="checkPassword"
           placeholder="請再次輸入密碼"
-          v-model="passwordCheck"
+          v-model="checkPassword"
           required
         />
       </div>
@@ -83,64 +84,67 @@
 import { Toast } from "../utils/helpers";
 import authorizationAPI from "../apis/authorization";
 export default {
-  name: "Regist",
-  data() {
+  name: 'Regist',
+  data () {
     return {
-      account: "",
-      name: "",
-      email: "",
-      password: "",
-      passwordCheck: "",
-    };
+      name: '',
+      account: '',
+      email: '',
+      password: '',
+      checkPassword: ''
+    }
   },
   methods: {
-    async handleSubmit() {
+    async handleSubmit () {
       try {
         if (
           !this.name ||
           !this.email ||
+          !this.account ||
           !this.password ||
-          !this.passwordCheck
+          !this.checkPassword
         ) {
           Toast.fire({
-            icon: "warning",
-            title: "請填寫所有欄位",
-          });
-          return;
+            icon: 'warning',
+            title: '請確認已填寫所有欄位'
+          })
+          return
         }
-        if (this.password !== this.passwordCheck) {
+        if (this.password !== this.checkPassword) {
           Toast.fire({
-            icon: "warning",
-            title: "兩次輸入的密碼不同",
-          });
-          this.passwordCheck = "";
-          return;
+            icon: 'warning',
+            title: '兩次輸入的密碼不同'
+          })
+          this.checkPassword = ''
+          return
         }
-        const { data } = await authorizationAPI.signUp({
-          account: this.account,
+        const { data } =  await authorizationAPI.signUp({
           name: this.name,
+          account: this.account,
           email: this.email,
           password: this.password,
-          passwordCheck: this.passwordCheck,
-        });
-        if (data.status === "error") {
-          throw new Error(data.message);
+          checkPassword: this.checkPassword
+        })
+        if (data.status === 'error') {
+          throw new Error(data.message)
         }
         Toast.fire({
-          icon: "success",
-          title: data.message,
-        });
-        this.$router.push("/login");
+          icon: 'success',
+          title: data.message
+        })
+        // 成功登入後轉址到登入頁
+        this.$router.push('/login')
       } catch (error) {
         Toast.fire({
-          icon: "warning",
-          title: `無法註冊 - ${error.message}`,
-        });
+          icon: 'warning',
+          title: error.response.data.message
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
+
 
 <style lang="scss" scoped>
 .regist {

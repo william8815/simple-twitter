@@ -12,8 +12,8 @@
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
             <div>
-              <h5>John Doe</h5>
-              <span>25 貼文</span>
+              <h5>{{ user.name }}</h5>
+              <span>{{ user.tweetsCount }} 貼文</span>
             </div>
           </div>
           <!-- 追蹤切換 -->
@@ -38,26 +38,29 @@
             <li
               class="list-item"
               v-for="follower in followers"
-              :key="follower.id"
+              :key="follower.followerId"
             >
               <router-link :to="{ name: 'main' }" class="avator">
-                <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
+                <img
+                  :src="follower.followerAvatar | emptyImage"
+                  alt="userImg"
+                />
               </router-link>
               <div class="user">
                 <div class="user__info">
                   <router-link :to="{ name: 'main' }">
-                    <span class="user__name">{{ follower.name }}</span>
+                    <span class="user__name">{{ follower.followerName }}</span>
                   </router-link>
                   <button
-                    v-if="follower.isFollowed"
-                    @click.stop.prevent="deleteFollow(follower.id)"
+                    v-if="follower.isFollower"
+                    @click.stop.prevent="deleteFollow(follower.followerId)"
                     class="btn followed-btn"
                   >
                     正在跟隨
                   </button>
                   <button
                     v-else
-                    @click.stop.prevent="addFollow(follower.id)"
+                    @click.stop.prevent="addFollow(follower.followerId)"
                     class="btn follow-btn"
                   >
                     跟隨
@@ -82,62 +85,14 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
-
-const dummyData = {
-  followers: [
-    {
-      id: 1,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 2,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 3,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: false,
-    },
-    {
-      id: 4,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: false,
-    },
-    {
-      id: 5,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: false,
-    },
-    {
-      id: 6,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: false,
-    },
-  ],
-};
+import userAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+import { emptyImageFilter } from "./../utils/mixins";
+import { mapState } from "vuex";
 
 export default {
   name: "Followers",
+  mixins: [emptyImageFilter],
   components: {
     Navbar,
     RecommendUsers,
@@ -145,37 +100,86 @@ export default {
   data() {
     return {
       followers: [],
+      user: {},
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
-    this.fetchFollower();
+    const { id: userId } = this.$route.params;
+    this.fetchUser(userId);
+    this.fetchFollower(userId);
   },
   methods: {
-    fetchFollower() {
-      const { followers } = dummyData;
-      this.followers = followers;
+    async fetchUser(userId) {
+      const { data } = await userAPI.getOtherUser(userId);
+      const { name, tweetsCount } = data;
+      this.user = {
+        name,
+        tweetsCount,
+      };
     },
-    addFollow(followerId) {
-      this.followers = this.followers.map((follower) => {
-        if (follower.id === followerId) {
-          return {
-            ...follower,
-            isFollowed: true,
-          };
-        }
-        return follower;
-      });
+    async fetchFollower(userId) {
+      try {
+        const { data } = await userAPI.getUserFollowers(userId);
+        this.followers = data;
+        this.followers = this.followers.filter((follower) => {
+          return this.currentUser.id !== follower.followerId;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "請求粉絲用戶失敗",
+        });
+      }
     },
-    deleteFollow(followerId) {
-      this.followers = this.followers.map((follower) => {
-        if (follower.id === followerId) {
-          return {
-            ...follower,
-            isFollowed: false,
-          };
+    async addFollow(followerId) {
+      try {
+        const { data } = await userAPI.addFollowing(followerId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        return follower;
-      });
+        this.followers = this.followers.map((follower) => {
+          if (follower.followerId === followerId) {
+            return {
+              ...follower,
+              isFollower: true,
+            };
+          }
+          return follower;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "追蹤用戶失敗",
+        });
+      }
+    },
+    async deleteFollow(followerId) {
+      try {
+        const { data } = await userAPI.deleteFollowing(followerId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.followers = this.followers.map((follower) => {
+          if (follower.followerId === followerId) {
+            return {
+              ...follower,
+              isFollower: false,
+            };
+          }
+          return follower;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "追蹤用戶失敗",
+        });
+      }
     },
   },
 };
@@ -232,7 +236,7 @@ img {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
     z-index: -1;
   }
   .back {
@@ -271,6 +275,7 @@ img {
     border-bottom: 1px solid #e6ecf0;
   }
   .user {
+    width: 100%;
     &__info {
       width: 100%;
       display: flex;

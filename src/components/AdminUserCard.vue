@@ -2,32 +2,32 @@
   <div class="container">
     <div class="card">
       <div class="user__background">
-        <img :src="user.background" alt="" />
+        <img :src="user.front_cover" alt="" />
       </div>
       <div class="card__avatar">
-        <img :src="user.image" alt="" />
+        <img :src="user.avatar" alt="" />
       </div>
       <div class="card__body">
         <div class="card__title">{{ user.name }}</div>
-        <p class="card__text">@{{ user.text }}</p>
+        <p class="card__text">@{{ user.account }}</p>
         <div class="click__panel">
           <div class="click__icon">
             <img src="../assets/img/reply.svg" alt="" />{{
-              user.Count.replyCount | changeCount
+              user.tweetsCount | changeCount
             }}
           </div>
           <div class="click__icon">
             <img src="../assets/img/like.svg" alt="" />{{
-              user.Count.likeCount | changeCount
+              user.likedTweetsCount | changeCount
             }}
           </div>
         </div>
         <div class="follow__panel">
           <div class="follow__count">
-            <span>{{ user.Count.following | changeFollow }} </span>跟隨中
+            <span>{{ user.followingsCount | changeFollow }} </span>跟隨中
           </div>
           <div class="follow__count">
-            <span>{{ user.Count.follower | changeFollow }} </span>跟隨者
+            <span>{{ user.followersCount | changeFollow }} </span>跟隨者
           </div>
         </div>
       </div>
@@ -39,10 +39,55 @@
 export default {
   name: "AdminUserCard",
   props: {
-    user: {
+    userInfo: {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      user: {
+        id: -1,
+        name: "",
+        avatar: "",
+        account: "",
+        front_cover: "",
+        tweetsCount: 1,
+        likedTweetsCount: 0,
+        followingsCount: 0,
+        followersCount: 0,
+      },
+    };
+  },
+  methods: {
+    fetchUser() {
+      const {
+        id,
+        name,
+        avatar,
+        account,
+        tweetsCount,
+        likedTweetsCount,
+        followingsCount,
+        followersCount,
+        front_cover,
+      } = this.userInfo;
+      this.user = {
+        ...this.user,
+        id,
+        name,
+        front_cover: front_cover ? front_cover : 'https://imgur.com/s4rJStF.png',
+        avatar: avatar ? avatar : "https://imgur.com/TYOq10P.png",
+        account,
+        tweetsCount,
+        likedTweetsCount,
+        followingsCount,
+        followersCount,
+      };
+    },
+  },
+  created() {
+    this.fetchUser();
   },
   filters: {
     changeCount(count) {

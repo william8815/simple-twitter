@@ -3,207 +3,83 @@
     <!-- AdminSidbar -->
     <AdminSidbar />
     <!-- main -->
-      <div class="main">
-        <div class="main__title">
-          <h1>推文清單</h1>
-        </div>
+    <div class="main">
+      <div class="main__title">
+        <h1>推文清單</h1>
+      </div>
+      <Spinner v-if="isLoading" />
+      <template v-else>
         <div class="main__body">
           <!-- AdminTweetsList -->
           <AdminTweetsList
             v-for="tweet in tweets"
             :key="tweet.id"
-            :tweet="tweet"
+            :tweet-info="tweet"
             @after-delete-tweet="afterDeleteTweet"
           />
         </div>
-      </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
-/* eslint-disable */
-import { v4 as uuidv4 } from "uuid";
-import { Toast } from '../utils/helpers'
-import adminAPI from '../apis/admin'
+import { Toast } from "../utils/helpers";
+import adminAPI from "../apis/admin";
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminTweetsList from "../components/AdminTweetsList.vue";
-import Navbar from "./../components/Navbar.vue";
-const dammyData = {
-  tweets: [
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "hello",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-    {
-      id: uuidv4(),
-      name: "Apple",
-      image: "https://imgur.com/3C9eOJT.png",
-      text: "apple",
-      tweetDate: "3小時",
-      content:
-        " Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis ullamco cillum dolor. Voluptate exercitation incididunt aliquip deserunt reprehenderit elit laborum. ",
-    },
-  ],
-};
+import Spinner from "../components/Spinner.vue";
 
 export default {
   name: "AdminPost",
   components: {
     AdminSidbar,
     AdminTweetsList,
-    Navbar,
+    Spinner,
   },
   data() {
     return {
-      // tweets: {
-      //   id: -1,
-      //   name:'',
-      //   text: '',
-      //   tweetDate: '',
-      //   content: ''
-      // },
-      tweets:[],
+      tweets: {},
+      isLoading: true,
     };
   },
   methods: {
     async fetchTweets() {
       try {
-        const { data } = await adminAPI.getTweets()
-        console.log(data)
-        console.log('hi')
-          this.tweets = dammyData.tweets
-      } catch(error) {
+        this.isLoading = true;
+        const { data } = await adminAPI.getTweets();
+
+        if (data.statu === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
         Toast.fire({
-          icon: 'error',
-          title: '載入失敗，請稍後再試'
-        })
+          icon: "error",
+          title: error.response.data.message,
+        });
       }
-    
     },
-    afterDeleteTweet(tweetId) {
-      this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+    async afterDeleteTweet(tweetId) {
+      try {
+        const { data } = await adminAPI.deleteTweet({ tweetId });
+        if (data.statu === "error") {
+          throw new Error(data.message);
+        }
+        this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
+        Toast.fire({
+          icon: "success",
+          title: data.message,
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error.response.data.message,
+        });
+      }
     },
   },
   created() {
@@ -216,7 +92,7 @@ export default {
 .adminUsers {
   display: flex;
   max-height: 100vh;
-  width: auto;;
+  width: auto;
 }
 
 .main {
@@ -251,6 +127,4 @@ export default {
     line-height: 26px;
   }
 }
-
-
 </style>

@@ -44,6 +44,7 @@
 <script>
 import { Toast } from "./../utils/helpers";
 import authorizationAPI from "./../apis/authorization";
+
 export default {
   name: "AdminLogin",
   data() {
@@ -79,7 +80,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: `登入失敗 - ${error.message}`,
+          title: error.response.data.message
         });
         (this.account = ""), (this.password = "");
       }

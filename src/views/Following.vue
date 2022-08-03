@@ -12,8 +12,8 @@
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
             <div>
-              <h5>John Doe</h5>
-              <span>25 貼文</span>
+              <h5>{{ user.name }}</h5>
+              <span>{{ user.tweetsCount }} 貼文</span>
             </div>
           </div>
           <!-- 追蹤切換 -->
@@ -39,33 +39,38 @@
             <li
               class="list-item"
               v-for="following in followings"
-              :key="following.id"
+              :key="following.followingId"
             >
               <router-link :to="{ name: 'main' }" class="avator">
-                <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
+                <img
+                  :src="following.followingAvatar | emptyImage"
+                  alt="userImg"
+                />
               </router-link>
               <div class="user">
                 <div class="user__info">
                   <router-link :to="{ name: 'main' }">
-                    <span class="user__name">{{ following.name }}</span>
+                    <span class="user__name">{{
+                      following.followingName
+                    }}</span>
                   </router-link>
                   <button
-                    v-if="following.isFollowed"
-                    @click.stop.prevent="deleteFollow(following.id)"
+                    v-if="following.isFollowing"
+                    @click.stop.prevent="deleteFollow(following.followingId)"
                     class="btn followed-btn"
                   >
                     正在跟隨
                   </button>
                   <button
                     v-else
-                    @click.stop.prevent="addFollow(following.id)"
+                    @click.stop.prevent="addFollow(following.followingId)"
                     class="btn follow-btn"
                   >
                     跟隨
                   </button>
                 </div>
                 <div class="user__post">
-                  {{ following.post }}
+                  {{ following.followingIntroduction }}
                 </div>
               </div>
             </li>
@@ -83,62 +88,14 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
-
-const dummyData = {
-  followings: [
-    {
-      id: 1,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 2,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 3,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 4,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 5,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-    {
-      id: 6,
-      name: "Apple",
-      post: `Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-            ullamco cillum dolor. Voluptate exercitation incididunt
-            aliquip deserunt reprehenderit elit laborum.`,
-      isFollowed: true,
-    },
-  ],
-};
+import userAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+import { emptyImageFilter } from "./../utils/mixins";
+import { mapState } from "vuex";
 
 export default {
   name: "followings",
+  mixins: [emptyImageFilter],
   components: {
     Navbar,
     RecommendUsers,
@@ -146,37 +103,86 @@ export default {
   data() {
     return {
       followings: [],
+      user: {},
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
-    this.fetchfollowing();
+    const { id: userId } = this.$route.params;
+    this.fetchUser(userId);
+    this.fetchfollowing(userId);
   },
   methods: {
-    fetchfollowing() {
-      const { followings } = dummyData;
-      this.followings = followings;
+    async fetchUser(userId) {
+      const { data } = await userAPI.getOtherUser(userId);
+      const { name, tweetsCount } = data;
+      this.user = {
+        name,
+        tweetsCount,
+      };
     },
-    addFollow(followingId) {
-      this.followings = this.followings.map((following) => {
-        if (following.id === followingId) {
-          return {
-            ...following,
-            isFollowed: true,
-          };
-        }
-        return following;
-      });
+    async fetchfollowing(userId) {
+      try {
+        const { data } = await userAPI.getUserFollowing(userId);
+        this.followings = data;
+        this.followings = this.followings.filter((following) => {
+          return this.currentUser.id !== following.followingId;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "請求追蹤用戶失敗",
+        });
+      }
     },
-    deleteFollow(followingId) {
-      this.followings = this.followings.map((following) => {
-        if (following.id === followingId) {
-          return {
-            ...following,
-            isFollowed: false,
-          };
+    async addFollow(followingId) {
+      try {
+        const { data } = await userAPI.addFollowing(followingId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
         }
-        return following;
-      });
+        this.followings = this.followings.map((following) => {
+          if (following.followingId === followingId) {
+            return {
+              ...following,
+              isFollowing: true,
+            };
+          }
+          return following;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "追蹤用戶失敗",
+        });
+      }
+    },
+    async deleteFollow(followingId) {
+      try {
+        const { data } = await userAPI.deleteFollowing(followingId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.followings = this.followings.map((following) => {
+          if (following.followingId === followingId) {
+            return {
+              ...following,
+              isFollowing: false,
+            };
+          }
+          return following;
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消追蹤用戶失敗",
+        });
+      }
     },
   },
 };
@@ -216,6 +222,7 @@ img {
     display: flex;
     align-items: center;
     width: 100%;
+    height: 100%;
     padding: 16px 28px;
     border-bottom: 1px solid #e6ecf0;
 
@@ -233,7 +240,7 @@ img {
     left: 0;
     bottom: 0;
     // 毛玻璃特效
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(3px);
     z-index: -1;
   }
   .back {
@@ -273,6 +280,7 @@ img {
     border-bottom: 1px solid #e6ecf0;
   }
   .user {
+    width: 100%;
     &__info {
       width: 100%;
       display: flex;

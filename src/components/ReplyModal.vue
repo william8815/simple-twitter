@@ -1,44 +1,47 @@
 <template>
   <div>
-    <div class="black" @click="cancelModal" v-if="replyState"></div>
-    <div class="reply-modal" v-if="replyState">
+    <div class="black" @click="cancelModal"></div>
+    <div class="reply-modal">
       <div class="modal">
         <div class="cancel">
-          <i class="fa-solid fa-xmark" @click.stop="cacelModal"></i>
+          <i class="fa-solid fa-xmark" @click.stop="cancelModal"></i>
         </div>
         <!-- 留言對象 -->
         <div class="sent-user">
           <router-link :to="{ name: 'main' }" class="avator">
-            <img src="~@/assets/img/otherUserImg.png" alt="userImg" />
+            <img :src="tweetContent.User.avatar | emptyImage" alt="userImg" />
           </router-link>
           <div class="user">
             <div class="user__info">
               <router-link :to="{ name: 'main' }">
-                <span class="user__name">Apple</span>
-                <span class="user__account">@apple ・</span>
+                <span class="user__name">{{ tweetContent.User.name }}</span>
+                <span class="user__account"
+                  >@{{ tweetContent.User.account }} ・</span
+                >
               </router-link>
               <router-link :to="{ name: 'main' }">
-                <span class="user__posttime">3 小時</span>
+                <span class="user__posttime">{{
+                  tweetContent.createdAt | fromNow
+                }}</span>
               </router-link>
             </div>
             <div class="user__post">
-              Nulla Lorem mollit cupidatat irure. Laborum magna nulla duis
-              ullamco cillum dolor. Voluptate exercitation incididunt aliquip
-              deserunt reprehenderit elit laborum.
+              {{ tweetContent.description }}
             </div>
             <div class="user__sent">
               <span>回覆&nbsp;&nbsp;</span>
-              <span class="sent-account">@apple</span>
+              <span class="sent-account">@{{ tweetContent.User.account }}</span>
             </div>
           </div>
         </div>
         <!-- 回覆留言區 -->
         <div class="tweet">
-          <img src="~@/assets/img/userImg.png" alt="userImg" />
-          <form action="">
+          <img :src="currentUser.avatar | emptyImage" alt="userImg" />
+          <form @submit.stop.prevent="handleSubmit" action="">
             <div>
               <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
               <textarea
+                v-model="text"
                 class="tweet-content"
                 name="tweet"
                 id=""
@@ -56,30 +59,86 @@
 </template>
 
 <script>
+import { emptyImageFilter } from "./../utils/mixins";
+import { fromNowFilter } from "./../utils/mixins";
+import { mapState } from "vuex";
+import { Toast } from "./../utils/helpers";
 export default {
+  name: "ReplyModel",
+  mixins: [emptyImageFilter, fromNowFilter],
   props: {
-    reply_state: {
-      type: Boolean,
+    initial_tweet: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
       count: 6,
-      replyState: false,
+      // replyState: false,
+      tweetContent: {
+        id: -1,
+        UserId: -1,
+        description: "",
+        createdAt: "",
+        User: {},
+        replyCount: 0,
+        replyState: 0,
+      },
+      text: "",
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+  },
   created() {
-    this.fetchModal();
+    this.fetchReplyModal();
   },
   methods: {
-    fetchModal() {
-      this.replyState = this.reply_state;
-      // console.log(this.replyState);
+    fetchReplyModal() {
+      const {
+        id,
+        UserId,
+        description,
+        createdAt,
+        User,
+        replyCount,
+        replyState,
+      } = this.initial_tweet;
+      this.tweetContent = {
+        id,
+        UserId,
+        description,
+        createdAt,
+        User,
+        replyCount,
+        replyState,
+      };
+      // this.tweetContent = this.initial_tweet;
     },
     cancelModal() {
       // this.replyState = false;
-      this.$emit("handleReplyState", false);
+      this.$emit("handleReplyState", this.initial_tweet.id);
+    },
+    handleSubmit() {
+      // 預防 required 屬性被刪掉
+      if (!this.text) {
+        Toast.fire({
+          icon: "warning",
+          title: "請勿提交空白留言",
+        });
+        return;
+      } else if (!this.text.length > 140) {
+        Toast.fire({
+          icon: "warning",
+          title: "留言字數已超過140",
+        });
+        return;
+      }
+      this.$emit("after-submit", {
+        tweetId: this.initial_tweet.id,
+        comment: this.text,
+      });
     },
   },
 };
