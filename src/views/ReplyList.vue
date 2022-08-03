@@ -26,7 +26,7 @@
               <div class="post">
                 {{ tweet.description }}
               </div>
-              <div class="post-time">{{ tweet.createdAt }}</div>
+              <div class="post-time">{{ changeTime }}</div>
             </div>
             <div class="tweet__info">
               <div class="comments">
@@ -176,6 +176,29 @@ export default {
   },
   computed: {
     ...mapState(["currentUser"]),
+    changeTime() {
+      console.log(Date.parse(this.tweet.createdAt));
+      let time = new Date(this.tweet.createdAt);
+      let year = time.getFullYear();
+      let month = time.getMonth();
+      let date = time.getDate();
+      let hour = time.getHours();
+      let minutes = time.getMinutes();
+      let text = "";
+      if (minutes < 10) {
+        minutes = `0${minutes}`;
+      }
+      if (hour < 10) {
+        hour = `0${hour}`;
+      }
+      if (hour >= 0 && hour <= 11) {
+        text = "上午";
+      } else if (hour >= 12 && hour <= 23) {
+        text = "下午";
+      }
+      let timeString = `${text} ${hour}:${minutes}・${year}年${month}月${date}日`;
+      return timeString;
+    },
   },
   beforeRouteUpdate(to, from, next) {
     const { id: tweetId } = to.params;

@@ -62,7 +62,7 @@ export default {
       try {
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
-        console.log(data);
+        // console.log(data);
         this.recommendUsers = users.filter((user) => {
           if (user.Followers.length !== 0 || user.id === this.currentUser.id) {
             for (let usesrSelf of user.Followers) {
