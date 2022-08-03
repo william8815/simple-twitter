@@ -26,10 +26,14 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link
+              :to="{ name: 'user-profile', params: { id: 14} }"
+              class="tag"
+            >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
+                :class="{ focus: $route.name === 'user-profile' }"
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -41,12 +45,14 @@
                   fill="#fff"
                 />
               </svg>
-              <h5>個人資料</h5>
+              <h5 :class="{ focus: $route.name === 'user-profile' }">
+                個人資料
+              </h5>
             </router-link>
           </li>
           <li>
             <router-link
-              :to="{ name: 'user-edit', params: { id: 4 } }"
+              :to="{ name: 'user-edit', params: { id: 14 } }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->

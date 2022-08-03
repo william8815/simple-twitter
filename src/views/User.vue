@@ -1,6 +1,8 @@
 <template >
   <div class="container">
-    <div class="left__bar">左Bar</div>
+    <div class="left__bar">
+      <Navbar />
+    </div>
 
     <!-- 使用者個人資料 -->
     <div class="user">
@@ -57,7 +59,7 @@
             <button type="button" class="card__edit__unfollow">跟隨</button>
           </div>
         </div>
-<!-- 使用者跟隨的數量 -->
+        <!-- 使用者跟隨的數量 -->
         <div class="card__text">
           <h5>{{ user.name }}</h5>
           <p class="card__text__account">@{{ user.account }}</p>
@@ -80,7 +82,7 @@
         </div>
       </div>
 
-<!-- 憨個嵌套式路由 點選可切換頁面 -->
+      <!-- 憨個嵌套式路由 點選可切換頁面 -->
       <div class="group">
         <ul class="nav">
           <li class="nav__item" active-class="active">
@@ -123,10 +125,12 @@
 
 <script>
 import UserEditModal from "../components/UserEditModal.vue";
+import Navbar from "../components/Navbar.vue";
 
 export default {
   components: {
     UserEditModal,
+    Navbar,
   },
 
   data() {
