@@ -67,7 +67,7 @@
 
 <script>
 import { mapState } from "vuex";
-// import { Toast } from '../utils/helpers'
+import { Toast } from '../utils/helpers'
  export default {
   name: "AccountEditForm",
   data() {
@@ -104,24 +104,24 @@ import { mapState } from "vuex";
     },
     async handleSubmit() {
       try {
-        //  if (this.user.password.length < 4) {
-        //   Toast.fire({
-        //     icon: "warning",
-        //     title: "密碼長度不得小於 4 ",
-        //   });
-        //   this.password = "";
-        //   this.checkPassword = "";
-        //   return;
-        // }
-        // if (this.user.password !== this.user.checkPassword) {
-        //   Toast.fire({
-        //     icon: "warning",
-        //     title: "兩次輸入的密碼不同",
-        //   });
-        //   this.password = "";
-        //   this.checkPassword = "";
-        //   return;
-        // }
+         if (this.user.password && this.user.password.length < 4) {
+          Toast.fire({
+            icon: "warning",
+            title: "密碼長度不得小於 4 ",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
+        }
+        if (this.user.password && this.user.password !== this.user.checkPassword) {
+          Toast.fire({
+            icon: "warning",
+            title: "兩次輸入的密碼不同",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
+        }
         const formDate = this.user;
         this.$emit("handle-after-submit", formDate);
       } catch (error) {
