@@ -23,16 +23,24 @@
                   class="tweet-content"
                   name="tweet"
                   id=""
-                  maxlength="140"
                   cols="30"
-                  :rows="count"
+                  rows="1"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
-              <button type="submit" class="tweet-btn">推文</button>
+              <div class="tweet-footer">
+                <span v-if="content.length > 140" class="alertWord"
+                  >已超過 140 個字</span
+                >
+                <span :class="{ red: content.length > 140 }"
+                  >{{ countLength }}/140</span
+                >
+                <button type="submit" class="tweet-btn">推文</button>
+              </div>
             </form>
           </div>
-          <div class="tweet-board__otherUser">
+          <Spinner v-if="isLoading" />
+          <div v-else class="tweet-board__otherUser">
             <ul>
               <li class="list-item" v-for="tweet in tweets" :key="tweet.id">
                 <router-link :to="{ name: 'main' }">
@@ -136,6 +144,7 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
+import Spinner from "./../components/Spinner.vue";
 // import { v4 as uuidv4 } from "uuid";
 // api
 import tweetsAPI from "./../apis/tweet";
@@ -152,6 +161,7 @@ export default {
     Navbar,
     RecommendUsers,
     ReplyModal,
+    Spinner,
   },
   data() {
     return {
@@ -159,10 +169,14 @@ export default {
       content: "",
       tweets: [],
       tweetState: false,
+      isLoading: false,
     };
   },
   computed: {
     ...mapState(["currentUser"]),
+    countLength() {
+      return this.content.length;
+    },
   },
   created() {
     this.fetchTweet({
@@ -172,6 +186,7 @@ export default {
   methods: {
     async fetchTweet({ limit }) {
       try {
+        this.isLoading = true;
         const { data } = await tweetsAPI.getTweets({
           limit,
         });
@@ -181,7 +196,9 @@ export default {
           replyState: false,
           tweetState: false,
         }));
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -318,7 +335,6 @@ export default {
         return;
       }
       this.handleSubmitTweet({ description: this.content });
-      this.content = "";
     },
     // 新增貼文(請求)
     async handleSubmitTweet({ description }) {
@@ -338,6 +354,7 @@ export default {
         });
       }
       this.fetchTweet({ limit: 10 });
+      this.content = "";
     },
     setCount(event) {
       if (event.key === "Enter") {
@@ -418,9 +435,19 @@ export default {
         border: none;
         outline: none;
       }
-      .tweet-btn {
+      .tweet-footer {
         align-self: flex-end;
         margin-top: 16px;
+      }
+      .red {
+        color: red;
+      }
+      .alertWord {
+        color: red;
+        margin-right: 16px;
+      }
+      .tweet-btn {
+        margin-left: 16px;
         border: none;
         background-color: var(--main-color);
         color: #fff;

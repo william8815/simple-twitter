@@ -46,7 +46,7 @@
           </li>
           <li>
             <router-link
-              :to="{ name: 'user-edit', params: { id: 4 } }"
+              :to="{ name: 'user-edit', params: { id: currentUser.id } }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
@@ -135,6 +135,8 @@
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  ref="textarea"
+                  @input="countRow"
                   v-model="text"
                   class="tweet-content"
                   name="tweet"
@@ -144,7 +146,15 @@
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
-              <button type="submit" class="tweet-btn">推文</button>
+              <div class="tweet-footer">
+                <span v-if="text.length > 140" class="alertWord"
+                  >已超過 140 個字</span
+                >
+                <span :class="{ red: text.length > 140 }"
+                  >{{ countLength }}/140</span
+                >
+                <button type="submit" class="tweet-btn">推文</button>
+              </div>
             </form>
           </div>
         </div>
@@ -162,6 +172,7 @@
 <script>
 // 共用區
 import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -169,9 +180,21 @@ export default {
       count: 7,
       tweetMode: false,
       isAdmin: false,
+      scrollHeight: 0,
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+    countLength() {
+      return this.text.length;
+    },
+  },
   methods: {
+    countRow() {
+      this.scrollTop = this.$refs.textarea.scrollTop;
+      console.log(this.scrollTop);
+      // this.$refs.textarea.style.height = this.scrollTop + "px";
+    },
     cancelModel() {
       this.tweetMode = false;
     },
@@ -335,6 +358,8 @@ img {
   }
   .tweet-content {
     width: 100%;
+    // overflow-y: scroll;
+    // height: auto;
     resize: none;
     font-size: 16px;
     font-weight: 400;
@@ -343,9 +368,19 @@ img {
     border: none;
     outline: none;
   }
-  .tweet-btn {
+  .tweet-footer {
     align-self: flex-end;
     margin-top: 16px;
+  }
+  .red {
+    color: red;
+  }
+  .alertWord {
+    color: red;
+    margin-right: 16px;
+  }
+  .tweet-btn {
+    margin-left: 16px;
     border: none;
     background-color: var(--main-color);
     color: #fff;

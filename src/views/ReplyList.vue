@@ -12,7 +12,8 @@
           <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
           <h4>推文</h4>
         </div>
-        <template v-if="isLoading">
+        <Spinner v-if="isLoading" />
+        <template v-else>
           <!-- 推文區 -->
           <div class="tweet">
             <router-link :to="{ name: 'main' }" class="tweet__user">
@@ -41,7 +42,7 @@
             <div class="tweet__icon">
               <div class="comment">
                 <svg
-                  @click="makeReply"
+                  @click.stop="makeReply"
                   class="icon comment__icon"
                   viewBox="0 0 30 30"
                   fill="#657786"
@@ -55,7 +56,7 @@
               <div class="like">
                 <svg
                   v-if="tweet.isLiked"
-                  @click="deleteLike(tweet.id)"
+                  @click.stop="deleteLike(tweet.id)"
                   class="icon like__icon"
                   viewBox="0 0 30 30"
                   fill="#f91880"
@@ -68,7 +69,7 @@
                 </svg>
                 <svg
                   v-else
-                  @click="addLike(tweet.id)"
+                  @click.stop="addLike(tweet.id)"
                   class="icon like__icon"
                   viewBox="0 0 30 30"
                   fill="#fff"
@@ -96,7 +97,7 @@
                     <router-link :to="{ name: 'main' }">
                       <span class="user__name">{{ reply.User.name }}</span>
                       <span class="user__account"
-                        >{{ reply.User.account }} ・</span
+                        >@{{ reply.User.account }} ・</span
                       >
                     </router-link>
                     <router-link :to="{ name: 'main' }">
@@ -137,6 +138,7 @@
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
+import Spinner from "./../components/Spinner.vue";
 import tweetsAPI from "./../apis/tweet";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -151,11 +153,12 @@ export default {
     Navbar,
     RecommendUsers,
     ReplyModal,
+    Spinner,
   },
   date() {
     return {
-      isComment: false,
-      isLoading: true,
+      isLoading: false,
+      isProcessing: false,
       replyList: [],
       tweet: {
         id: -1,
@@ -177,7 +180,6 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
     changeTime() {
-      console.log(Date.parse(this.tweet.createdAt));
       let time = new Date(this.tweet.createdAt);
       let year = time.getFullYear();
       let month = time.getMonth();
@@ -212,7 +214,7 @@ export default {
   methods: {
     async fetchReply(tweetId) {
       try {
-        this.isLoading = false;
+        this.isLoading = true;
         const { data } = await tweetsAPI.getUserTweet(tweetId);
         const replyList = await tweetsAPI.getUserComments(tweetId);
         this.tweet = {
@@ -231,9 +233,9 @@ export default {
           },
         };
         this.replyList = replyList.data;
-        this.isLoading = true;
+        this.isLoading = false;
       } catch (error) {
-        this.isLoading = true;
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -248,9 +250,7 @@ export default {
         ...this.tweet,
         replyState: true,
       };
-      // console.log(this.tweet);
       this.$forceUpdate();
-      // console.log(this.replyState);
     },
     afterReplyState() {
       this.tweet = {
@@ -258,7 +258,6 @@ export default {
         replyState: false,
       };
       this.$forceUpdate();
-      // console.log(this.replyState);
     },
     async afterHandleSubmit({ tweetId, comment }) {
       try {
@@ -298,6 +297,7 @@ export default {
     // 新增喜歡
     async addLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.addTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -311,7 +311,9 @@ export default {
           icon: "success",
           title: "已按讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -323,6 +325,7 @@ export default {
     // 移除喜歡
     async deleteLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.cancelTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -336,7 +339,9 @@ export default {
           icon: "success",
           title: "已取消讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
