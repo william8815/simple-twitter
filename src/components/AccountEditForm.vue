@@ -104,7 +104,7 @@ import { Toast } from '../utils/helpers'
     },
     async handleSubmit() {
       try {
-         if (this.user.password.length < 4) {
+         if (this.user.password && this.user.password.length < 4) {
           Toast.fire({
             icon: "warning",
             title: "密碼長度不得小於 4 ",
@@ -113,7 +113,7 @@ import { Toast } from '../utils/helpers'
           this.checkPassword = "";
           return;
         }
-        if (this.user.password !== this.user.checkPassword) {
+        if (this.user.password && this.user.password !== this.user.checkPassword) {
           Toast.fire({
             icon: "warning",
             title: "兩次輸入的密碼不同",
