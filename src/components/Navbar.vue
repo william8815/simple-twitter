@@ -27,7 +27,10 @@
           </li>
           <li>
             <router-link
-              :to="{ name: 'user-profile', params: { id: this.$store.state.currentUser.id} }"
+              :to="{
+                name: 'user-profile',
+                params: { id: this.$store.state.currentUser.id },
+              }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
@@ -52,7 +55,7 @@
           </li>
           <li>
             <router-link
-              :to="{ name: 'user-edit', params: { id: this.$store.state.currentUser.id } }"
+              :to="{ name: 'user-edit', params: { id: currentUser.id } }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
@@ -137,10 +140,14 @@
           </div>
           <div class="tweet">
             <img src="~@/assets/img/userImg.png" alt="userImg" />
-            <form action="">
+            <form action="" @submit.stop.prevent="handleSubmit">
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  :style="{ minHeight: '145px' }"
+                  ref="textarea"
+                  @input="countRow"
+                  v-model="text"
                   class="tweet-content"
                   name="tweet"
                   id=""
@@ -149,7 +156,21 @@
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
-              <button type="submit" class="tweet-btn">推文</button>
+              <div class="tweet-footer">
+                <span v-if="text.length > 140" class="alertWord"
+                  >已超過 140 個字</span
+                >
+                <span :class="{ red: text.length > 140 }"
+                  >{{ countLength }}/140</span
+                >
+                <button
+                  type="submit"
+                  class="tweet-btn"
+                  :disabled="isProcessing"
+                >
+                  推文
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -163,17 +184,45 @@
     </div>
   </div>
 </template>
-
 <script>
+// 共用區
+import tweetsAPI from "./../apis/tweet";
+import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
+      text: "",
       count: 7,
       tweetMode: false,
       isAdmin: false,
+      isProcessing: false,
     };
   },
+  computed: {
+    ...mapState(["currentUser"]),
+    countLength() {
+      return this.text.length;
+    },
+  },
   methods: {
+    countRow() {
+      let scrollHeight = this.$refs.textarea.scrollHeight;
+      // let clientHeight = 145;
+      // console.log(scrollHeight, clientHeight);
+      // if (scrollHeight - clientHeight === 0) {
+      //   this.count = 7;
+      //   return;
+      // } else {
+      //   let countNum = (scrollHeight - clientHeight) / 19 + 7;
+      //   this.count = countNum;
+      //   return;
+      // }
+      let countNum = Math.floor(scrollHeight / 19);
+      this.count = countNum;
+
+      console.log(countNum);
+    },
     cancelModel() {
       this.tweetMode = false;
     },
@@ -184,11 +233,55 @@ export default {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/login");
     },
+    async handleSubmit() {
+      if (this.text.length === 0) {
+        Toast.fire({
+          icon: "error",
+          title: "推文內容請勿空白",
+        });
+        return;
+      }
+      if (this.text.length > 140) {
+        Toast.fire({
+          icon: "error",
+          title: "推文字數超過 140 個字",
+        });
+        return;
+      }
+      try {
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.addTweet({ description: this.text });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$emit("submit-tweet", {
+          description: this.text,
+        });
+        this.cancelModel();
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則貼文",
+        });
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "新增貼文失敗",
+        });
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .navbar {
   // min-width: 178px;
   // height: 100%;
@@ -316,6 +409,7 @@ img {
     justify-content: space-between;
   }
   .tweet-content {
+    max-height: 60vh;
     width: 100%;
     resize: none;
     font-size: 16px;
@@ -325,9 +419,19 @@ img {
     border: none;
     outline: none;
   }
-  .tweet-btn {
+  .tweet-footer {
     align-self: flex-end;
     margin-top: 16px;
+  }
+  .red {
+    color: red;
+  }
+  .alertWord {
+    color: red;
+    margin-right: 16px;
+  }
+  .tweet-btn {
+    margin-left: 16px;
     border: none;
     background-color: var(--main-color);
     color: #fff;

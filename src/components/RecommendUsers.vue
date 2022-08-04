@@ -1,7 +1,8 @@
 <template>
   <div class="recommend">
     <h4>推薦跟隨</h4>
-    <div class="recommend__list">
+    <Spinner v-if="isLoading" />
+    <div v-else class="recommend__list">
       <ul>
         <li v-for="user in recommendUsers" :key="user.id" class="list-item">
           <router-link :to="{ name: 'main' }" class="user">
@@ -21,6 +22,7 @@
             @click.stop.prevent="deleteFollow(user.id)"
             v-if="user.isFollowed"
             class="btn followed"
+            :disabled="isProcessing"
           >
             正在跟隨
           </button>
@@ -28,6 +30,7 @@
             @click.stop.prevent="addFollow(user.id)"
             v-else
             class="btn follow"
+            :disabled="isProcessing"
           >
             跟隨
           </button>
@@ -38,6 +41,7 @@
 </template>
 
 <script>
+import Spinner from "./../components/Spinner.vue";
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -45,10 +49,15 @@ import { mapState } from "vuex";
 
 export default {
   mixins: [emptyImageFilter],
+  components: {
+    Spinner,
+  },
   data() {
     return {
       // 少了用戶圖片
       recommendUsers: [],
+      isLoading: false,
+      isProcessing: false,
     };
   },
   computed: {
@@ -60,10 +69,12 @@ export default {
   methods: {
     async fetchUser() {
       try {
+        this.isLoading = true;
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
+        // console.log(data);
         this.recommendUsers = users.filter((user) => {
-          if (user.Followers.length !== 0) {
+          if (user.Followers.length !== 0 || user.id === this.currentUser.id) {
             for (let usesrSelf of user.Followers) {
               if (usesrSelf.id !== this.currentUser.id) {
                 return {
@@ -85,7 +96,9 @@ export default {
             };
           }
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -95,6 +108,7 @@ export default {
     },
     async addFollow(userId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.addFollowing(userId);
         if (data.status !== "success") {
           console.log(data.message);
@@ -113,7 +127,9 @@ export default {
           icon: "success",
           title: "已追蹤此用戶",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -123,6 +139,7 @@ export default {
     },
     async deleteFollow(userId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.deleteFollowing(userId);
         if (data.status !== "success") {
           console.log(data.message);
@@ -140,7 +157,9 @@ export default {
           icon: "success",
           title: "已取消追蹤此用戶",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -163,7 +182,8 @@ export default {
   margin-top: 16px;
   background-color: #fafafb;
   border-radius: 16px;
-  height: 90vh;
+  height: 60vh;
+  min-height: 508px;
   overflow-y: scroll;
   h4 {
     padding: 24px;
@@ -191,6 +211,7 @@ export default {
     .list-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       .user {
         display: flex;
         &__image {
@@ -199,20 +220,25 @@ export default {
           height: 50px;
           border-radius: 50%;
         }
+        .content {
+          width: 70px;
+        }
         &__name {
           font-size: 16px;
           font-weight: 700;
           // 溢出文字以...替代
           overflow: hidden;
           text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
+          white-space: nowrap;
         }
         &__account {
           color: #92929d;
           font-size: 14px;
           font-weight: 400;
+          // 溢出文字以...替代
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
       .btn {

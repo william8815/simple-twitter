@@ -1,17 +1,17 @@
 <template>
   <div class="container row">
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
     <!-- followers -->
-    <section class="col-xl-7 col-lg-7">
+    <section class="col-7 following-section">
       <div class="follow">
         <div class="follow-head">
           <!-- 開頭 -->
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
-            <div>
+            <div class="head">
               <h5>{{ user.name }}</h5>
               <span>{{ user.tweetsCount }} 貼文</span>
             </div>
@@ -34,7 +34,8 @@
         </div>
         <!-- 粉絲清單 -->
         <!-- 追蹤清單 -->
-        <div class="follow-list">
+        <Spinner v-if="isLoading" />
+        <div v-else class="follow-list">
           <ul>
             <li
               class="list-item"
@@ -58,6 +59,7 @@
                     v-if="following.isFollowing"
                     @click.stop.prevent="deleteFollow(following.followingId)"
                     class="btn followed-btn"
+                    :disabled="isProcessing"
                   >
                     正在跟隨
                   </button>
@@ -65,6 +67,7 @@
                     v-else
                     @click.stop.prevent="addFollow(following.followingId)"
                     class="btn follow-btn"
+                    :disabled="isProcessing"
                   >
                     跟隨
                   </button>
@@ -79,7 +82,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-xl-3 col-lg-3">
+    <section class="col-3" style="min-width:274px;'">
       <RecommendUsers />
     </section>
   </div>
@@ -88,6 +91,7 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
+import Spinner from "./../components/Spinner.vue";
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -99,15 +103,24 @@ export default {
   components: {
     Navbar,
     RecommendUsers,
+    Spinner,
   },
   data() {
     return {
       followings: [],
       user: {},
+      isProcessing: false,
+      isLoading: false,
     };
   },
   computed: {
     ...mapState(["currentUser"]),
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchUser(id);
+    this.fetchfollowing(id);
+    next();
   },
   created() {
     const { id: userId } = this.$route.params;
@@ -125,12 +138,15 @@ export default {
     },
     async fetchfollowing(userId) {
       try {
+        this.isLoading = true;
         const { data } = await userAPI.getUserFollowing(userId);
         this.followings = data;
         this.followings = this.followings.filter((following) => {
           return this.currentUser.id !== following.followingId;
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -140,6 +156,7 @@ export default {
     },
     async addFollow(followingId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.addFollowing(followingId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -153,7 +170,13 @@ export default {
           }
           return following;
         });
+        Toast.fire({
+          icon: "success",
+          title: "成功追蹤用戶",
+        });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -163,6 +186,7 @@ export default {
     },
     async deleteFollow(followingId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.deleteFollowing(followingId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -176,7 +200,13 @@ export default {
           }
           return following;
         });
+        Toast.fire({
+          icon: "success",
+          title: "取消追蹤用戶",
+        });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -190,9 +220,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1144px;
+  width: calc(100vw - 130px);
+  max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
+  .following-section {
+    flex: 1 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {
@@ -243,6 +277,9 @@ img {
     backdrop-filter: blur(3px);
     z-index: -1;
   }
+  // .head {
+  //   height: 45px;
+  // }
   .back {
     margin-right: 19px;
   }

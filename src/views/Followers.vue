@@ -1,11 +1,11 @@
 <template>
   <div class="container row">
     <!-- navbar -->
-    <section class="col-xl-2 col-lg-2">
+    <section class="col-2" style="min-width:176px;'">
       <Navbar />
     </section>
     <!-- followers -->
-    <section class="col-xl-7 col-lg-7">
+    <section class="col-7 follower-section">
       <div class="follow">
         <div class="follow-head">
           <!-- 開頭 -->
@@ -33,7 +33,8 @@
           </div>
         </div>
         <!-- 追蹤清單 -->
-        <div class="follow-list">
+        <Spinner v-if="isLoading" />
+        <div v-else class="follow-list">
           <ul>
             <li
               class="list-item"
@@ -55,6 +56,7 @@
                     v-if="follower.isFollower"
                     @click.stop.prevent="deleteFollow(follower.followerId)"
                     class="btn followed-btn"
+                    :disabled="isProcessing"
                   >
                     正在跟隨
                   </button>
@@ -62,6 +64,7 @@
                     v-else
                     @click.stop.prevent="addFollow(follower.followerId)"
                     class="btn follow-btn"
+                    :disabled="isProcessing"
                   >
                     跟隨
                   </button>
@@ -76,7 +79,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-xl-3 col-lg-3">
+    <section class="col-3" style="min-width:274px;'">
       <RecommendUsers />
     </section>
   </div>
@@ -85,6 +88,7 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
+import Spinner from "./../components/Spinner.vue";
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -96,15 +100,24 @@ export default {
   components: {
     Navbar,
     RecommendUsers,
+    Spinner,
   },
   data() {
     return {
       followers: [],
       user: {},
+      isProcessing: false,
+      isLoading: false,
     };
   },
   computed: {
     ...mapState(["currentUser"]),
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params;
+    this.fetchUser(id);
+    this.fetchFollower(id);
+    next();
   },
   created() {
     const { id: userId } = this.$route.params;
@@ -122,12 +135,15 @@ export default {
     },
     async fetchFollower(userId) {
       try {
+        this.isLoading = true;
         const { data } = await userAPI.getUserFollowers(userId);
         this.followers = data;
         this.followers = this.followers.filter((follower) => {
           return this.currentUser.id !== follower.followerId;
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -137,6 +153,7 @@ export default {
     },
     async addFollow(followerId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.addFollowing(followerId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -150,7 +167,9 @@ export default {
           }
           return follower;
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -160,6 +179,7 @@ export default {
     },
     async deleteFollow(followerId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.deleteFollowing(followerId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -173,7 +193,9 @@ export default {
           }
           return follower;
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -187,9 +209,13 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  max-width: 1144px;
+  width: calc(100vw - 130px);
+  max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
+  .follower-section {
+    flex: 1 1;
+  }
 }
 // 取消滾輪
 ::-webkit-scrollbar {

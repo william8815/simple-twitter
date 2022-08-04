@@ -55,10 +55,10 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 260px);
+  width: calc(100vw - 130px);
   max-width: 1400px;
   height: 100vh;
-  margin: 0 auto;
+  margin-left: 130px;
 }
 @media screen and (max-width: 960px) {
   .set-section {
