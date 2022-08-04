@@ -2,7 +2,7 @@
   <!-- 首頁 -->
   <div class="container row">
     <!-- navbar -->
-    <section class="col-2" style="min-width:176px;'">
+    <section class="col-2" style="min-width:176px">
       <Navbar @submit-tweet="handleSubmitTweet" :tweet_state="tweetState" />
     </section>
     <!-- main -->
@@ -143,7 +143,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-3" style="min-width:274px;'">
+    <section class="col-3" style="min-width:274px">
       <RecommendUsers />
     </section>
   </div>

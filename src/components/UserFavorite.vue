@@ -1,16 +1,26 @@
 <template>
   <div class="list__container">
-    <div class="favorite__card" v-for="usertweet in usertweets" :key="usertweet.id">
+    <Spinner v-if="isLoading" />
+    <div
+      v-else
+      class="favorite__card"
+      v-for="usertweet in usertweets"
+      :key="usertweet.TweetId"
+    >
       <div>
-        <img :src="usertweet.selfImg" alt="" class="favorite__avatar" />
+        <img :src="usertweet.selfImg | emptyImage" alt="" class="favorite__avatar" />
       </div>
       <div class="favorite__info">
         <div class="favorite__info__header">
-          <span class="header__user">{{ usertweet.name }}</span>
-          <span class="header__account">@{{ usertweet.account }}</span>
-          <span class="header__time">．發文時間</span>
+          <span class="header__user">{{ usertweet.userNameOfLikedTweet }}</span>
+          <span class="header__account"
+            >@{{ usertweet.userAccountOfLikedTweet }}</span
+          >
+          <span class="header__time"
+            >．{{ usertweet.createdAt | fromNow }}</span
+          >
         </div>
-        <div class="favorite__info__text">{{ usertweet.text }}</div>
+        <div class="favorite__info__text">{{ usertweet.description }}</div>
         <div class="favorite__info__icons">
           <div class="favorite__info__icons__comment">
             <img
@@ -19,7 +29,7 @@
               class="favorite__info__icons__comment__img"
             />
             <span class="favorite__info__icons__comment__span">{{
-              usertweet.commentpeople
+              usertweet.repliedCount
             }}</span>
           </div>
 
@@ -30,7 +40,7 @@
               class="favorite__info__icons__like__img"
             />
             <span class="favorite__info__icons__like__span">{{
-              usertweet.likepeople
+              usertweet.likesCount
             }}</span>
           </div>
         </div>
@@ -40,31 +50,61 @@
 </template>
 
 <script>
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+import { fromNowFilter } from "./../utils/mixins";
+import { emptyImageFilter } from "./../utils/mixins";
+import Spinner from "./../components/Spinner.vue";
+
 export default {
+  mixins: [fromNowFilter, emptyImageFilter],
+
+  components: {
+    Spinner,
+  },
+
+  created() {
+    const { id: userId } = this.$route.params;
+    this.getUserLikes(userId);
+  },
+
   data() {
     return {
       usertweets: [
         {
-          id: 1,
-          name: "John Doe",
-          account: "heyJohn",
-          text: "hey guys, im John, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
-        },
-
-        {
-          id: 2,
-          name: "Hello Kitty",
-          account: "Hello Kitty",
-          text: "hey guys, im Hello Kitty, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
+          TweetId: -1,
+          userNameOfLikedTweet: "",
+          userAccountOfLikedTweet: "",
+          description: "",
+          createdAt: "",
+          userAvatarOfLikedTweet: "",
+          repliedCount: 0,
+          likesCount: 0,
         },
       ],
+      isLoading: false,
     };
+  },
+
+  methods: {
+    async getUserLikes(userId) {
+      try {
+        this.isLoading = true;
+
+        const { data } = await usersAPI.getUserLikes(userId);
+        const usertweets = data;
+
+        this.usertweets = usertweets;
+
+        this.isLoading = false;
+      } catch (error) {
+        this.isLoading = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法取得個人喜歡的推文，請稍後再試",
+        });
+      }
+    },
   },
 };
 </script>
@@ -112,7 +152,7 @@ export default {
 
   &__icons {
     display: flex;
-    margin-bottom: 17px ;
+    margin-bottom: 17px;
 
     &__comment,
     &__like {
@@ -135,7 +175,6 @@ export default {
     }
 
     &__like {
-
       &__img {
         height: 14px;
         width: 14px;

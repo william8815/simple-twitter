@@ -33,6 +33,7 @@
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
+                :class="{ focus: $route.name === 'user-profile' }"
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -44,7 +45,9 @@
                   fill="#fff"
                 />
               </svg>
-              <h5>個人資料</h5>
+              <h5 :class="{ focus: $route.name === 'user-profile' }">
+                個人資料
+              </h5>
             </router-link>
           </li>
           <li>

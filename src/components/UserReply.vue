@@ -25,7 +25,11 @@
 </template>
 
 <script>
+import { fromNowFilter } from './../utils/mixins'
+
 export default {
+  mixins: [fromNowFilter],
+
   data() {
     return {
       usertweets: [
@@ -40,16 +44,7 @@ export default {
           friend: "apple",
         },
 
-        {
-          id: 2,
-          name: "Hello Kitty",
-          account: "Hello Kitty",
-          text: "hey guys, im Hello Kitty, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
-          friend: "apple",
-        },
+        
       ],
     };
   },

@@ -84,18 +84,18 @@
 import { Toast } from "../utils/helpers";
 import authorizationAPI from "../apis/authorization";
 export default {
-  name: 'Regist',
-  data () {
+  name: "Regist",
+  data() {
     return {
-      name: '',
-      account: '',
-      email: '',
-      password: '',
-      checkPassword: ''
-    }
+      name: "",
+      account: "",
+      email: "",
+      password: "",
+      checkPassword: "",
+    };
   },
   methods: {
-    async handleSubmit () {
+    async handleSubmit() {
       try {
         if (
           !this.name ||
@@ -105,44 +105,56 @@ export default {
           !this.checkPassword
         ) {
           Toast.fire({
-            icon: 'warning',
-            title: '請確認已填寫所有欄位'
-          })
-          return
+            icon: "warning",
+            title: "請確認已填寫所有欄位",
+          });
+          return;
+        }
+        if (this.password.length < 4) {
+          Toast.fire({
+            icon: "warning",
+            title: "密碼長度不得小於 4 ",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
         }
         if (this.password !== this.checkPassword) {
           Toast.fire({
-            icon: 'warning',
-            title: '兩次輸入的密碼不同'
-          })
-          this.checkPassword = ''
-          return
+            icon: "warning",
+            title: "兩次輸入的密碼不同",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
         }
-        const { data } =  await authorizationAPI.signUp({
+        const { data } = await authorizationAPI.signUp({
           name: this.name,
           account: this.account,
           email: this.email,
           password: this.password,
-          checkPassword: this.checkPassword
-        })
-        if (data.status === 'error') {
-          throw new Error(data.message)
+          checkPassword: this.checkPassword,
+        });
+        if (data.status === "error") {
+          throw new Error(data.message);
         }
         Toast.fire({
-          icon: 'success',
-          title: data.message
-        })
+          icon: "success",
+          title: "帳號註冊成功",
+        });
         // 成功登入後轉址到登入頁
-        this.$router.push('/login')
+        this.$router.push("/login");
       } catch (error) {
         Toast.fire({
-          icon: 'warning',
-          title: error.response.data.message
-        })
+          icon: "warning",
+          title: error.response.data.message,
+        });
+        this.account = "";
+        this.email = "";
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 
