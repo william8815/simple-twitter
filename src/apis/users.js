@@ -39,5 +39,13 @@ export default {
     return apiHelper.get(`/users/${id}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+
+  // 查詢特定使用者的所有推文
+  getUserTweets(id) {
+    return apiHelper.get(`/users/${id}/tweets`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
+
 }
