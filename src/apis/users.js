@@ -39,5 +39,9 @@ export default {
     return apiHelper.get(`/users/${id}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  // 編輯使用者
+  editUser(id , data) {
+    return apiHelper.put(`/users/${id} `, { ...data })
   }
 }
