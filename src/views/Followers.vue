@@ -33,7 +33,8 @@
           </div>
         </div>
         <!-- 追蹤清單 -->
-        <div class="follow-list">
+        <Spinner v-if="isLoading" />
+        <div v-else class="follow-list">
           <ul>
             <li
               class="list-item"
@@ -55,6 +56,7 @@
                     v-if="follower.isFollower"
                     @click.stop.prevent="deleteFollow(follower.followerId)"
                     class="btn followed-btn"
+                    :disabled="isProcessing"
                   >
                     正在跟隨
                   </button>
@@ -62,6 +64,7 @@
                     v-else
                     @click.stop.prevent="addFollow(follower.followerId)"
                     class="btn follow-btn"
+                    :disabled="isProcessing"
                   >
                     跟隨
                   </button>
@@ -85,6 +88,7 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
+import Spinner from "./../components/Spinner.vue";
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -96,11 +100,14 @@ export default {
   components: {
     Navbar,
     RecommendUsers,
+    Spinner,
   },
   data() {
     return {
       followers: [],
       user: {},
+      isProcessing: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -128,12 +135,15 @@ export default {
     },
     async fetchFollower(userId) {
       try {
+        this.isLoading = true;
         const { data } = await userAPI.getUserFollowers(userId);
         this.followers = data;
         this.followers = this.followers.filter((follower) => {
           return this.currentUser.id !== follower.followerId;
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -143,6 +153,7 @@ export default {
     },
     async addFollow(followerId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.addFollowing(followerId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -156,7 +167,9 @@ export default {
           }
           return follower;
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -166,6 +179,7 @@ export default {
     },
     async deleteFollow(followerId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.deleteFollowing(followerId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -179,7 +193,9 @@ export default {
           }
           return follower;
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",

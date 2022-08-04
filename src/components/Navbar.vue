@@ -144,7 +144,13 @@
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
-              <button type="submit" class="tweet-btn">推文</button>
+              <div class="tweet-footer">
+                <span v-if="text.length > 140" class="alertWord"
+                  >已超過 140 個字</span
+                >
+                <span>{{ countLength }}/140</span>
+                <button type="submit" class="tweet-btn">推文</button>
+              </div>
             </form>
           </div>
         </div>
@@ -170,6 +176,11 @@ export default {
       tweetMode: false,
       isAdmin: false,
     };
+  },
+  computed: {
+    countLength() {
+      return this.text.length;
+    },
   },
   methods: {
     cancelModel() {
@@ -343,9 +354,16 @@ img {
     border: none;
     outline: none;
   }
-  .tweet-btn {
+  .tweet-footer {
     align-self: flex-end;
     margin-top: 16px;
+  }
+  .alertWord {
+    color: red;
+    margin-right: 16px;
+  }
+  .tweet-btn {
+    margin-left: 16px;
     border: none;
     background-color: var(--main-color);
     color: #fff;
