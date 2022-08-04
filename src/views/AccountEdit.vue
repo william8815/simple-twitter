@@ -46,6 +46,7 @@ export default {
         });
         // put上去後 更新store.state的顯示資訊
         this.$store.commit("setCurrentUser", data.newData);
+       this.$router.push("/main");
       } catch (error) {
         Toast.fire({
           icon: "error",

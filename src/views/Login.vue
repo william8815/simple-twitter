@@ -17,7 +17,6 @@
             class="label__control"
             name="account"
             id="account"
-            style="border-style: none"
             v-model="account"
             required
           />
@@ -26,13 +25,21 @@
           <label for="password">密碼</label>
           <input
             type="password"
-            class="label__control"
+            class="label__control error"
             name="password"
             id="password"
-            style="border-style: none"
             v-model="password"
             required
           />
+          <div class="info">
+            <div class="errorInfo">
+              <span v-if="!isError">帳號不存在 !</span>
+              <span>字數超過上限 !</span>
+            </div>
+            <div class="lenghtInfo">
+              <span>50/50</span>
+            </div>
+          </div>
         </div>
         <button class="from__btn" type="submit" :disabled="isProcessing">
           登入
@@ -63,6 +70,7 @@ export default {
       account: "",
       password: "",
       isProcessing: false,
+      isError: true,
     };
   },
   methods: {
@@ -117,6 +125,20 @@ export default {
   margin-bottom: 2rem;
   background: #f5f8fa;
   border-radius: 2px;
+
+  input {
+    &:hover, &:focus {
+     border-bottom: 1px solid #50B5FF;
+    }
+  }
+
+  .error {
+     border-bottom: 1px solid #FC5A5A;
+      &:hover, &:focus {
+     border-bottom: 1px solid #FC5A5A;
+    }
+  }
+  
 }
 
 .from__label input {
@@ -137,6 +159,29 @@ export default {
   line-height: 22px;
   display: block;
   width: 100%;
+}
+
+.info {
+  // border: 1px solid #000;
+  display: flex;
+  justify-content: space-between;
+  .errorInfo {
+    font-weight: 500;
+font-size: 12px;
+line-height: 20px;
+    max-width: 270px;
+    color: #FC5A5A;
+    border: 1px solid #000;
+  }
+  .lengthInfo {
+    border: 1px solid #000;
+    width: 270px;
+    font-weight: 500;
+font-size: 12px;
+line-height: 20px;
+color: #696974;
+text-align: right;
+  }
 }
 
 .login__from {
