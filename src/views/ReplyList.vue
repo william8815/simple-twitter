@@ -259,35 +259,20 @@ export default {
       };
       this.$forceUpdate();
     },
-    async afterHandleSubmit({ tweetId, comment }) {
-      try {
-        const { data } = await tweetsAPI.addNewComment({ tweetId, comment });
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        Toast.fire({
-          icon: "success",
-          title: "成功新增一則留言",
-        });
-        this.replyList.unshift({
-          id: uuidv4(),
-          comment: comment,
-          createdAt: new Date(),
-          User: {
-            id: this.currentUser.id,
-            account: this.currentUser.account,
-            name: this.currentUser.name,
-            avatar: this.currentUser.avatar,
-          },
-        });
-        this.$forceUpdate();
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "新增留言失敗，請稍後再試",
-        });
-      }
+    // 新增留言
+    afterHandleSubmit({ comment }) {
+      this.replyList.unshift({
+        id: uuidv4(),
+        comment: comment,
+        createdAt: new Date(),
+        User: {
+          id: this.currentUser.id,
+          account: this.currentUser.account,
+          name: this.currentUser.name,
+          avatar: this.currentUser.avatar,
+        },
+      });
+      this.$forceUpdate();
       this.tweet = {
         ...this.tweet,
         replyCount: this.tweet.replyCount + 1,
