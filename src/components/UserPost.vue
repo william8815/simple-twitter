@@ -1,6 +1,7 @@
 <template>
   <div class="list__container">
-    <div class="post__card" v-for="usertweet in usertweets" :key="usertweet.id">
+    <Spinner v-if="isLoading" />
+    <div v-else class="post__card" v-for="usertweet in usertweets" :key="usertweet.id">
       <div>
         <img :src="user.avatar" alt="" class="post__avatar" />
       </div>
@@ -8,7 +9,7 @@
         <div class="post__info__header">
           <span class="header__user">{{ user.name }}</span>
           <span class="header__account">@{{ user.account }}</span>
-          <span class="header__time">．{{ usertweet.createdAt }}</span>
+          <span class="header__time">．{{ usertweet.createdAt | fromNow}}</span>
         </div>
         <div class="post__info__text">{{ usertweet.description }}</div>
         <div class="post__info__icons">
@@ -42,18 +43,28 @@
 <script>
 import usersAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
+import { fromNowFilter } from './../utils/mixins'
+import Spinner from "./../components/Spinner.vue";
+
 
 export default {
+  mixins: [fromNowFilter],
+
+  components:{
+    Spinner
+  },
+
   data() {
     return {
       usertweets: [
-        {
+        { id: 0,
           createdAt: "",
           description: "",
           RepliesCount: 0,
           LikesCount: 0,
         },
       ],
+      isLoading: false,
     };
   },
 
@@ -74,6 +85,7 @@ export default {
   methods: {
     async getUserTweets(userId) {
       try {
+        this.isLoading = true
         // 取得特定使用者的所有貼文
         const { data } = await usersAPI.getUserTweets(userId);      
 
@@ -81,8 +93,9 @@ export default {
         // 將取得的資料解構附值至data中
         this.usertweets = usertweets.data
 
-        
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false;
         Toast.fire({
           icon: "error",
           title: "無法取得個人推文，請稍後再試",

@@ -1,11 +1,12 @@
 <template >
-  <div class="container">
-    <div class="left__bar">
+  <div class="container row row-cols-3">
+    <section class="col-2" style="min-width:176px">
       <Navbar />
-    </div>
+    </section>
 
     <!-- 使用者個人資料 -->
-    <div class="user">
+    <Spinner v-if="isLoading" />
+    <section class="main-section col-7" v-else>
       <div class="card">
         <div class="card__header">
           <div class="card__header__icon">
@@ -124,9 +125,11 @@
           <router-view :user="user"/>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="right__bar">右Bar</div>
+    <section class="col-3" style="min-width:274px">
+      <RecommendUsers />
+    </section>
   </div>
 </template>
 
@@ -134,10 +137,12 @@
 <script>
 import UserEditModal from "../components/UserEditModal.vue";
 import Navbar from "../components/Navbar.vue";
+import RecommendUsers from "./../components/RecommendUsers.vue";
 
 import { mapState } from "vuex";
 import { emptyImageFilter } from "./../utils/mixins";
 import { Toast } from "./../utils/helpers";
+import Spinner from "./../components/Spinner.vue";
 
 import usersAPI from "./../apis/users";
 
@@ -146,6 +151,8 @@ export default {
   components: {
     UserEditModal,
     Navbar,
+    RecommendUsers,
+    Spinner
   },
 
   data() {
@@ -160,6 +167,7 @@ export default {
         followingsCount: "",
         Followers: "",
       },
+      isLoading: false,
       isCurrentUser: true,
       isSubscribing: false,
       isFollowed: true,
@@ -181,6 +189,7 @@ export default {
   methods: {
     async fetchUser(userId) {
       try {
+        this.isLoading = true;
         const { data } = await usersAPI.getOtherUser(userId);
         const {
           name,
@@ -207,6 +216,7 @@ export default {
           if(this.$store.state.currentUser.id !== userId){
             this.isCurrentUser = false
           }
+          this.isLoading = false;
       } catch (error) {
         // STEP 6: 透過 restaurantsAPI 取得餐廳資訊
         Toast.fire({
@@ -242,27 +252,13 @@ button {
 }
 
 .container {
-  width: 80%;
-  max-width: 960px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-gap: 25px;
-}
-
-.left__bar {
-  grid-column: 1 / 3;
-}
-
-.user {
-  grid-column: 3 / 10;
-  padding-top: 16px;
-  border-right: 1px solid #e6ecf0;
-  border-left: 1px solid #e6ecf0;
-}
-
-.right__bar {
-  grid-column: 10 / 13;
+  width: calc(100vw - 130px);
+  max-width: 1400px;
+  height: 100vh;
+  margin-left: 130px;
+  .main-section {
+    flex: 1 1;
+  }
 }
 
 .card__header {

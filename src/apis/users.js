@@ -46,6 +46,13 @@ export default {
     return apiHelper.get(`/users/${id}/tweets`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
-  }
+  },
+
+  // 查詢特定使用者喜歡的推文
+  getUserLikes(id) {
+    return apiHelper.get(`/users/${id}/likes`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  },
 
 }
