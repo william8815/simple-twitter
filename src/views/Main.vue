@@ -24,7 +24,7 @@
                   name="tweet"
                   id=""
                   cols="30"
-                  :rows="count"
+                  rows="1"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -32,7 +32,9 @@
                 <span v-if="content.length > 140" class="alertWord"
                   >已超過 140 個字</span
                 >
-                <span>{{ countLength }}/140</span>
+                <span :class="{ red: content.length > 140 }"
+                  >{{ countLength }}/140</span
+                >
                 <button type="submit" class="tweet-btn">推文</button>
               </div>
             </form>
@@ -436,6 +438,9 @@ export default {
       .tweet-footer {
         align-self: flex-end;
         margin-top: 16px;
+      }
+      .red {
+        color: red;
       }
       .alertWord {
         color: red;

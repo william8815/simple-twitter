@@ -46,7 +46,7 @@
           </li>
           <li>
             <router-link
-              :to="{ name: 'user-edit', params: { id: 4 } }"
+              :to="{ name: 'user-edit', params: { id: currentUser.id } }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
@@ -135,6 +135,8 @@
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  ref="textarea"
+                  @input="countRow"
                   v-model="text"
                   class="tweet-content"
                   name="tweet"
@@ -148,7 +150,9 @@
                 <span v-if="text.length > 140" class="alertWord"
                   >已超過 140 個字</span
                 >
-                <span>{{ countLength }}/140</span>
+                <span :class="{ red: text.length > 140 }"
+                  >{{ countLength }}/140</span
+                >
                 <button type="submit" class="tweet-btn">推文</button>
               </div>
             </form>
@@ -168,6 +172,7 @@
 <script>
 // 共用區
 import { Toast } from "./../utils/helpers";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -175,14 +180,21 @@ export default {
       count: 7,
       tweetMode: false,
       isAdmin: false,
+      scrollHeight: 0,
     };
   },
   computed: {
+    ...mapState(["currentUser"]),
     countLength() {
       return this.text.length;
     },
   },
   methods: {
+    countRow() {
+      this.scrollTop = this.$refs.textarea.scrollTop;
+      console.log(this.scrollTop);
+      // this.$refs.textarea.style.height = this.scrollTop + "px";
+    },
     cancelModel() {
       this.tweetMode = false;
     },
@@ -346,6 +358,8 @@ img {
   }
   .tweet-content {
     width: 100%;
+    // overflow-y: scroll;
+    // height: auto;
     resize: none;
     font-size: 16px;
     font-weight: 400;
@@ -357,6 +371,9 @@ img {
   .tweet-footer {
     align-self: flex-end;
     margin-top: 16px;
+  }
+  .red {
+    color: red;
   }
   .alertWord {
     color: red;
