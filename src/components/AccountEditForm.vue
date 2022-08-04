@@ -45,19 +45,17 @@
         id="password"
         placeholder="請輸入密碼"
         v-model="user.password"
-        required
       />
     </div>
     <div class="form__label">
-      <label for="passwordCheck">密碼確認</label>
+      <label for="checkPassword">密碼確認</label>
       <input
         type="password"
         class="label__control"
-        name="passwordCheck"
+        name="checkPassword"
         id="passwordCheck"
         placeholder="請再次輸入密碼"
-        v-model="user.passwordCheck"
-        required
+        v-model="user.checkPassword"
       />
     </div>
 
@@ -68,45 +66,71 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { Toast } from "../utils/helpers";
-export default {
+import { mapState } from "vuex";
+import { Toast } from '../utils/helpers'
+ export default {
   name: "AccountEditForm",
-  props: {
-    initialUser: {
-      type: Object,
-      default: () => ({
+  data() {
+    return {
+      user: {
         name: "",
         account: "",
         email: "",
         password: "",
-        passwordCheck: "",
-      }),
-    },
-  },
-  data() {
-    return {
-      user: {
-        ...this.initialUser,
+        checkPassword: "",
       },
     };
   },
-  methods: {
-    handleSubmit(e) {
-      if (this.user.password !== this.user.passwordCheck) {
-        Toast.fire({
-          icon: "warning",
-          title: "密碼確認有誤，請重新輸入",
-        });
 
-        (this.user.password = ""), (this.user.passwordCheck = "");
-        return;
-      }
-
-      const form = e.target;
-      const formDate = new FormData(form);
-      this.$emit("handle-after-submit", formDate);
+  // 追蹤fetchUser欄位是否有改變
+  watch: {
+    currentUser(newValue) {
+      this.fetchUser(newValue);
     },
+  },
+  created() {
+    this.fetchUser(this.currentUser);
+  },
+  methods: {
+    fetchUser(newValue) {
+      console.log("newValue", newValue);
+      const { account, name, email } = newValue;
+      this.user = {
+        ...this.user,
+        account,
+        name,
+        email,
+      };
+    },
+    async handleSubmit() {
+      try {
+         if (this.user.password.length < 4) {
+          Toast.fire({
+            icon: "warning",
+            title: "密碼長度不得小於 4 ",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
+        }
+        if (this.user.password !== this.user.checkPassword) {
+          Toast.fire({
+            icon: "warning",
+            title: "兩次輸入的密碼不同",
+          });
+          this.password = "";
+          this.checkPassword = "";
+          return;
+        }
+        const formDate = this.user;
+        this.$emit("handle-after-submit", formDate);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
+  computed: {
+    ...mapState(["currentUser"]),
   },
 };
 </script>
@@ -114,7 +138,6 @@ export default {
 <style lang="scss" scoped>
 .form {
   width: 100%;
-  // min-width: 593px;
   display: flex;
   flex-direction: column;
   align-items: center;
