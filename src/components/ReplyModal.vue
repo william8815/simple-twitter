@@ -50,7 +50,9 @@
                 placeholder="推你的回覆"
               ></textarea>
             </div>
-            <button type="submit" class="tweet-btn">推文</button>
+            <button type="submit" class="tweet-btn" :disabled="isProcessing">
+              推文
+            </button>
           </form>
         </div>
       </div>
@@ -59,6 +61,7 @@
 </template>
 
 <script>
+import tweetsAPI from "./../apis/tweet";
 import { emptyImageFilter } from "./../utils/mixins";
 import { fromNowFilter } from "./../utils/mixins";
 import { mapState } from "vuex";
@@ -86,6 +89,7 @@ export default {
         replyState: 0,
       },
       text: "",
+      isProcessing: false,
     };
   },
   computed: {
@@ -120,7 +124,7 @@ export default {
       // this.replyState = false;
       this.$emit("handleReplyState", this.initial_tweet.id);
     },
-    handleSubmit() {
+    async handleSubmit() {
       // 預防 required 屬性被刪掉
       if (!this.text) {
         Toast.fire({
@@ -135,10 +139,32 @@ export default {
         });
         return;
       }
-      this.$emit("after-submit", {
-        tweetId: this.initial_tweet.id,
-        comment: this.text,
-      });
+      try {
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.addNewComment({
+          tweetId: this.tweetContent.id,
+          comment: this.text,
+        });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$emit("after-submit", {
+          tweetId: this.tweetContent.id,
+          comment: this.text,
+        });
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則留言",
+        });
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "新增留言失敗，請稍後再試",
+        });
+      }
     },
   },
 };

@@ -18,13 +18,14 @@
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  ref="mainTextarea"
                   v-model="content"
-                  @keydown.stop="setCount"
+                  @input="countRow"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
-                  rows="1"
+                  :rows="count"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -35,7 +36,13 @@
                 <span :class="{ red: content.length > 140 }"
                   >{{ countLength }}/140</span
                 >
-                <button type="submit" class="tweet-btn">推文</button>
+                <button
+                  type="submit"
+                  class="tweet-btn"
+                  :disabled="isProcessing"
+                >
+                  推文
+                </button>
               </div>
             </form>
           </div>
@@ -145,7 +152,6 @@ import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
 import ReplyModal from "./../components/ReplyModal.vue";
 import Spinner from "./../components/Spinner.vue";
-// import { v4 as uuidv4 } from "uuid";
 // api
 import tweetsAPI from "./../apis/tweet";
 // 共用區
@@ -170,6 +176,7 @@ export default {
       tweets: [],
       tweetState: false,
       isLoading: false,
+      isProcessing: false,
     };
   },
   computed: {
@@ -184,6 +191,19 @@ export default {
     });
   },
   methods: {
+    countRow() {
+      let scrollHeight = this.$refs.mainTextarea.scrollHeight;
+      let clientHeight = 34;
+      console.log(scrollHeight, clientHeight);
+      // this.$refs.textarea.style.height = 150 + "px";
+      let countNum = Math.floor(scrollHeight - clientHeight) / 22 + 1;
+      console.log(countNum);
+      if (countNum <= 1) {
+        this.count = 1;
+        return;
+      }
+      this.count = countNum;
+    },
     async fetchTweet({ limit }) {
       try {
         this.isLoading = true;
@@ -290,23 +310,7 @@ export default {
       });
     },
     // 新增留言
-    async afterHandleSubmit({ tweetId, comment }) {
-      try {
-        const { data } = await tweetsAPI.addNewComment({ tweetId, comment });
-        if (data.status !== "success") {
-          throw new Error(data.message);
-        }
-        Toast.fire({
-          icon: "success",
-          title: "成功新增一則留言",
-        });
-      } catch (error) {
-        console.log(error);
-        Toast.fire({
-          icon: "error",
-          title: "新增留言失敗，請稍後再試",
-        });
-      }
+    async afterHandleSubmit({ tweetId }) {
       this.tweets = this.tweets.map((tweet) => {
         if (tweetId === tweet.id) {
           return {
@@ -319,7 +323,7 @@ export default {
       });
     },
     // 新增貼文
-    submitTweet() {
+    async submitTweet() {
       if (this.content.length === 0) {
         Toast.fire({
           icon: "error",
@@ -334,12 +338,11 @@ export default {
         });
         return;
       }
-      this.handleSubmitTweet({ description: this.content });
-    },
-    // 新增貼文(請求)
-    async handleSubmitTweet({ description }) {
       try {
-        const { data } = await tweetsAPI.addTweet({ description });
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.addTweet({
+          description: this.content,
+        });
         if (data.status !== "success") {
           throw new Error(data.message);
         }
@@ -347,21 +350,20 @@ export default {
           icon: "success",
           title: "成功新增一則貼文",
         });
+        this.fetchTweet({ limit: 10 });
+        this.content = "";
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "新增貼文失敗",
         });
       }
-      this.fetchTweet({ limit: 10 });
-      this.content = "";
     },
-    setCount(event) {
-      if (event.key === "Enter") {
-        this.count += 1;
-        // let reg = /^[\w*][\s*]\/n$/gi;
-        // console.log(reg.exec(this.content));
-      }
+    // 新增貼文(navbar)
+    async handleSubmitTweet() {
+      this.fetchTweet({ limit: 10 });
     },
   },
 };

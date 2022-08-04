@@ -40,8 +40,18 @@ export default {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
   },
+
   // 編輯使用者
-  editUser(id , data) {
+  editUser(id, data) {
     return apiHelper.put(`/users/${id} `, { ...data })
+
+  },
+  // 查詢特定使用者的所有推文
+  getUserTweets(id) {
+    return apiHelper.get(`/users/${id}/tweets`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+
   }
+
 }

@@ -26,10 +26,17 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link
+              :to="{
+                name: 'user-profile',
+                params: { id: this.$store.state.currentUser.id },
+              }"
+              class="tag"
+            >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
+                :class="{ focus: $route.name === 'user-profile' }"
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -41,7 +48,9 @@
                   fill="#fff"
                 />
               </svg>
-              <h5>個人資料</h5>
+              <h5 :class="{ focus: $route.name === 'user-profile' }">
+                個人資料
+              </h5>
             </router-link>
           </li>
           <li>
@@ -135,6 +144,7 @@
               <div>
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
                 <textarea
+                  :style="{ minHeight: '145px' }"
                   ref="textarea"
                   @input="countRow"
                   v-model="text"
@@ -153,7 +163,13 @@
                 <span :class="{ red: text.length > 140 }"
                   >{{ countLength }}/140</span
                 >
-                <button type="submit" class="tweet-btn">推文</button>
+                <button
+                  type="submit"
+                  class="tweet-btn"
+                  :disabled="isProcessing"
+                >
+                  推文
+                </button>
               </div>
             </form>
           </div>
@@ -168,9 +184,9 @@
     </div>
   </div>
 </template>
-
 <script>
 // 共用區
+import tweetsAPI from "./../apis/tweet";
 import { Toast } from "./../utils/helpers";
 import { mapState } from "vuex";
 export default {
@@ -180,7 +196,7 @@ export default {
       count: 7,
       tweetMode: false,
       isAdmin: false,
-      scrollHeight: 0,
+      isProcessing: false,
     };
   },
   computed: {
@@ -191,9 +207,21 @@ export default {
   },
   methods: {
     countRow() {
-      this.scrollTop = this.$refs.textarea.scrollTop;
-      console.log(this.scrollTop);
-      // this.$refs.textarea.style.height = this.scrollTop + "px";
+      let scrollHeight = this.$refs.textarea.scrollHeight;
+      // let clientHeight = 145;
+      // console.log(scrollHeight, clientHeight);
+      // if (scrollHeight - clientHeight === 0) {
+      //   this.count = 7;
+      //   return;
+      // } else {
+      //   let countNum = (scrollHeight - clientHeight) / 19 + 7;
+      //   this.count = countNum;
+      //   return;
+      // }
+      let countNum = Math.floor(scrollHeight / 19);
+      this.count = countNum;
+
+      console.log(countNum);
     },
     cancelModel() {
       this.tweetMode = false;
@@ -205,7 +233,7 @@ export default {
       this.$store.commit("revokeAuthentication");
       this.$router.push("/login");
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (this.text.length === 0) {
         Toast.fire({
           icon: "error",
@@ -220,16 +248,40 @@ export default {
         });
         return;
       }
-      this.$emit("submit-tweet", {
-        description: this.text,
-      });
-      this.cancelModel();
+      try {
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.addTweet({ description: this.text });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.$emit("submit-tweet", {
+          description: this.text,
+        });
+        this.cancelModel();
+        Toast.fire({
+          icon: "success",
+          title: "成功新增一則貼文",
+        });
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "新增貼文失敗",
+        });
+      }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .navbar {
   // min-width: 178px;
   // height: 100%;
@@ -357,9 +409,8 @@ img {
     justify-content: space-between;
   }
   .tweet-content {
+    max-height: 60vh;
     width: 100%;
-    // overflow-y: scroll;
-    // height: auto;
     resize: none;
     font-size: 16px;
     font-weight: 400;

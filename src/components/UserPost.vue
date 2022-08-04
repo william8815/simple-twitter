@@ -2,15 +2,15 @@
   <div class="list__container">
     <div class="post__card" v-for="usertweet in usertweets" :key="usertweet.id">
       <div>
-        <img :src="usertweet.selfImg" alt="" class="post__avatar" />
+        <img :src="user.avatar" alt="" class="post__avatar" />
       </div>
       <div class="post__info">
         <div class="post__info__header">
-          <span class="header__user">{{ usertweet.name }}</span>
-          <span class="header__account">@{{ usertweet.account }}</span>
-          <span class="header__time">．發文時間</span>
+          <span class="header__user">{{ user.name }}</span>
+          <span class="header__account">@{{ user.account }}</span>
+          <span class="header__time">．{{ usertweet.createdAt }}</span>
         </div>
-        <div class="post__info__text">{{ usertweet.text }}</div>
+        <div class="post__info__text">{{ usertweet.description }}</div>
         <div class="post__info__icons">
           <div class="post__info__icons__comment">
             <img
@@ -19,7 +19,7 @@
               class="post__info__icons__comment__img"
             />
             <span class="post__info__icons__comment__span">{{
-              usertweet.commentpeople
+              usertweet.RepliesCount
             }}</span>
           </div>
 
@@ -30,7 +30,7 @@
               class="post__info__icons__like__img"
             />
             <span class="post__info__icons__like__span">{{
-              usertweet.likepeople
+              usertweet.LikesCount
             }}</span>
           </div>
         </div>
@@ -40,48 +40,61 @@
 </template>
 
 <script>
+import usersAPI from "./../apis/users";
+import { Toast } from "./../utils/helpers";
+
 export default {
   data() {
     return {
       usertweets: [
         {
-          id: 1,
-          name: "John Doe",
-          account: "heyJohn",
-          text: "hey guys, im John, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
-        },
-
-        {
-          id: 2,
-          name: "Hello Kitty",
-          account: "Hello Kitty",
-          text: "hey guys, im Hello Kitty, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
-        },
-
-        {
-          id: 3,
-          name: "Hello Kitty",
-          account: "Hello Kitty",
-          text: "hey guys, im Hello Kitty, i like to swimming",
-          selfImg: require("./../assets/img/Photo.png"),
-          commentpeople: 13,
-          likepeople: 76,
+          createdAt: "",
+          description: "",
+          RepliesCount: 0,
+          LikesCount: 0,
         },
       ],
     };
+  },
+
+  created() {
+    // api getUser (params: id)
+    // 先取得要渲染的使用者id
+    const { id: userId } = this.$route.params;
+    this.getUserTweets(userId);
+  },
+
+  props: {
+    user: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  methods: {
+    async getUserTweets(userId) {
+      try {
+        // 取得特定使用者的所有貼文
+        const { data } = await usersAPI.getUserTweets(userId);      
+
+        const  usertweets =  { data };        
+        // 將取得的資料解構附值至data中
+        this.usertweets = usertweets.data
+
+        
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得個人推文，請稍後再試",
+        });
+      }
+    },
   },
 };
 </script>
 
 
 <style lang="scss" scoped>
-
 .post__card {
   width: 100%;
   display: flex;
@@ -123,7 +136,7 @@ export default {
 
   &__icons {
     display: flex;
-    margin-bottom: 17px ;
+    margin-bottom: 17px;
 
     &__comment,
     &__like {
@@ -146,7 +159,6 @@ export default {
     }
 
     &__like {
-
       &__img {
         height: 14px;
         width: 14px;
