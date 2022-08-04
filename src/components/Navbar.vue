@@ -27,10 +27,7 @@
           </li>
           <li>
             <router-link
-              :to="{
-                name: 'user-profile',
-                params: { id: this.$store.state.currentUser.id },
-              }"
+              :to="{ name: 'user-profile', params: { id: currentUser.id } }"
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
