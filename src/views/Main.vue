@@ -1,6 +1,6 @@
 <template>
   <!-- 首頁 -->
-  <div class="container row row-cols-3">
+  <div class="container row">
     <!-- navbar -->
     <section class="col-2" style="min-width:176px;'">
       <Navbar @submit-tweet="handleSubmitTweet" :tweet_state="tweetState" />
@@ -97,8 +97,9 @@
                     <div class="btn like">
                       <svg
                         v-if="tweet.isLiked"
-                        @click="deleteLike(tweet.id)"
+                        @click.stop="deleteLike(tweet.id)"
                         class="icon like__icon"
+                        :class="{ disabled: isProcessing }"
                         viewBox="0 0 30 30"
                         fill="#f91880"
                         xmlns="http://www.w3.org/2000/svg"
@@ -110,8 +111,9 @@
                       </svg>
                       <svg
                         v-else
-                        @click="addLike(tweet.id)"
+                        @click.stop="addLike(tweet.id)"
                         class="icon like__icon"
+                        :class="{ disabled: isProcessing }"
                         viewBox="0 0 30 30"
                         fill="#fff"
                         stroke="#657786"
@@ -229,6 +231,7 @@ export default {
     // 新增喜歡
     async addLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.addTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -247,7 +250,9 @@ export default {
           icon: "success",
           title: "已按讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -258,6 +263,7 @@ export default {
     // 移除喜歡
     async deleteLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.cancelTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -276,7 +282,9 @@ export default {
           icon: "success",
           title: "已取消讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -375,8 +383,9 @@ export default {
   max-width: 1400px;
   height: 100vh;
   margin-left: 130px;
+  // flex-wrap: nowrap;
   .main-section {
-    flex: 1 1;
+    flex: 0px 1 1;
   }
 }
 // 取消滾輪
@@ -504,6 +513,9 @@ export default {
             background-size: cover;
             margin-right: 9px;
             cursor: pointer;
+            &.disabled {
+              pointer-events: none;
+            }
           }
           .num {
             color: #6c757d;

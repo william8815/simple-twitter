@@ -58,6 +58,7 @@
                   v-if="tweet.isLiked"
                   @click.stop="deleteLike(tweet.id)"
                   class="icon like__icon"
+                  :class="{ disabled: isProcessing }"
                   viewBox="0 0 30 30"
                   fill="#f91880"
                   xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +72,7 @@
                   v-else
                   @click.stop="addLike(tweet.id)"
                   class="icon like__icon"
+                  :class="{ disabled: isProcessing }"
                   viewBox="0 0 30 30"
                   fill="#fff"
                   stroke="#657786"
@@ -297,6 +299,7 @@ export default {
           title: "已按讚",
         });
         this.isProcessing = false;
+        this.$forceUpdate();
       } catch (error) {
         this.isProcessing = false;
         console.log(error);
@@ -305,7 +308,6 @@ export default {
           title: "按讚失敗",
         });
       }
-      this.$forceUpdate();
     },
     // 移除喜歡
     async deleteLike(tweetId) {
@@ -325,16 +327,15 @@ export default {
           title: "已取消讚",
         });
         this.isProcessing = false;
+        this.$forceUpdate();
       } catch (error) {
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
           title: "取消讚失敗",
         });
       }
-
-      this.$forceUpdate();
     },
   },
 };
@@ -454,6 +455,9 @@ img {
         background-size: cover;
         width: 30px;
         height: 30px;
+        &.disabled {
+          pointer-events: none;
+        }
       }
       .comment__icon:hover {
         fill: var(--main-color);

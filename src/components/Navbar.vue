@@ -26,7 +26,10 @@
             </router-link>
           </li>
           <li>
-            <router-link :to="{ name: 'main' }" class="tag">
+            <router-link
+              :to="{ name: 'user-profile', params: { id: currentUser.id } }"
+              class="tag"
+            >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
