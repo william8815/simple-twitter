@@ -11,7 +11,7 @@
           <!-- 開頭 -->
           <div class="title">
             <i @click="$router.back()" class="back fa-solid fa-arrow-left"></i>
-            <div>
+            <div class="head">
               <h5>{{ user.name }}</h5>
               <span>{{ user.tweetsCount }} 貼文</span>
             </div>
@@ -34,7 +34,8 @@
         </div>
         <!-- 粉絲清單 -->
         <!-- 追蹤清單 -->
-        <div class="follow-list">
+        <Spinner v-if="isLoading" />
+        <div v-else class="follow-list">
           <ul>
             <li
               class="list-item"
@@ -58,6 +59,7 @@
                     v-if="following.isFollowing"
                     @click.stop.prevent="deleteFollow(following.followingId)"
                     class="btn followed-btn"
+                    :disabled="isProcessing"
                   >
                     正在跟隨
                   </button>
@@ -65,6 +67,7 @@
                     v-else
                     @click.stop.prevent="addFollow(following.followingId)"
                     class="btn follow-btn"
+                    :disabled="isProcessing"
                   >
                     跟隨
                   </button>
@@ -88,6 +91,7 @@
 <script>
 import Navbar from "./../components/Navbar.vue";
 import RecommendUsers from "./../components/RecommendUsers.vue";
+import Spinner from "./../components/Spinner.vue";
 import userAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -99,11 +103,14 @@ export default {
   components: {
     Navbar,
     RecommendUsers,
+    Spinner,
   },
   data() {
     return {
       followings: [],
       user: {},
+      isProcessing: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -131,12 +138,15 @@ export default {
     },
     async fetchfollowing(userId) {
       try {
+        this.isLoading = true;
         const { data } = await userAPI.getUserFollowing(userId);
         this.followings = data;
         this.followings = this.followings.filter((following) => {
           return this.currentUser.id !== following.followingId;
         });
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -146,6 +156,7 @@ export default {
     },
     async addFollow(followingId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.addFollowing(followingId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -159,7 +170,13 @@ export default {
           }
           return following;
         });
+        Toast.fire({
+          icon: "success",
+          title: "成功追蹤用戶",
+        });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -169,6 +186,7 @@ export default {
     },
     async deleteFollow(followingId) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.deleteFollowing(followingId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -182,7 +200,13 @@ export default {
           }
           return following;
         });
+        Toast.fire({
+          icon: "success",
+          title: "取消追蹤用戶",
+        });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -253,6 +277,9 @@ img {
     backdrop-filter: blur(3px);
     z-index: -1;
   }
+  // .head {
+  //   height: 45px;
+  // }
   .back {
     margin-right: 19px;
   }
