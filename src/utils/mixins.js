@@ -7,11 +7,20 @@ export const fromNowFilter = {
     },
   },
 }
-// 使用者沒有上傳圖片時，顯示一張空的圖片
+// 使用者沒有上傳頭像圖片時，顯示一張空的頭像圖片
 export const emptyImageFilter = {
   filters: {
     emptyImage(src) {
       return src || 'https://i.postimg.cc/nz9DxX0W/other-User.png'
+    }
+  }
+}
+
+// 使用者沒有上傳背景圖片時，顯示一張山水畫圖片
+export const emptyBackgroundFilter = {
+  filters: {
+    emptyBackground(src) {
+      return src || require('./../assets/img/backgroud.png')
     }
   }
 }

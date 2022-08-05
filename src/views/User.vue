@@ -1,6 +1,6 @@
 <template >
   <div class="container row row-cols-3">
-    <section class="col-2" style="min-width:176px">
+    <section class="col-2" style="min-width: 176px">
       <Navbar />
     </section>
 
@@ -24,7 +24,7 @@
 
         <div class="card__image">
           <img
-            :src="user.front_cover | emptyImage"
+            :src="user.front_cover | emptyBackground"
             alt=""
             class="card__image__background"
           />
@@ -33,7 +33,7 @@
 
         <!-- 若是當前使用者，則會出現編輯個人資料 -->
         <template v-if="isCurrentUser">
-          <UserEditModal :initial-edit="isEdit" />
+          <UserEditModal :initial-edit="isEdit" :initial-user="user"/>
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
         <div class="card__edit" v-else>
@@ -122,12 +122,12 @@
         </ul>
 
         <div class="list">
-          <router-view :user="user"/>
+          <router-view :user="user" />
         </div>
       </div>
     </section>
 
-    <section class="col-3" style="min-width:274px">
+    <section class="col-3" style="min-width: 274px">
       <RecommendUsers />
     </section>
   </div>
@@ -141,18 +141,19 @@ import RecommendUsers from "./../components/RecommendUsers.vue";
 
 import { mapState } from "vuex";
 import { emptyImageFilter } from "./../utils/mixins";
+import { emptyBackgroundFilter } from "./../utils/mixins";
 import { Toast } from "./../utils/helpers";
 import Spinner from "./../components/Spinner.vue";
 
 import usersAPI from "./../apis/users";
 
 export default {
-  mixins: [emptyImageFilter],
+  mixins: [emptyImageFilter, emptyBackgroundFilter],
   components: {
     UserEditModal,
     Navbar,
     RecommendUsers,
-    Spinner
+    Spinner,
   },
 
   data() {
@@ -207,16 +208,19 @@ export default {
           tweetsCount,
           account,
           introduction,
-          front_cover: front_cover ? front_cover : 'https://imgur.com/s4rJStF.png',
-          avatar: avatar ? avatar : "https://imgur.com/TYOq10P.png",
+          front_cover,
+          avatar,
           followingsCount,
           Followers,
         };
 
-          if(this.$store.state.currentUser.id !== userId){
-            this.isCurrentUser = false
-          }
-          this.isLoading = false;
+        if (this.$store.state.currentUser.id === Number(userId)) {
+          this.isCurrentUser = true;
+        } else {
+          this.isCurrentUser = false;
+        }
+
+        this.isLoading = false;
       } catch (error) {
         // STEP 6: 透過 restaurantsAPI 取得餐廳資訊
         Toast.fire({
