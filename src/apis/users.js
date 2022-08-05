@@ -55,4 +55,11 @@ export default {
     })
   },
 
+  // 查詢特定使用者回覆過的推文
+  getUserReply(id) {
+    return apiHelper.get(`/users/${id}/replied_tweets`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
+  }
+
 }

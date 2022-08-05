@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="modal__container">
     <!-- 編輯個人資料的按鈕 -->
     <div class="card__edit">
       <button
@@ -62,7 +62,11 @@
             </div>
 
             <!-- 使用者頭像 -->
-            <img :src="user.selfImg" alt="" class="modal__image__self" />
+            <img
+              :src="user.avatar | emptyImage"
+              alt=""
+              class="modal__image__self"
+            />
 
             <!-- 使用者頭像控制組 (白相機)-->
             <div class="control__self">
@@ -124,13 +128,24 @@
 
 
 <script>
+import { emptyImageFilter } from "./../utils/mixins";
+import { emptyBackgroundFilter } from "./../utils/mixins";
+
 export default {
+  mixins: [emptyImageFilter, emptyBackgroundFilter],
+
   props: {
     initialEdit: {
       type: Boolean,
       require: true,
       default: true,
     },
+
+    // initialUser: {
+    //   type: Object,
+    //   require: true,
+    //   default: true,
+    // },
   },
 
   methods: {
@@ -143,13 +158,20 @@ export default {
     return {
       user: {
         name: "John Doe",
-        tweets: 25,
         account: "heyJohn",
         info: "hey guys, im John, i like to swimming",
         img: require("./../assets/img/backgroud.png"),
         selfImg: require("./../assets/img/Photo.png"),
         following: "34個",
         follower: "59位",
+
+        // name: "",
+        // account: "",
+        // introduction: "",
+        // front_cover: "",
+        // avatar: "",
+        // followingsCount: "",
+        // Followers: "",
       },
       isEdit: false,
     };
@@ -174,7 +196,8 @@ button {
   outline: none;
 }
 
-input, textarea {
+input,
+textarea {
   all: unset;
 }
 
@@ -335,12 +358,12 @@ input, textarea {
     border-bottom: 2px solid #657786;
     padding: 0 15px;
 
-    & label {    
+    & label {
       font-size: 14px;
       color: #696974;
     }
 
-    & input {      
+    & input {
       font-size: 16px;
       color: #141425;
     }
@@ -365,12 +388,12 @@ input, textarea {
     border-bottom: 2px solid #657786;
     padding: 0 15px;
 
-    & label {    
+    & label {
       font-size: 14px;
       color: #696974;
     }
 
-    & textarea {      
+    & textarea {
       font-size: 16px;
       color: #141425;
     }
