@@ -27,18 +27,20 @@
           </li>
           <li>
             <router-link
+
               :to="{
                 name: 'user-post',
                 params: { id: currentUser.id },
               }"
+
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
-                :class="{
-                  focus: $route.name === 'user-post',
-                }"
+
+                :class="{ focus: $route.name === 'user-post' }"
+
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -53,11 +55,8 @@
                   fill="#fff"
                 />
               </svg>
-              <h5
-                :class="{
-                  focus: $route.name === 'user-post',
-                }"
-              >
+              <h5 :class="{ focus: $route.name === 'user-post' }">
+
                 個人資料
               </h5>
             </router-link>

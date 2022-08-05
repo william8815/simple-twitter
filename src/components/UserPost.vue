@@ -1,15 +1,22 @@
 <template>
   <div class="list__container">
     <Spinner v-if="isLoading" />
-    <div v-else class="post__card" v-for="usertweet in usertweets" :key="usertweet.id">
+    <div
+      v-else
+      class="post__card"
+      v-for="usertweet in usertweets"
+      :key="usertweet.id"
+    >
       <div>
-        <img :src="user.avatar" alt="" class="post__avatar" />
+        <img :src="user.avatar | emptyImage" alt="" class="post__avatar" />
       </div>
       <div class="post__info">
         <div class="post__info__header">
           <span class="header__user">{{ user.name }}</span>
           <span class="header__account">@{{ user.account }}</span>
-          <span class="header__time">．{{ usertweet.createdAt | fromNow}}</span>
+          <span class="header__time"
+            >．{{ usertweet.createdAt | fromNow }}</span
+          >
         </div>
         <div class="post__info__text">{{ usertweet.description }}</div>
         <div class="post__info__icons">
@@ -43,21 +50,22 @@
 <script>
 import usersAPI from "./../apis/users";
 import { Toast } from "./../utils/helpers";
-import { fromNowFilter } from './../utils/mixins'
+import { emptyImageFilter } from "./../utils/mixins";
+import { fromNowFilter } from "./../utils/mixins";
 import Spinner from "./../components/Spinner.vue";
 
-
 export default {
-  mixins: [fromNowFilter],
+  mixins: [fromNowFilter, emptyImageFilter],
 
-  components:{
-    Spinner
+  components: {
+    Spinner,
   },
 
   data() {
     return {
       usertweets: [
-        { id: 0,
+        {
+          id: 0,
           createdAt: "",
           description: "",
           RepliesCount: 0,
@@ -85,15 +93,15 @@ export default {
   methods: {
     async getUserTweets(userId) {
       try {
-        this.isLoading = true
+        this.isLoading = true;
         // 取得特定使用者的所有貼文
-        const { data } = await usersAPI.getUserTweets(userId);      
+        const { data } = await usersAPI.getUserTweets(userId);
 
-        const  usertweets =  { data };        
+        const usertweets = { data };
         // 將取得的資料解構附值至data中
-        this.usertweets = usertweets.data
+        this.usertweets = usertweets.data;
 
-        this.isLoading = false
+        this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
         Toast.fire({
