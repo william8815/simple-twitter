@@ -37,7 +37,6 @@
       <div class="row__icon out__icon">
         <img src="../assets/img/Vectoroutlog.svg" alt="" />
       </div>
-      <!-- <div class="row__title"><button type="button" class="btn__logout" @click="logout">登出</button></div> -->
       <button class="row__title" type="button" @click="logout">登出</button>
     </div>
   </div>

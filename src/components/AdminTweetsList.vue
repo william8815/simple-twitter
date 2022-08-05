@@ -134,6 +134,7 @@ export default {
 
 .list__icon {
   cursor: pointer;
+  padding-right: 5px;
   img {
     width: 15px;
     height: 15px;

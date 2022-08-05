@@ -76,8 +76,8 @@ export default {
         ...this.user,
         id,
         name,
-        front_cover: front_cover ? front_cover : 'https://imgur.com/s4rJStF.png',
-        avatar: avatar ? avatar : "https://imgur.com/TYOq10P.png",
+        front_cover: front_cover ? front_cover : 'https://imgur.com/GGeK2iP.png',
+        avatar: avatar ? avatar : "https://imgur.com/2ajTlIb.png",
         account,
         tweetsCount,
         likedTweetsCount,
@@ -122,6 +122,8 @@ export default {
 }
 .user__background img {
   width: 249px;
+  height: 140px;
+  border-radius: 10px 10px 0px 0px;
 }
 
 .card__avatar img {
@@ -131,6 +133,8 @@ export default {
   top: 70px;
   left: 50%;
   transform: translateX(-50%);
+   border: 4px solid #FFFFFF;
+  border-radius: 50%;
 }
 
 .card__body {
@@ -197,3 +201,4 @@ export default {
   margin-right: 8px;
 }
 </style>
+

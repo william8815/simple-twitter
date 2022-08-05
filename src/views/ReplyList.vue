@@ -16,7 +16,10 @@
         <template v-else>
           <!-- 推文區 -->
           <div class="tweet">
-            <router-link :to="{ name: 'main' }" class="tweet__user">
+            <router-link
+              :to="{ name: 'user-post', params: { id: tweet.UserId } }"
+              class="tweet__user"
+            >
               <img :src="tweet.User.avatar | emptyImage" alt="userImg" />
               <div class="user">
                 <div class="name">{{ tweet.User.name }}</div>
@@ -54,36 +57,44 @@
                 </svg>
               </div>
               <div class="like">
-                <svg
+                <button
+                  class="btn"
                   v-if="tweet.isLiked"
                   @click.stop="deleteLike(tweet.id)"
-                  class="icon like__icon"
-                  :class="{ disabled: isProcessing }"
-                  viewBox="0 0 30 30"
-                  fill="#f91880"
-                  xmlns="http://www.w3.org/2000/svg"
+                  :disabled="tweet.isProcessing"
                 >
-                  <path
-                    d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                  <svg
+                    class="icon like__icon"
+                    viewBox="0 0 30 30"
                     fill="#f91880"
-                  />
-                </svg>
-                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                      fill="#f91880"
+                    />
+                  </svg>
+                </button>
+                <button
                   v-else
                   @click.stop="addLike(tweet.id)"
-                  class="icon like__icon"
-                  :class="{ disabled: isProcessing }"
-                  viewBox="0 0 30 30"
-                  fill="#fff"
-                  stroke="#657786"
-                  stroke-width="2px"
-                  xmlns="http://www.w3.org/2000/svg"
+                  class="btn"
+                  :disabled="tweet.isProcessing"
                 >
-                  <path
-                    d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
-                    fill="white"
-                  />
-                </svg>
+                  <svg
+                    class="icon like__icon"
+                    viewBox="0 0 30 30"
+                    fill="#fff"
+                    stroke="#657786"
+                    stroke-width="2px"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15 27.0478H14.9825C11.7538 26.9878 2.4375 18.5703 2.4375 10.5978C2.4375 6.76777 5.59375 3.40527 9.19125 3.40527C12.0537 3.40527 13.9787 5.38027 14.9987 6.81777C16.0162 5.38277 17.9412 3.40527 20.805 3.40527C24.405 3.40527 27.56 6.76777 27.56 10.599C27.56 18.569 18.2425 26.9865 15.0137 27.0453H15V27.0478Z"
+                      fill="white"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -91,18 +102,25 @@
           <div class="reply-board">
             <ul>
               <li class="list-item" v-for="reply in replyList" :key="reply.id">
-                <router-link :to="{ name: 'main' }" class="avator">
+                <router-link
+                  :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                  class="avator"
+                >
                   <img :src="reply.User.avatar | emptyImage" alt="userImg" />
                 </router-link>
                 <div class="user">
                   <div class="user__info">
-                    <router-link :to="{ name: 'main' }">
+                    <router-link
+                      :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                    >
                       <span class="user__name">{{ reply.User.name }}</span>
                       <span class="user__account"
                         >@{{ reply.User.account }} ・</span
                       >
                     </router-link>
-                    <router-link :to="{ name: 'main' }">
+                    <router-link
+                      :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                    >
                       <span class="user__posttime">{{
                         reply.createdAt | fromNow
                       }}</span>
@@ -160,7 +178,7 @@ export default {
   date() {
     return {
       isLoading: false,
-      isProcessing: false,
+
       replyList: [],
       tweet: {
         id: -1,
@@ -234,11 +252,12 @@ export default {
             avatar: data.User.avatar,
           },
         };
+        this.$set(this.tweet, "isProcessing", false);
         this.replyList = replyList.data;
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
-        console.log(error);
+        // console.log(error);
         Toast.fire({
           icon: "error",
           title: "無法取得推文資料，請稍後再試",
@@ -284,7 +303,8 @@ export default {
     // 新增喜歡
     async addLike(tweetId) {
       try {
-        this.isProcessing = true;
+        if (this.tweet.isProcessing === true) return;
+        this.tweet.isProcessing = true;
         const { data } = await tweetsAPI.addTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -298,10 +318,11 @@ export default {
           icon: "success",
           title: "已按讚",
         });
-        this.isProcessing = false;
+
+        this.tweet.isProcessing = false;
         this.$forceUpdate();
       } catch (error) {
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -312,7 +333,8 @@ export default {
     // 移除喜歡
     async deleteLike(tweetId) {
       try {
-        this.isProcessing = true;
+        if (this.tweet.isProcessing === true) return;
+        this.tweet.isProcessing = true;
         const { data } = await tweetsAPI.cancelTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -326,7 +348,7 @@ export default {
           icon: "success",
           title: "已取消讚",
         });
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         this.$forceUpdate();
       } catch (error) {
         this.tweet.isProcessing = false;
@@ -450,14 +472,15 @@ img {
       width: 10vw;
       display: flex;
       justify-content: space-between;
+      .btn {
+        border: none;
+        background: #fff;
+      }
       .icon {
         fill: #6c757d;
         background-size: cover;
         width: 30px;
         height: 30px;
-        &.disabled {
-          pointer-events: none;
-        }
       }
       .comment__icon:hover {
         fill: var(--main-color);

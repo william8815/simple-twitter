@@ -42,7 +42,13 @@
               v-for="following in followings"
               :key="following.followingId"
             >
-              <router-link :to="{ name: 'main' }" class="avator">
+              <router-link
+                :to="{
+                  name: 'user-post',
+                  params: { id: following.followingId },
+                }"
+                class="avator"
+              >
                 <img
                   :src="following.followingAvatar | emptyImage"
                   alt="userImg"
