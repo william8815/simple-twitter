@@ -1,8 +1,8 @@
 <template>
   <!-- 首頁 -->
-  <div class="container row row-cols-3">
+  <div class="container row">
     <!-- navbar -->
-    <section class="col-2" style="min-width:176px">
+    <section class="col-2" style="min-width: 176px">
       <Navbar @submit-tweet="handleSubmitTweet" :tweet_state="tweetState" />
     </section>
     <!-- main -->
@@ -15,17 +15,16 @@
               <img :src="currentUser.avatar | emptyImage" alt="userImg" />
             </router-link>
             <form @submit.stop.prevent="submitTweet" action="">
-              <div>
-                <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
+              <div id="parent">
+                <div id="dummy">{{ content }}</div>
                 <textarea
                   ref="mainTextarea"
                   v-model="content"
-                  @input="countRow"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
-                  :rows="count"
+                  rows="2"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -97,8 +96,9 @@
                     <div class="btn like">
                       <svg
                         v-if="tweet.isLiked"
-                        @click="deleteLike(tweet.id)"
+                        @click.stop="deleteLike(tweet.id)"
                         class="icon like__icon"
+                        :class="{ disabled: isProcessing }"
                         viewBox="0 0 30 30"
                         fill="#f91880"
                         xmlns="http://www.w3.org/2000/svg"
@@ -110,8 +110,9 @@
                       </svg>
                       <svg
                         v-else
-                        @click="addLike(tweet.id)"
+                        @click.stop="addLike(tweet.id)"
                         class="icon like__icon"
+                        :class="{ disabled: isProcessing }"
                         viewBox="0 0 30 30"
                         fill="#fff"
                         stroke="#657786"
@@ -141,7 +142,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-3" style="min-width:274px">
+    <section class="col-3" style="min-width: 274px">
       <RecommendUsers />
     </section>
   </div>
@@ -191,19 +192,6 @@ export default {
     });
   },
   methods: {
-    countRow() {
-      let scrollHeight = this.$refs.mainTextarea.scrollHeight;
-      let clientHeight = 34;
-      console.log(scrollHeight, clientHeight);
-      // this.$refs.textarea.style.height = 150 + "px";
-      let countNum = Math.floor(scrollHeight - clientHeight) / 22 + 1;
-      console.log(countNum);
-      if (countNum <= 1) {
-        this.count = 1;
-        return;
-      }
-      this.count = countNum;
-    },
     async fetchTweet({ limit }) {
       try {
         this.isLoading = true;
@@ -229,6 +217,7 @@ export default {
     // 新增喜歡
     async addLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.addTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -247,7 +236,9 @@ export default {
           icon: "success",
           title: "已按讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -258,6 +249,7 @@ export default {
     // 移除喜歡
     async deleteLike(tweetId) {
       try {
+        this.isProcessing = true;
         const { data } = await tweetsAPI.cancelTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -276,7 +268,9 @@ export default {
           icon: "success",
           title: "已取消讚",
         });
+        this.isProcessing = false;
       } catch (error) {
+        this.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -375,8 +369,9 @@ export default {
   max-width: 1400px;
   height: 100vh;
   margin-left: 130px;
+  // flex-wrap: nowrap;
   .main-section {
-    flex: 1 1;
+    flex: 0px 1 1;
   }
 }
 // 取消滾輪
@@ -427,12 +422,33 @@ export default {
         display: flex;
         flex-direction: column;
       }
+      #parent {
+        width: 100%;
+        position: relative;
+        font-size: 16px;
+        font-weight: 400;
+        max-height: 60vh;
+        color: #6c757d;
+      }
+      #dummy {
+        visibility: hidden;
+        min-height: 57px;
+        white-space: pre-wrap;
+        color: #6c757d;
+        padding-top: 12px;
+      }
+      #dummy::after {
+        content: "\A";
+      }
       .tweet-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: 100%;
         resize: none;
-        font-size: 18px;
-        font-weight: 700;
-        color: #6c757d;
+        font: inherit;
         padding-top: 12px;
         border: none;
         outline: none;
@@ -504,6 +520,9 @@ export default {
             background-size: cover;
             margin-right: 9px;
             cursor: pointer;
+            &.disabled {
+              pointer-events: none;
+            }
           }
           .num {
             color: #6c757d;

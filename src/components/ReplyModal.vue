@@ -38,15 +38,15 @@
         <div class="tweet">
           <img :src="currentUser.avatar | emptyImage" alt="userImg" />
           <form @submit.stop.prevent="handleSubmit" action="">
-            <div>
-              <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
+            <div id="parent">
+              <div id="dummy">{{ text }}</div>
               <textarea
                 v-model="text"
                 class="tweet-content"
                 name="tweet"
                 id=""
                 cols="30"
-                :rows="count"
+                rows="6"
                 placeholder="推你的回覆"
               ></textarea>
             </div>
@@ -219,12 +219,33 @@ img {
     flex-direction: column;
     justify-content: space-between;
   }
-  .tweet-content {
+  #parent {
     width: 100%;
-    resize: none;
+    position: relative;
     font-size: 16px;
     font-weight: 400;
+    max-height: 60vh;
     color: #6c757d;
+  }
+  #dummy {
+    visibility: hidden;
+    min-height: 114px;
+    white-space: pre-wrap;
+    color: #6c757d;
+    padding-top: 12px;
+  }
+  #dummy::after {
+    content: "\A";
+  }
+  .tweet-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    resize: none;
+    font: inherit;
     padding-top: 12px;
     border: none;
     outline: none;

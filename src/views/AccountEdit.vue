@@ -11,10 +11,7 @@
         </div>
         <div class="main__body">
           <!-- AccountEditForm -->
-          <AccountEditForm
-            :initial-user="user"
-            @handle-after-submit="handleAfterSubmit"
-          />
+          <AccountEditForm @handle-after-submit="handleAfterSubmit" />
         </div>
       </div>
     </section>
@@ -22,31 +19,39 @@
 </template>
 
 <script>
-/* eslint-disable */
-// import UserSidbar from '../components/UserSidbar.vue'
 import AccountEditForm from "../components/AccountEditForm.vue";
 import Navbar from "../components/Navbar.vue";
+import { Toast } from "../utils/helpers";
+import usersAPI from "../apis/users";
 export default {
   name: "AccountEdit",
   components: {
     AccountEditForm,
     Navbar,
   },
-  data() {
-    return {
-      user: {
-        name: "",
-        account: "",
-        email: "",
-        password: "",
-        passwordCheck: "",
-      },
-    };
-  },
   methods: {
-    handleAfterSubmit(formData) {
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ": " + value);
+    async handleAfterSubmit(formData) {
+      try {
+        const id = this.$route.params.id;
+        const { data } = await usersAPI.editUser(id, {
+          name: formData.name,
+          account: formData.account,
+          email: formData.email,
+          password: formData.password,
+          checkPassword: formData.checkPassword,
+        });
+        Toast.fire({
+          icon: "success",
+          title: data.message,
+        });
+        // put上去後 更新store.state的顯示資訊
+        this.$store.commit("setCurrentUser", data.newData);
+       this.$router.push("/main");
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: error.response.data.message,
+        });
       }
     },
   },
@@ -65,9 +70,7 @@ export default {
     flex-grow: 1;
   }
 }
-// 取消滾輪
 ::-webkit-scrollbar {
-  /* make scrollbar transparent */
   width: 0px;
   background: transparent;
 }
@@ -98,6 +101,5 @@ export default {
   padding: 24px 23px 0;
   display: flex;
   flex-wrap: wrap;
-  // max-height: 100vh;
 }
 </style>
