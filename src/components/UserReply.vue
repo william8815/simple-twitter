@@ -84,11 +84,10 @@ export default {
       try {
         this.isLoading = true;
         const { data } = await usersAPI.getUserReply(userId);
-        const usertweets = data
-        this.usertweets = usertweets
+        const usertweets = data;
+        this.usertweets = usertweets;
 
         this.isLoading = false;
-
       } catch (error) {
         this.isLoading = false;
         Toast.fire({

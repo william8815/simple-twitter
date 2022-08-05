@@ -33,7 +33,7 @@
 
         <!-- 若是當前使用者，則會出現編輯個人資料 -->
         <template v-if="isCurrentUser">
-          <UserEditModal :initial-edit="isEdit" :initial-user="user"/>
+          <UserEditModal  :initialuser="user" @after-submit="handleAfterSubmit"/>
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
         <div class="card__edit" v-else>
@@ -229,6 +229,38 @@ export default {
         });
       }
     },
+
+    async handleAfterSubmit(formData){
+      try {
+        const id = this.$route.params.id;
+        console.log(formData.name)
+        console.log(formData.introduction)
+        console.log(formData.front_cover)
+        console.log(formData.avatar)
+
+        const { data } = await usersAPI.editUser(id, {
+          name: formData.name,
+          introduction: formData.introduction,
+          front_cover: formData.front_cover,
+          avatar: formData.avatar,
+        });
+        Toast.fire({
+          icon: "success",
+          title: data.message,
+        });
+        console.log(data.newData)
+        this.$store.commit("setCurrentUser", data.newData);
+       this.$router.push("/main");
+    
+      } catch (error) {
+        console.log(error)
+
+        Toast.fire({
+          icon: "error",
+          title: "無法儲存個人資料，請稍後再試",
+        });
+      }
+    }
   },
 };
 </script>

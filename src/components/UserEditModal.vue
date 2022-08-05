@@ -18,7 +18,7 @@
 
       <!-- 返回圖示、標題、儲存紐 -->
       <div class="edit__modal" v-show="isEdit">
-        <form action="" class="form">
+        <form action="" class="form" @submit.stop.prevent="handleSubmit">
           <div class="header">
             <img
               src="./../assets/img/橘叉叉.png"
@@ -28,14 +28,14 @@
             />
 
             <span class="header__title">編輯個人資料</span>
-            <button class="header__save">儲存</button>
+            <button type="submit" class="header__save" :disabled="isNameOver || isInfoOver">儲存</button>
           </div>
 
           <!-- 中間使用者背景和使用者頭像的部分 -->
           <div class="modal__image">
             <!-- 使用者背景 -->
             <img
-              :src="user.img"
+              :src="user.front_cover | emptyBackground"
               alt=""
               class="modal__image__background"
               @error="user.img = ''"
@@ -47,7 +47,9 @@
                 type="file"
                 id="cover-input"
                 name="coverImg"
+                accept="image/*"
                 class="control__cover__input"
+                @change="handleChangeCover"
               />
               <label for="cover-input">
                 <img
@@ -58,6 +60,7 @@
               <img
                 src="./../assets/img/白叉叉.png"
                 class="control__cover__cross"
+                @click="cancelCover"
               />
             </div>
 
@@ -70,7 +73,12 @@
 
             <!-- 使用者頭像控制組 (白相機)-->
             <div class="control__self">
-              <input type="file" id="self-input" name="selfImg" />
+              <input
+                type="file"
+                id="self-input"
+                name="selfImg"
+                @change="handleChangeAvatar"
+              />
               <label for="self-input">
                 <img
                   src="./../assets/img/相機.png"
@@ -92,12 +100,13 @@
                   type="text"
                   name="name"
                   required
-                  maxlength="50"
                 />
               </div>
 
+              <span class="text__name__alert" v-show="isNameOver">字數不能超過50字!</span>
+
               <span class="text__name__count">
-                {{ user.name ? user.name.length : 0 }}/50</span
+                {{ nameLength }}/50</span
               >
             </div>
 
@@ -106,16 +115,19 @@
               <div class="text__info__input">
                 <label for="" class="info__label">自我介紹</label>
                 <textarea
-                  v-model="user.info"
+                  v-model="user.introduction"
                   name="info"
                   cols="30"
                   rows="5"
-                  maxlength="160"
                 />
               </div>
 
+              <span class="text__info__alert" v-show="isInfoOver">字數不能超過160字!</span>
+
               <span class="text__info__count"
-                >{{ user.info ? user.info.length : 0 }}/160</span
+                >{{
+                  introductionLength
+                }}/160</span
               >
             </div>
           </div>
@@ -135,47 +147,105 @@ export default {
   mixins: [emptyImageFilter, emptyBackgroundFilter],
 
   props: {
-    initialEdit: {
-      type: Boolean,
+    initialuser: {
+      type: Object,
       require: true,
-      default: true,
+    },
+  },
+
+  created() {
+    this.user = {
+      ...this.user,
+      ...this.initialuser,
+    };
+  },
+
+  computed:{
+    nameLength(){
+      return this.user.name.length
+    },
+    introductionLength(){
+      return this.user.introduction.length
+    }
+  },
+
+  watch:{
+    "user.name": function(){      
+      if(this.user.name.length > 50){
+        this.isNameOver = true
+      }else{
+        this.isNameOver = false
+      }
     },
 
-    // initialUser: {
-    //   type: Object,
-    //   require: true,
-    //   default: true,
-    // },
+    "user.introduction": function(){
+      if(this.user.introduction.length > 160){
+        this.isInfoOver = true
+      }else{
+        this.isInfoOver = false
+      }
+    }
+  },
+
+  data() {
+    return {
+      user: {
+        name: "",
+        account: "",
+        introduction: "",
+        front_cover: "",
+        avatar: "",
+      },
+      isEdit: false,
+      isNameOver: false,
+      isInfoOver: false
+    };
   },
 
   methods: {
     toggleModal() {
       this.isEdit = !this.isEdit;
     },
-  },
 
-  data() {
-    return {
-      user: {
-        name: "John Doe",
-        account: "heyJohn",
-        info: "hey guys, im John, i like to swimming",
-        img: require("./../assets/img/backgroud.png"),
-        selfImg: require("./../assets/img/Photo.png"),
-        following: "34個",
-        follower: "59位",
+    handleChangeCover(e) {
+      const { files } = e.target;
 
-        // name: "",
-        // account: "",
-        // introduction: "",
-        // front_cover: "",
-        // avatar: "",
-        // followingsCount: "",
-        // Followers: "",
-      },
-      isEdit: false,
-    };
-  },
+      if (files.length === 0) {
+        // 使用者沒有選擇上傳的檔案
+        this.user.front_cover = "";
+      } else {
+        // 否則產生預覽圖
+        const imageURL = window.URL.createObjectURL(files[0]);
+        this.user.front_cover = imageURL;
+      }
+    },
+
+    handleChangeAvatar(e) {
+      const { files } = e.target;
+
+      if (files.length === 0) {
+        // 使用者沒有選擇上傳的檔案
+        this.user.avatar = "";
+      } else {
+        // 否則產生預覽圖
+        const imageURL = window.URL.createObjectURL(files[0]);
+        this.user.avatar = imageURL;
+      }
+    },
+
+    cancelCover() {
+      this.user.front_cover = "";
+    },
+
+    handleSubmit() {
+      const formData = this.user;
+      this.$emit("after-submit", formData);
+    },
+
+    // overName(){
+      
+    // }
+  },  
 };
 </script>
 
@@ -233,7 +303,7 @@ textarea {
 
 .edit__modal {
   position: fixed;
-  top: 30px;
+  top: 10px;
   left: 45%;
   width: 540px;
   transform: translateX(-45%);
@@ -350,6 +420,7 @@ textarea {
 
 .text__name {
   margin: 0 16px 0 16px;
+  position: relative;
 
   &__input {
     display: flex;
@@ -376,10 +447,19 @@ textarea {
     font-size: 12px;
     color: #696974;
   }
+
+  &__alert {
+    display: inline-block;
+    position: absolute;
+    bottom: 0%;
+    font-size: 12px;
+    color: red;
+  }
 }
 
 .text__info {
   margin: 5px 16px 30px 16px;
+  position: relative;
 
   &__input {
     display: flex;
@@ -404,6 +484,14 @@ textarea {
     margin-left: auto;
     font-size: 12px;
     color: #696974;
+  }
+
+  &__alert {
+    display: inline-block;
+    position: absolute;
+    bottom: 0%;
+    font-size: 12px;
+    color: red;
   }
 }
 </style>
