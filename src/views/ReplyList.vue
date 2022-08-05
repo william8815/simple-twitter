@@ -61,7 +61,7 @@
                   class="btn"
                   v-if="tweet.isLiked"
                   @click.stop="deleteLike(tweet.id)"
-                  :disabled="isProcessing"
+                  :disabled="tweet.isProcessing"
                 >
                   <svg
                     class="icon like__icon"
@@ -79,7 +79,7 @@
                   v-else
                   @click.stop="addLike(tweet.id)"
                   class="btn"
-                  :disabled="isProcessing"
+                  :disabled="tweet.isProcessing"
                 >
                   <svg
                     class="icon like__icon"
@@ -178,7 +178,7 @@ export default {
   date() {
     return {
       isLoading: false,
-      isProcessing: false,
+
       replyList: [],
       tweet: {
         id: -1,
@@ -252,6 +252,7 @@ export default {
             avatar: data.User.avatar,
           },
         };
+        this.$set(this.tweet, "isProcessing", false);
         this.replyList = replyList.data;
         this.isLoading = false;
       } catch (error) {
@@ -302,7 +303,8 @@ export default {
     // 新增喜歡
     async addLike(tweetId) {
       try {
-        this.isProcessing = true;
+        if (this.tweet.isProcessing === true) return;
+        this.tweet.isProcessing = true;
         const { data } = await tweetsAPI.addTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -317,10 +319,10 @@ export default {
           title: "已按讚",
         });
 
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         this.$forceUpdate();
       } catch (error) {
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
@@ -331,7 +333,8 @@ export default {
     // 移除喜歡
     async deleteLike(tweetId) {
       try {
-        this.isProcessing = true;
+        if (this.tweet.isProcessing === true) return;
+        this.tweet.isProcessing = true;
         const { data } = await tweetsAPI.cancelTweetLike(tweetId);
         if (data.status !== "success") {
           throw new Error(data.message);
@@ -345,10 +348,10 @@ export default {
           icon: "success",
           title: "已取消讚",
         });
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         this.$forceUpdate();
       } catch (error) {
-        this.isProcessing = false;
+        this.tweet.isProcessing = false;
         console.log(error);
         Toast.fire({
           icon: "error",
