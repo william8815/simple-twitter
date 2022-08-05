@@ -16,7 +16,10 @@
         <template v-else>
           <!-- 推文區 -->
           <div class="tweet">
-            <router-link :to="{ name: 'main' }" class="tweet__user">
+            <router-link
+              :to="{ name: 'user-post', params: { id: tweet.UserId } }"
+              class="tweet__user"
+            >
               <img :src="tweet.User.avatar | emptyImage" alt="userImg" />
               <div class="user">
                 <div class="name">{{ tweet.User.name }}</div>
@@ -91,18 +94,25 @@
           <div class="reply-board">
             <ul>
               <li class="list-item" v-for="reply in replyList" :key="reply.id">
-                <router-link :to="{ name: 'main' }" class="avator">
+                <router-link
+                  :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                  class="avator"
+                >
                   <img :src="reply.User.avatar | emptyImage" alt="userImg" />
                 </router-link>
                 <div class="user">
                   <div class="user__info">
-                    <router-link :to="{ name: 'main' }">
+                    <router-link
+                      :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                    >
                       <span class="user__name">{{ reply.User.name }}</span>
                       <span class="user__account"
                         >@{{ reply.User.account }} ・</span
                       >
                     </router-link>
-                    <router-link :to="{ name: 'main' }">
+                    <router-link
+                      :to="{ name: 'user-post', params: { id: reply.User.id } }"
+                    >
                       <span class="user__posttime">{{
                         reply.createdAt | fromNow
                       }}</span>

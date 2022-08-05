@@ -11,7 +11,9 @@
         <h4>首頁</h4>
         <div class="tweet-board">
           <div class="tweet-board__user">
-            <router-link :to="{ name: 'main' }">
+            <router-link
+              :to="{ name: 'user-post', params: { id: currentUser.id } }"
+            >
               <img :src="currentUser.avatar | emptyImage" alt="userImg" />
             </router-link>
             <form @submit.stop.prevent="submitTweet" action="">
@@ -49,7 +51,9 @@
           <div v-else class="tweet-board__otherUser">
             <ul>
               <li class="list-item" v-for="tweet in tweets" :key="tweet.id">
-                <router-link :to="{ name: 'main' }">
+                <router-link
+                  :to="{ name: 'user-post', params: { id: tweet.UserId } }"
+                >
                   <img
                     :src="tweet.User.avatar | emptyImage"
                     alt="otherUserImg"
@@ -57,10 +61,22 @@
                 </router-link>
                 <div>
                   <div class="user">
-                    <router-link :to="{ name: 'main' }" class="user__name">
+                    <router-link
+                      :to="{
+                        name: 'user-post',
+                        params: { id: tweet.UserId },
+                      }"
+                      class="user__name"
+                    >
                       {{ tweet.User.name }}
                     </router-link>
-                    <router-link :to="{ name: 'main' }" class="user__account">
+                    <router-link
+                      :to="{
+                        name: 'user-post',
+                        params: { id: tweet.UserId },
+                      }"
+                      class="user__account"
+                    >
                       @{{ tweet.User.account }} ・
                     </router-link>
 

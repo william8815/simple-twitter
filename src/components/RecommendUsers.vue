@@ -5,7 +5,10 @@
     <div v-else class="recommend__list">
       <ul>
         <li v-for="user in recommendUsers" :key="user.id" class="list-item">
-          <router-link :to="{ name: 'main' }" class="user">
+          <router-link
+            :to="{ name: 'user-post', params: { id: user.id } }"
+            class="user"
+          >
             <img
               :src="user.avatar | emptyImage"
               alt="otherUser"
@@ -72,7 +75,6 @@ export default {
         this.isLoading = true;
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
-        // console.log(data);
         this.recommendUsers = users.filter((user) => {
           if (user.Followers.length !== 0 || user.id === this.currentUser.id) {
             for (let usesrSelf of user.Followers) {
