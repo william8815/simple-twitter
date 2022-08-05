@@ -173,23 +173,23 @@ export default {
         this.$router.push("/login");
       } catch (error) {
         if (error.response.data.message === "帳號或信箱已有人使用了!") {
-          console.log('in error')
+          console.log("in error");
           this.isEmailError = true;
           this.isAccountError = true;
         }
-        console.error(error.response)
+        console.error(error.response);
         this.account = "";
         this.email = "";
       }
     },
   },
   // watch: {
-    // account: function () {
-    //   this.isAccountError = false;
-    // },
-    // email: function () {
-    //   this.isEmailError = false;
-    // },
+  // account: function () {
+  //   this.isAccountError = false;
+  // },
+  // email: function () {
+  //   this.isEmailError = false;
+  // },
   // },
   computed: {
     nameLength() {
@@ -300,7 +300,6 @@ export default {
 }
 
 .inputInfo {
-  // border: 1px solid #000;
   display: flex;
   margin: 0 1rem 0 5px;
   justify-content: space-between;
@@ -308,11 +307,9 @@ export default {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
-    max-width: 270px;
     color: #fc5a5a;
   }
   .lengthInfo {
-    width: 270px;
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;

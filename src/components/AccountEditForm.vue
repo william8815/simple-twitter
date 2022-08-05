@@ -270,7 +270,6 @@ export default {
 }
 
 .inputInfo {
-  // border: 1px solid #000;
   display: flex;
   margin: 0 1rem 0 5px;
   justify-content: space-between;
@@ -278,11 +277,9 @@ export default {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
-    max-width: 270px;
     color: #fc5a5a;
   }
   .lengthInfo {
-    width: 270px;
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
