@@ -2,7 +2,7 @@
   <!-- 首頁 -->
   <div class="container row">
     <!-- navbar -->
-    <section class="col-2" style="min-width:176px">
+    <section class="col-2" style="min-width: 176px">
       <Navbar @submit-tweet="handleSubmitTweet" :tweet_state="tweetState" />
     </section>
     <!-- main -->
@@ -15,17 +15,16 @@
               <img :src="currentUser.avatar | emptyImage" alt="userImg" />
             </router-link>
             <form @submit.stop.prevent="submitTweet" action="">
-              <div>
-                <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
+              <div id="parent">
+                <div id="dummy">{{ content }}</div>
                 <textarea
                   ref="mainTextarea"
                   v-model="content"
-                  @input="countRow"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
-                  :rows="count"
+                  rows="2"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -143,7 +142,7 @@
       </div>
     </section>
     <!-- recommend -->
-    <section class="col-3" style="min-width:274px">
+    <section class="col-3" style="min-width: 274px">
       <RecommendUsers />
     </section>
   </div>
@@ -193,19 +192,6 @@ export default {
     });
   },
   methods: {
-    countRow() {
-      let scrollHeight = this.$refs.mainTextarea.scrollHeight;
-      let clientHeight = 34;
-      console.log(scrollHeight, clientHeight);
-      // this.$refs.textarea.style.height = 150 + "px";
-      let countNum = Math.floor(scrollHeight - clientHeight) / 22 + 1;
-      console.log(countNum);
-      if (countNum <= 1) {
-        this.count = 1;
-        return;
-      }
-      this.count = countNum;
-    },
     async fetchTweet({ limit }) {
       try {
         this.isLoading = true;
@@ -436,12 +422,33 @@ export default {
         display: flex;
         flex-direction: column;
       }
+      #parent {
+        width: 100%;
+        position: relative;
+        font-size: 16px;
+        font-weight: 400;
+        max-height: 60vh;
+        color: #6c757d;
+      }
+      #dummy {
+        visibility: hidden;
+        min-height: 57px;
+        white-space: pre-wrap;
+        color: #6c757d;
+        padding-top: 12px;
+      }
+      #dummy::after {
+        content: "\A";
+      }
       .tweet-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         width: 100%;
         resize: none;
-        font-size: 18px;
-        font-weight: 700;
-        color: #6c757d;
+        font: inherit;
         padding-top: 12px;
         border: none;
         outline: none;

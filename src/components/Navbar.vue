@@ -138,18 +138,17 @@
           <div class="tweet">
             <img src="~@/assets/img/userImg.png" alt="userImg" />
             <form action="" @submit.stop.prevent="handleSubmit">
-              <div>
+              <div id="parent">
                 <!-- <label for="tweet" class="tweet-title">有甚麼新鮮事?</label> -->
+                <div id="dummy">{{ text }}</div>
                 <textarea
-                  :style="{ minHeight: '145px' }"
                   ref="textarea"
-                  @input="countRow"
                   v-model="text"
                   class="tweet-content"
                   name="tweet"
                   id=""
                   cols="30"
-                  :rows="count"
+                  rows="7"
                   placeholder="有甚麼新鮮事?"
                 ></textarea>
               </div>
@@ -203,23 +202,6 @@ export default {
     },
   },
   methods: {
-    countRow() {
-      let scrollHeight = this.$refs.textarea.scrollHeight;
-      // let clientHeight = 145;
-      // console.log(scrollHeight, clientHeight);
-      // if (scrollHeight - clientHeight === 0) {
-      //   this.count = 7;
-      //   return;
-      // } else {
-      //   let countNum = (scrollHeight - clientHeight) / 19 + 7;
-      //   this.count = countNum;
-      //   return;
-      // }
-      let countNum = Math.floor(scrollHeight / 19);
-      this.count = countNum;
-
-      console.log(countNum);
-    },
     cancelModel() {
       this.tweetMode = false;
     },
@@ -405,13 +387,33 @@ img {
     flex-direction: column;
     justify-content: space-between;
   }
-  .tweet-content {
-    max-height: 60vh;
+  #parent {
     width: 100%;
-    resize: none;
+    position: relative;
     font-size: 16px;
     font-weight: 400;
+    max-height: 60vh;
     color: #6c757d;
+  }
+  #dummy {
+    visibility: hidden;
+    min-height: 133px;
+    white-space: pre-wrap;
+    color: #6c757d;
+    padding-top: 12px;
+  }
+  #dummy::after {
+    content: "\A";
+  }
+  .tweet-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    resize: none;
+    font: inherit;
     padding-top: 12px;
     border: none;
     outline: none;
