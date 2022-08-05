@@ -16,7 +16,6 @@
           class="label__control"
           name="account"
           id="account"
-          style="border-style: none"
           v-model="account"
         />
       </div>
@@ -27,7 +26,6 @@
           class="label__control"
           name="password"
           id="password"
-          style="border-style: none"
           v-model="password"
         />
       </div>
@@ -80,7 +78,7 @@ export default {
       } catch (error) {
         Toast.fire({
           icon: "error",
-          title: error.response.data.message
+          title: error.response.data.message,
         });
         (this.account = ""), (this.password = "");
       }
@@ -103,6 +101,21 @@ export default {
   margin-bottom: 2rem;
   background: #f5f8fa;
   border-radius: 2px;
+  input {
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #50b5ff;
+      outline: none;
+    }
+  }
+
+  .error {
+    border-bottom: 1px solid #fc5a5a;
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #fc5a5a;
+    }
+  }
 }
 
 .from__label input {
@@ -164,6 +177,8 @@ export default {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  color: #0099ff;
+  text-decoration: underline;
 }
 
 .from__btn {

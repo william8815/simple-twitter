@@ -11,7 +11,12 @@
         </div>
         <div class="main__body">
           <!-- AccountEditForm -->
-          <AccountEditForm @handle-after-submit="handleAfterSubmit" />
+          <AccountEditForm
+            @handle-after-submit="handleAfterSubmit"
+            @status-change="statusChange"
+            :isAccountError="isAccountError"
+            :isEmailError="isEmailError"
+          />
         </div>
       </div>
     </section>
@@ -28,6 +33,12 @@ export default {
   components: {
     AccountEditForm,
     Navbar,
+  },
+  data() {
+    return {
+      isAccountError: false,
+      isEmailError: false,
+    };
   },
   methods: {
     async handleAfterSubmit(formData) {
@@ -46,13 +57,19 @@ export default {
         });
         // put上去後 更新store.state的顯示資訊
         this.$store.commit("setCurrentUser", data.newData);
-       this.$router.push("/main");
+        this.$router.push("/main");
       } catch (error) {
-        Toast.fire({
-          icon: "error",
-          title: error.response.data.message,
-        });
+        if (error.response.data.message === "帳號已被使用！") {
+          this.isAccountError = true;
+        }
+        if (error.response.data.message === "電子信箱已被使用！") {
+          this.isEmailError = true;
+        }
       }
+    },
+    statusChange() {
+      this.isAccountError = false;
+      this.isEmailError = false;
     },
   },
 };

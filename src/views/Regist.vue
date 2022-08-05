@@ -17,8 +17,14 @@
           id="account"
           placeholder="請輸入帳號"
           v-model="account"
-          required
+          :class="{ error: isAccountError }"
         />
+
+        <div class="inputInfo">
+          <div class="errorInfo">
+            <span v-if="isAccountError">帳號 或 e-mail 已經有人使用</span>
+          </div>
+        </div>
       </div>
       <div class="form__label">
         <label for="name">名稱</label>
@@ -28,10 +34,18 @@
           name="name"
           id="name"
           placeholder="請輸入名稱"
-          maxlength="50"
+          maxlength="51"
           v-model="name"
-          required
+          :class="{ error: this.name.length > 50 }"
         />
+        <div class="inputInfo">
+          <div class="errorInfo">
+            <span v-if="this.name.length > 50">名稱字數上限 50 </span>
+          </div>
+          <div class="lenghtInfo">
+            <span>{{ nameLength }} / 50</span>
+          </div>
+        </div>
       </div>
       <div class="form__label">
         <label for="email">Email</label>
@@ -42,8 +56,14 @@
           id="email"
           placeholder="請輸入email"
           v-model="email"
-          required
+          :class="{ error: isEmailError }"
         />
+
+        <div class="inputInfo">
+          <div class="errorInfo">
+            <span v-if="isEmailError">帳號 或 e-mail 已經有人使用</span>
+          </div>
+        </div>
       </div>
       <div class="form__label">
         <label for="password">密碼</label>
@@ -54,7 +74,6 @@
           id="password"
           placeholder="請輸入密碼"
           v-model="password"
-          required
         />
       </div>
       <div class="form__label">
@@ -66,7 +85,6 @@
           id="checkPassword"
           placeholder="請再次輸入密碼"
           v-model="checkPassword"
-          required
         />
       </div>
 
@@ -92,6 +110,8 @@ export default {
       email: "",
       password: "",
       checkPassword: "",
+      isAccountError: false,
+      isEmailError: false,
     };
   },
   methods: {
@@ -107,6 +127,13 @@ export default {
           Toast.fire({
             icon: "warning",
             title: "請確認已填寫所有欄位",
+          });
+          return;
+        }
+        if (this.name && this.name.length > 50) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱字數不能超過 50 ",
           });
           return;
         }
@@ -145,13 +172,28 @@ export default {
         // 成功登入後轉址到登入頁
         this.$router.push("/login");
       } catch (error) {
-        Toast.fire({
-          icon: "warning",
-          title: error.response.data.message,
-        });
+        if (error.response.data.message === "帳號或信箱已有人使用了!") {
+          console.log('in error')
+          this.isEmailError = true;
+          this.isAccountError = true;
+        }
+        console.error(error.response)
         this.account = "";
         this.email = "";
       }
+    },
+  },
+  // watch: {
+    // account: function () {
+    //   this.isAccountError = false;
+    // },
+    // email: function () {
+    //   this.isEmailError = false;
+    // },
+  // },
+  computed: {
+    nameLength() {
+      return this.name.length;
     },
   },
 };
@@ -186,6 +228,21 @@ export default {
   margin-bottom: 2rem;
   background: #f5f8fa;
   border-radius: 2px;
+  input {
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #50b5ff;
+      outline: none;
+    }
+  }
+
+  .error {
+    border-bottom: 1px solid #fc5a5a;
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #fc5a5a;
+    }
+  }
 }
 
 .form__label input {
@@ -240,5 +297,27 @@ export default {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+}
+
+.inputInfo {
+  // border: 1px solid #000;
+  display: flex;
+  margin: 0 1rem 0 5px;
+  justify-content: space-between;
+  .errorInfo {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    max-width: 270px;
+    color: #fc5a5a;
+  }
+  .lengthInfo {
+    width: 270px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #696974;
+    text-align: right;
+  }
 }
 </style>

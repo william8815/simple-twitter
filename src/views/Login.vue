@@ -18,28 +18,17 @@
             name="account"
             id="account"
             v-model="account"
-            required
           />
         </div>
         <div class="from__label">
           <label for="password">密碼</label>
           <input
             type="password"
-            class="label__control error"
+            class="label__control"
             name="password"
             id="password"
             v-model="password"
-            required
           />
-          <div class="info">
-            <div class="errorInfo">
-              <span v-if="!isError">帳號不存在 !</span>
-              <span>字數超過上限 !</span>
-            </div>
-            <div class="lenghtInfo">
-              <span>50/50</span>
-            </div>
-          </div>
         </div>
         <button class="from__btn" type="submit" :disabled="isProcessing">
           登入
@@ -129,6 +118,7 @@ export default {
   input {
     &:hover, &:focus {
      border-bottom: 1px solid #50B5FF;
+     outline:none;
     }
   }
 
@@ -161,7 +151,7 @@ export default {
   width: 100%;
 }
 
-.info {
+.inputInfo {
   // border: 1px solid #000;
   display: flex;
   justify-content: space-between;
@@ -223,6 +213,8 @@ text-align: right;
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  color: #0099ff;
+   text-decoration: underline;
 }
 
 .from__btn {
