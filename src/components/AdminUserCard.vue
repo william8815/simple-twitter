@@ -126,9 +126,6 @@ export default {
   border-radius: 10px 10px 0px 0px;
 }
 
-.card__avatar {
-
-}
 .card__avatar img {
   width: 100px;
   height: 100px;
