@@ -133,7 +133,6 @@ export default {
   },
   methods: {
     fetchUser(newValue) {
-      console.log("newValue", newValue);
       const { account, name, email } = newValue;
       this.user = {
         ...this.user,
@@ -145,7 +144,6 @@ export default {
     async handleSubmit() {
       try {
         this.isProcessing = true
-        console.log('1111')
         if (this.user.name && this.user.name.length > 50) {
           Toast.fire({
             icon: "warning",

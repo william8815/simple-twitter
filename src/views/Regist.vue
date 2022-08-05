@@ -176,7 +176,6 @@ export default {
       } catch (error) {
         this.isProcessing = false
         if (error.response.data.message === "帳號或信箱已有人使用了!") {
-          console.log("in error");
           this.isEmailError = true;
           this.isAccountError = true;
         }
