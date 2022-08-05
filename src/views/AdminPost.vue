@@ -91,8 +91,10 @@ export default {
 <style lang="scss" scoped>
 .adminUsers {
   display: flex;
-  max-height: 100vh;
-  width: auto;
+  width: 100vw;
+  max-width: 1400px;
+  height: 100vh;
+  margin: 0 auto;
 }
 
 .main {
