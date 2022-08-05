@@ -80,7 +80,7 @@
     </div>
 
     <div class="form__btn">
-      <button class="btn submit" type="submit" :disabled="isProcessing">儲存</button>
+      <button class="btn submit" type="submit">儲存</button>
     </div>
   </form>
 </template>
@@ -113,7 +113,6 @@ export default {
         password: "",
         checkPassword: "",
       },
-       isProcessing: this.initialIsProcessing,
     };
   },
 

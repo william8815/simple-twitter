@@ -45,7 +45,6 @@ export default {
   methods: {
     async handleAfterSubmit(formData) {
       try {
-        this.isProcessing = true
         const id = this.$route.params.id;
         const { data } = await usersAPI.editUser(id, {
           name: formData.name,
@@ -62,7 +61,6 @@ export default {
         this.$store.commit("setCurrentUser", data.newData);
         this.$router.push("/main");
       } catch (error) {
-        this.isProcessing = false
         if (error.response.data.message === "帳號已被使用！") {
           this.isAccountError = true;
           return
