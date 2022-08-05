@@ -33,7 +33,10 @@
 
         <!-- 若是當前使用者，則會出現編輯個人資料 -->
         <template v-if="isCurrentUser">
-          <UserEditModal  :initialuser="user" @after-submit="handleAfterSubmit"/>
+          <UserEditModal
+            :initialuser="user"
+            @after-submit="handleAfterSubmit"
+          />
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
         <div class="card__edit" v-else>
@@ -230,13 +233,13 @@ export default {
       }
     },
 
-    async handleAfterSubmit(formData){
+    async handleAfterSubmit(formData) {
       try {
         const id = this.$route.params.id;
-        console.log(formData.name)
-        console.log(formData.introduction)
-        console.log(formData.front_cover)
-        console.log(formData.avatar)
+        console.log(formData.name);
+        console.log(formData.introduction);
+        console.log(formData.front_cover);
+        console.log(formData.avatar);
 
         const { data } = await usersAPI.editUser(id, {
           name: formData.name,
@@ -248,19 +251,18 @@ export default {
           icon: "success",
           title: data.message,
         });
-        console.log(data.newData)
+        console.log(data.newData);
         this.$store.commit("setCurrentUser", data.newData);
-       this.$router.push("/main");
-    
+        this.$router.push("/main");
       } catch (error) {
-        console.log(error)
+        console.log(error);
 
         Toast.fire({
           icon: "error",
           title: "無法儲存個人資料，請稍後再試",
         });
       }
-    }
+    },
   },
 };
 </script>
@@ -288,10 +290,11 @@ button {
 }
 
 .container {
-  width: calc(100vw - 130px);
+  width: 100vw;
   max-width: 1400px;
   height: 100vh;
-  margin-left: 130px;
+  padding-left: 130px;
+  margin: 0 auto;
   .main-section {
     flex: 1 1;
   }

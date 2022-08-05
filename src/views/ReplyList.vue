@@ -365,10 +365,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 130px);
+  width: 100vw;
   max-width: 1400px;
   height: 100vh;
-  margin-left: 130px;
+  padding-left: 130px;
+  margin: 0 auto;
   .reply-section {
     flex: 1 1;
   }
