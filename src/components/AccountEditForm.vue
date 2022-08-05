@@ -80,7 +80,7 @@
     </div>
 
     <div class="form__btn">
-      <button class="btn submit" type="submit">儲存</button>
+      <button class="btn submit" type="submit" :disabled="isProcessing">儲存</button>
     </div>
   </form>
 </template>
@@ -99,6 +99,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    initialIsProcessing: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -109,6 +113,7 @@ export default {
         password: "",
         checkPassword: "",
       },
+       isProcessing: this.initialIsProcessing,
     };
   },
 
@@ -140,6 +145,8 @@ export default {
     },
     async handleSubmit() {
       try {
+        this.isProcessing = true
+        console.log('1111')
         if (this.user.name && this.user.name.length > 50) {
           Toast.fire({
             icon: "warning",

@@ -16,6 +16,7 @@ export default new Vuex.Store({
     },
     isAuthenticated: false,
     token: '',
+    isProcessing: false,
 
   },
   mutations: {
@@ -32,6 +33,12 @@ export default new Vuex.Store({
       state.isAuthenticated = false,
       state.token = ''
       localStorage.removeItem('token')
+    },
+    isProcessingTrue(state) {
+      state.isProcessing = true
+    },
+    isProcessingFalse(state) {
+      state.isProcessing = false
     }
   },
   actions: {

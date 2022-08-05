@@ -89,7 +89,7 @@
       </div>
 
       <div class="form__btn">
-        <button class="btn submit" type="submit">註冊</button>
+        <button class="btn submit" type="submit" :disabled="isProcessing">註冊</button>
       </div>
       <div class="form__btn">
         <router-link class="btn cancel" to="/login"> 取消 </router-link>
@@ -112,11 +112,13 @@ export default {
       checkPassword: "",
       isAccountError: false,
       isEmailError: false,
+      isProcessing: false,
     };
   },
   methods: {
     async handleSubmit() {
       try {
+        this.isProcessing = true
         if (
           !this.name ||
           !this.email ||
@@ -172,6 +174,7 @@ export default {
         // 成功登入後轉址到登入頁
         this.$router.push("/login");
       } catch (error) {
+        this.isProcessing = false
         if (error.response.data.message === "帳號或信箱已有人使用了!") {
           console.log("in error");
           this.isEmailError = true;

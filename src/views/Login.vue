@@ -59,12 +59,12 @@ export default {
       account: "",
       password: "",
       isProcessing: false,
-      isError: true,
     };
   },
   methods: {
     async handleSubmit() {
       try {
+        this.isProcessing = true;
         if (!this.account | !this.password) {
           Toast.fire({
             icon: "warning",

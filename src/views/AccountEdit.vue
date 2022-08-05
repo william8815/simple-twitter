@@ -16,6 +16,7 @@
             @status-change="statusChange"
             :isAccountError="isAccountError"
             :isEmailError="isEmailError"
+            :initial-isProcessing="isProcessing"
           />
         </div>
       </div>
@@ -38,11 +39,13 @@ export default {
     return {
       isAccountError: false,
       isEmailError: false,
+      isProcessing: false,
     };
   },
   methods: {
     async handleAfterSubmit(formData) {
       try {
+        this.isProcessing = true
         const id = this.$route.params.id;
         const { data } = await usersAPI.editUser(id, {
           name: formData.name,
@@ -59,12 +62,19 @@ export default {
         this.$store.commit("setCurrentUser", data.newData);
         this.$router.push("/main");
       } catch (error) {
+        this.isProcessing = false
         if (error.response.data.message === "帳號已被使用！") {
           this.isAccountError = true;
+          return
         }
         if (error.response.data.message === "電子信箱已被使用！") {
           this.isEmailError = true;
+          return
         }
+        Toast.fire({
+          icon: 'warning',
+          title: error.response.data.message
+        })
       }
     },
     statusChange() {

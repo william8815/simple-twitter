@@ -55,6 +55,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
+        this.isProcessing = true;
         if (!this.account | !this.password) {
           Toast.fire({
             icon: "warning",
@@ -76,6 +77,7 @@ export default {
         this.$router.push("/admin");
         // error info
       } catch (error) {
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: error.response.data.message,
