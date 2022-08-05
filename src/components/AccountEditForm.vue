@@ -9,8 +9,13 @@
         id="account"
         placeholder="請輸入帳號"
         v-model="user.account"
-        required
+        :class="{ error: isAccountError }"
       />
+      <div class="inputInfo">
+        <div class="errorInfo">
+          <span v-if="isAccountError">帳號重複 , 請修改 帳號</span>
+        </div>
+      </div>
     </div>
     <div class="form__label">
       <label for="name">名稱</label>
@@ -21,8 +26,17 @@
         id="name"
         placeholder="請輸入名稱"
         v-model="user.name"
-        required
+        maxlength="51"
+        :class="{ error: this.user.name.length > 50 }"
       />
+      <div class="inputInfo">
+        <div class="errorInfo">
+          <span v-if="this.user.name.length > 50">名稱字數上限 50 </span>
+        </div>
+        <div class="lenghtInfo">
+          <span>{{ nameLength }} / 50</span>
+        </div>
+      </div>
     </div>
     <div class="form__label">
       <label for="email">Email</label>
@@ -33,9 +47,15 @@
         id="email"
         placeholder="請輸入email"
         v-model="user.email"
-        required
+        :class="{ error: isEmailError }"
       />
+      <div class="inputInfo">
+        <div class="errorInfo">
+          <span v-if="isEmailError">e-mail重複 , 請修改 e-mail</span>
+        </div>
+      </div>
     </div>
+
     <div class="form__label">
       <label for="password">密碼</label>
       <input
@@ -67,9 +87,23 @@
 
 <script>
 import { mapState } from "vuex";
-import { Toast } from '../utils/helpers'
- export default {
+import { Toast } from "../utils/helpers";
+export default {
   name: "AccountEditForm",
+  props: {
+    isAccountError: {
+      type: Boolean,
+      default: false,
+    },
+    isEmailError: {
+      type: Boolean,
+      default: false,
+    },
+    initialIsProcessing: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       user: {
@@ -87,13 +121,18 @@ import { Toast } from '../utils/helpers'
     currentUser(newValue) {
       this.fetchUser(newValue);
     },
+    "user.account": function () {
+      this.$emit("status-change");
+    },
+    "user.email": function () {
+      this.$emit("status-change");
+    },
   },
   created() {
     this.fetchUser(this.currentUser);
   },
   methods: {
     fetchUser(newValue) {
-      console.log("newValue", newValue);
       const { account, name, email } = newValue;
       this.user = {
         ...this.user,
@@ -104,22 +143,33 @@ import { Toast } from '../utils/helpers'
     },
     async handleSubmit() {
       try {
-         if (this.user.password && this.user.password.length < 4) {
+        this.isProcessing = true
+        if (this.user.name && this.user.name.length > 50) {
+          Toast.fire({
+            icon: "warning",
+            title: "名稱字數不能超過 50 ",
+          });
+          return;
+        }
+        if (this.user.password && this.user.password.length < 4) {
           Toast.fire({
             icon: "warning",
             title: "密碼長度不得小於 4 ",
           });
-          this.password = "";
-          this.checkPassword = "";
+          this.user.password = "";
+          this.user.checkPassword = "";
           return;
         }
-        if (this.user.password && this.user.password !== this.user.checkPassword) {
+        if (
+          this.user.password &&
+          this.user.password !== this.user.checkPassword
+        ) {
           Toast.fire({
             icon: "warning",
             title: "兩次輸入的密碼不同",
           });
-          this.password = "";
-          this.checkPassword = "";
+          this.user.password = "";
+          this.user.checkPassword = "";
           return;
         }
         const formDate = this.user;
@@ -131,6 +181,9 @@ import { Toast } from '../utils/helpers'
   },
   computed: {
     ...mapState(["currentUser"]),
+    nameLength() {
+      return this.user.name.length;
+    },
   },
 };
 </script>
@@ -149,6 +202,21 @@ import { Toast } from '../utils/helpers'
   margin-bottom: 24px;
   background: #f5f8fa;
   border-radius: 2px;
+  input {
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #50b5ff;
+      outline: none;
+    }
+  }
+
+  .error {
+    border-bottom: 1px solid #fc5a5a;
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid #fc5a5a;
+    }
+  }
 }
 
 .form__label input {
@@ -203,5 +271,24 @@ import { Toast } from '../utils/helpers'
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+}
+
+.inputInfo {
+  display: flex;
+  margin: 0 1rem 0 5px;
+  justify-content: space-between;
+  .errorInfo {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fc5a5a;
+  }
+  .lengthInfo {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #696974;
+    text-align: right;
+  }
 }
 </style>
