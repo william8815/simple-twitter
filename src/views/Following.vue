@@ -43,7 +43,10 @@
               :key="following.followingId"
             >
               <router-link
-                :to="{ name: 'user-post', params: { id: follower.followerId } }"
+                :to="{
+                  name: 'user-post',
+                  params: { id: following.followingId },
+                }"
                 class="avator"
               >
                 <img
