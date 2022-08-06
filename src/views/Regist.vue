@@ -22,7 +22,7 @@
 
         <div class="inputInfo">
           <div class="errorInfo">
-            <span v-if="isAccountError">帳號 或 e-mail 已經有人使用</span>
+            <span id="info" v-if="isAccountError">帳號 或 e-mail 已經有人使用</span>
           </div>
         </div>
       </div>
@@ -40,7 +40,7 @@
         />
         <div class="inputInfo">
           <div class="errorInfo">
-            <span v-if="this.name.length > 50">名稱字數上限 50 </span>
+            <span id="info" v-if="this.name.length > 50">名稱字數上限 50 </span>
           </div>
           <div class="lenghtInfo">
             <span id="length">{{ nameLength }} / 50</span>
@@ -61,7 +61,9 @@
 
         <div class="inputInfo">
           <div class="errorInfo">
-            <span v-if="isEmailError">帳號 或 e-mail 已經有人使用</span>
+            <span id="info" v-if="isEmailError"
+              >帳號 或 e-mail 已經有人使用</span
+            >
           </div>
         </div>
       </div>

@@ -110,6 +110,7 @@ export default {
   justify-content: center;
 
   img {
+    border-radius: 50%;
     width: 50px;
     height: 50px;
   }
