@@ -24,3 +24,28 @@ export const Toast = swal.mixin({
   showConfirmButton: false,
   timer: 3000
 })
+
+
+export const DeleteAlert = swal.mixin({
+  title: "確定要刪除推文 ? ",
+  icon: "warning",
+  width: '280px',
+  toast: true,
+  iconColor: '#FF974A',
+  showCancelButton: true,
+  confirmButtonColor: '#FFC542',
+  cancelButtonColor: '#FFC542',
+  confirmButtonText: '確定',
+  cancelButtonText: '取消',
+})
+
+export const DeleteInfoAlert = swal.mixin({
+  toast: true,
+  position: 'top-end',
+  icon: 'success',
+  title: '推文已刪除', 
+  showConfirmButton: false,
+  timer: 3000
+})
+
+

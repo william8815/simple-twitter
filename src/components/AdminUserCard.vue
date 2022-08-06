@@ -112,7 +112,6 @@ export default {
 .container {
   position: relative;
   width: 249px;
-  // margin: 1rem;
   margin: 0 0 1rem 1rem;
   padding: 0;
 }
