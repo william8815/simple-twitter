@@ -30,7 +30,10 @@ export default {
 
   // 編輯使用者
   editUser(id, data) {
-    return apiHelper.put(`/users/${id} `, { ...data })
+    console.log(id)
+    console.log(1)
+    console.log(data)
+    return apiHelper.put(`/users/${id} `, data )
 
   },
   // 查詢特定使用者的所有推文

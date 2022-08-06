@@ -35,7 +35,6 @@
         <template v-if="isCurrentUser">
           <UserEditModal
             :initialuser="user"
-            @after-submit="handleAfterSubmit"
           />
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
@@ -320,43 +319,44 @@ export default {
     },
 
     // 處理表單傳送事件
-    async handleAfterSubmit(formData) {
-      try {
-        this.isLoading = true;
-        const id = this.$route.params.id;
+    // async handleAfterSubmit(formData) {
+    //   try {
+    //     this.isLoading = true;
+    //     const id = this.$route.params.id;
 
-        // const { data } = await usersAPI.editUser(id, {
-        //   name: formData.name,
-        //   introduction: formData.introduction,
-        //   front_cover: formData.front_cover,
-        //   avatar: formData.avatar,
-        // });
-        // Toast.fire({
-        //   icon: "success",
-        //   title: data.message,
-        // });
-        // for (let [name, value] of formData.entries()) {
-        //   console.log(name + ": " + value);
-        // }
+    //     const { data } = await usersAPI.editUser(id, {
+    //       name: formData.name,
+    //       introduction: formData.introduction,
+    //       front_cover: formData.front_cover,
+    //       avatar: formData.avatar,
+    //     });
+    //     Toast.fire({
+    //       icon: "success",
+    //       title: data.message,
+    //     });
+    //     for (let [name, value] of formData.entries()) {
+    //       console.log(name + ": " + value);
+    //     }
+        
 
-        const { data } = await usersAPI.editUser(id, formData );
-        // console.log(data);
-        this.$store.commit("setCurrentUser", data.newData);
-        this.isEdit = false;
+    //     const { data } = await usersAPI.editUser(id, formData);
+    //     // console.log(data);
+    //     this.$store.commit("setCurrentUser", data.newData);
+    //     this.isEdit = false;
 
-        this.fetchUser(id);
-        this.isLoading = false;
-        // this.$router.push(`/user/${id}`);
-      } catch (error) {
-        this.isLoading = false;
-        console.log(error);
+    //     this.fetchUser(id);
+    //     this.isLoading = false;
+    //     // this.$router.push(`/user/${id}`);
+    //   } catch (error) {
+    //     this.isLoading = false;
+    //     console.log(error);
 
-        Toast.fire({
-          icon: "error",
-          title: "無法儲存個人資料，請稍後再試",
-        });
-      }
-    },
+    //     Toast.fire({
+    //       icon: "error",
+    //       title: "無法儲存個人資料，請稍後再試",
+    //     });
+    //   }
+    // },
   },
 };
 </script>
