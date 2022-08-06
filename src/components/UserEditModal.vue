@@ -169,6 +169,11 @@ export default {
       type: Object,
       require: true,
     },
+
+    fetchUser:{
+      type: Function,
+      require: true,
+    }
   },
 
   created() {
@@ -279,13 +284,12 @@ export default {
           });
           return;
         }
-        // const formData = this.user;
+
         const form = e.target;
         const formData = new FormData(form);
-
         const id = this.$route.params.id;
 
-        const { data } = await usersAPI.editUser(id , formData);
+        const { data } = await usersAPI.editUser(id, formData);
 
         if (data.status !== "success") {
           console.log(data.message);
@@ -293,7 +297,10 @@ export default {
 
         this.$store.commit("setCurrentUser", data.newData);
 
+        this.fetchUser(id)
+
         this.isEdit = false;
+        
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -302,10 +309,6 @@ export default {
         });
       }
     },
-
-    // overName(){
-
-    // }
   },
 };
 </script>
@@ -494,6 +497,10 @@ textarea {
     background-color: #f5f8fa;
     border-bottom: 2px solid #657786;
     padding: 0 15px;
+
+    &:hover , &:focus{
+      border-bottom: 2px solid #50b5ff;
+    }
 
     & label {
       font-size: 14px;
