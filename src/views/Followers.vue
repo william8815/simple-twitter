@@ -52,7 +52,7 @@
               </router-link>
               <div class="user">
                 <div class="user__info">
-                  <router-link :to="{ name: 'main' }">
+                  <router-link :to="{ name: 'user-post', params: { id: follower.followerId } }">
                     <span class="user__name">{{ follower.followerName }}</span>
                   </router-link>
                   <button

@@ -178,10 +178,13 @@ export default {
 
   computed: {
     nameLength() {
-      return this.user.name.length;
+      return this.user.name.length ;
     },
     introductionLength() {
-      return this.user.introduction.length;
+      if(this.user.introduction.length === 0){
+        return 0
+      }
+      return this.user.introduction.length ;
     },
   },
 
@@ -245,7 +248,7 @@ export default {
 
       if (files.length === 0) {
         // 使用者沒有選擇上傳的檔案
-        this.user.avatar = this.initialuserthis.avatar;
+        this.user.avatar = this.initialuser.avatar;
         return;
       }
       // 否則產生預覽圖
@@ -277,8 +280,16 @@ export default {
       // const formData = this.user;
       const form = e.target;
       const formData = new FormData(form);
-      console.log(form);
-      console.log(formData);
+      
+      console.log(formData.get('name'));
+      console.log(formData.get('introduction'));
+      console.log(formData.get('avatar'));
+      console.log(formData.get('front_cover'));
+
+      // for (let [name, value] of formData.entries()) {
+      //     console.log(name + ": " + value);
+      //   }
+
       this.$emit("after-submit", formData);
       this.isEdit = false;
     },
@@ -324,6 +335,7 @@ textarea {
     color: var(--main-color);
     border: 1px solid var(--main-color);
     border-radius: 50px;
+    cursor: pointer
   }
 }
 
@@ -362,6 +374,7 @@ textarea {
     width: 15px;
     height: 15px;
     margin-left: 20px;
+    cursor: pointer
   }
 
   &__title {
@@ -379,6 +392,7 @@ textarea {
     color: #fff;
     font-size: 16px;
     border-radius: 50px;
+    cursor: pointer
   }
 }
 
@@ -412,6 +426,7 @@ textarea {
       left: 78px;
       transform: translateY(-50%);
       border-radius: 50% 50%;
+      cursor: pointer
     }
   }
 }
@@ -435,6 +450,7 @@ textarea {
   &__cross {
     width: 20px;
     height: 20px;
+    cursor: pointer
   }
 
   &__camera {

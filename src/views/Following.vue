@@ -56,7 +56,12 @@
               </router-link>
               <div class="user">
                 <div class="user__info">
-                  <router-link :to="{ name: 'main' }">
+                  <router-link
+                    :to="{
+                      name: 'user-post',
+                      params: { id: following.followingId },
+                    }"
+                  >
                     <span class="user__name">{{
                       following.followingName
                     }}</span>

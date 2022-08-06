@@ -20,8 +20,12 @@
         </div>
         <div class="reply__friend">
           <span class="reply__friend__text">回覆</span>
-          <span class="reply__friend__span"
-            >@{{ usertweet.Tweet.User.account }}</span
+          <router-link
+            :to="{ name: 'user-post', params: { id: usertweet.Tweet.User.id } }"
+          >
+            <span class="reply__friend__span"
+              >@{{ usertweet.Tweet.User.account }}</span
+            ></router-link
           >
         </div>
         <div class="reply__info__text">{{ usertweet.comment }}</div>

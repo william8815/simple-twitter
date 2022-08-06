@@ -237,7 +237,7 @@ export default {
           name,
           tweetsCount,
           account,
-          introduction,
+          introduction: introduction? introduction : "大家好",
           front_cover,
           avatar,
           followingsCount,
@@ -335,12 +335,12 @@ export default {
         //   icon: "success",
         //   title: data.message,
         // });
-        for (let [name, value] of formData.entries()) {
-          console.log(name + ": " + value);
-        }
+        // for (let [name, value] of formData.entries()) {
+        //   console.log(name + ": " + value);
+        // }
 
-        const { data } = await usersAPI.editUser(id, { formData });
-        console.log(data);
+        const { data } = await usersAPI.editUser(id, formData );
+        // console.log(data);
         this.$store.commit("setCurrentUser", data.newData);
         this.isEdit = false;
 
@@ -405,6 +405,7 @@ button {
     img {
       width: 17px;
       height: 14px;
+      cursor: pointer
     }
   }
 
