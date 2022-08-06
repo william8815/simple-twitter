@@ -381,11 +381,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 130px);
+  width: 100vw;
   max-width: 1400px;
   height: 100vh;
-  margin-left: 130px;
-  // flex-wrap: nowrap;
+  padding-left: 130px;
+  margin: 0 auto;
   .main-section {
     flex: 0px 1 1;
   }

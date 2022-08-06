@@ -63,16 +63,16 @@ export default {
       } catch (error) {
         if (error.response.data.message === "帳號已被使用！") {
           this.isAccountError = true;
-          return
+          return;
         }
         if (error.response.data.message === "電子信箱已被使用！") {
           this.isEmailError = true;
-          return
+          return;
         }
         Toast.fire({
-          icon: 'warning',
-          title: error.response.data.message
-        })
+          icon: "warning",
+          title: error.response.data.message,
+        });
       }
     },
     statusChange() {
@@ -85,10 +85,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  width: calc(100vw - 130px);
+  width: 100vw;
   max-width: 1400px;
   height: 100vh;
-  margin-left: 130px;
+  padding-left: 130px;
+  margin: 0 auto;
 }
 @media screen and (max-width: 960px) {
   .set-section {

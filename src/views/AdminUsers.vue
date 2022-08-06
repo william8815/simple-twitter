@@ -72,8 +72,10 @@ export default {
 <style lang="scss" scoped>
 .adminUsers {
   display: flex;
-  max-height: 100vh;
-  width: auto;
+  width: 100vw;
+  max-width: 1400px;
+  height: 100vh;
+  margin: 0 auto;
 }
 
 .main {
@@ -81,6 +83,7 @@ export default {
   flex: 1;
   height: 100vh;
   border-left: 1px solid #e6ecf0;
+  border-right: 1px solid #e6ecf0;
   margin-left: 24px;
   overflow-y: scroll;
 }
@@ -113,6 +116,6 @@ export default {
   margin-top: 1rem;
   display: flex;
   flex-wrap: wrap;
-  padding-left: 1rem;
+  padding-right: 1px;
 }
 </style>

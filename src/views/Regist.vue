@@ -43,7 +43,7 @@
             <span v-if="this.name.length > 50">名稱字數上限 50 </span>
           </div>
           <div class="lenghtInfo">
-            <span>{{ nameLength }} / 50</span>
+            <span id="length">{{ nameLength }} / 50</span>
           </div>
         </div>
       </div>
@@ -89,7 +89,9 @@
       </div>
 
       <div class="form__btn">
-        <button class="btn submit" type="submit" :disabled="isProcessing">註冊</button>
+        <button class="btn submit" type="submit" :disabled="isProcessing">
+          註冊
+        </button>
       </div>
       <div class="form__btn">
         <router-link class="btn cancel" to="/login"> 取消 </router-link>
@@ -118,7 +120,7 @@ export default {
   methods: {
     async handleSubmit() {
       try {
-        this.isProcessing = true
+        this.isProcessing = true;
         if (
           !this.name ||
           !this.email ||
@@ -174,7 +176,7 @@ export default {
         // 成功登入後轉址到登入頁
         this.$router.push("/login");
       } catch (error) {
-        this.isProcessing = false
+        this.isProcessing = false;
         if (error.response.data.message === "帳號或信箱已有人使用了!") {
           this.isEmailError = true;
           this.isAccountError = true;
@@ -303,20 +305,22 @@ export default {
 
 .inputInfo {
   display: flex;
-  margin: 0 1rem 0 5px;
+
   justify-content: space-between;
-  .errorInfo {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 20px;
-    color: #fc5a5a;
-  }
-  .lengthInfo {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 20px;
-    color: #696974;
-    text-align: right;
-  }
+}
+
+#info {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fc5a5a;
+}
+
+#length {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 20px;
+  color: #696974;
+  text-align: right;
 }
 </style>

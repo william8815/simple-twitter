@@ -261,15 +261,19 @@ export default {
       }
     },
 
+
     // 追蹤他人
     async addFollow() {
+
       try {
         this.isProcessing = true;
         const id = this.$route.params.id;
+
         const { data } = await usersAPI.addFollowing(id);
         if (data.status !== "success") {
           throw new Error(data.message);
         }
+
 
         Toast.fire({
           icon: "success",
@@ -380,10 +384,11 @@ button {
 }
 
 .container {
-  width: calc(100vw - 130px);
+  width: 100vw;
   max-width: 1400px;
   height: 100vh;
-  margin-left: 130px;
+  padding-left: 130px;
+  margin: 0 auto;
   .main-section {
     flex: 1 1;
   }

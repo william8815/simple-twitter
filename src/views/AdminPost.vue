@@ -29,6 +29,8 @@ import adminAPI from "../apis/admin";
 import AdminSidbar from "../components/AdminSidbar.vue";
 import AdminTweetsList from "../components/AdminTweetsList.vue";
 import Spinner from "../components/Spinner.vue";
+import { DeleteInfoAlert } from "../utils/helpers";
+
 
 export default {
   name: "AdminPost",
@@ -65,15 +67,15 @@ export default {
     },
     async afterDeleteTweet(tweetId) {
       try {
+
+
         const { data } = await adminAPI.deleteTweet({ tweetId });
+
         if (data.statu === "error") {
           throw new Error(data.message);
         }
         this.tweets = this.tweets.filter((tweet) => tweet.id !== tweetId);
-        Toast.fire({
-          icon: "success",
-          title: data.message,
-        });
+         DeleteInfoAlert.fire();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -91,8 +93,10 @@ export default {
 <style lang="scss" scoped>
 .adminUsers {
   display: flex;
-  max-height: 100vh;
-  width: auto;
+  width: 100vw;
+  max-width: 1400px;
+  height: 100vh;
+  margin: 0 auto;
 }
 
 .main {
@@ -112,7 +116,6 @@ export default {
 .main__title {
   position: sticky;
   top: 0;
-  // width: 937px;
   width: 100%;
   background: #fff;
   border-bottom: 1px solid#E6ECF0;
