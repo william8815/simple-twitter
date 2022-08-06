@@ -13,7 +13,7 @@
       />
       <div class="inputInfo">
         <div class="errorInfo">
-          <span v-if="isAccountError">帳號重複 , 請修改 帳號</span>
+          <span v-if="isAccountError" id="info">帳號重複 , 請修改 帳號</span>
         </div>
       </div>
     </div>
@@ -31,10 +31,12 @@
       />
       <div class="inputInfo">
         <div class="errorInfo">
-          <span v-if="this.user.name.length > 50">名稱字數上限 50 </span>
+          <span v-if="this.user.name.length > 50" id="info"
+            >名稱字數上限 50
+          </span>
         </div>
         <div class="lenghtInfo">
-          <span>{{ nameLength }} / 50</span>
+          <span id="length">{{ nameLength }} / 50</span>
         </div>
       </div>
     </div>
@@ -51,7 +53,7 @@
       />
       <div class="inputInfo">
         <div class="errorInfo">
-          <span v-if="isEmailError">e-mail重複 , 請修改 e-mail</span>
+          <span v-if="isEmailError" id="info">e-mail重複 , 請修改 e-mail</span>
         </div>
       </div>
     </div>
@@ -101,8 +103,8 @@ export default {
     },
     initialIsProcessing: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -143,7 +145,7 @@ export default {
     },
     async handleSubmit() {
       try {
-        this.isProcessing = true
+        this.isProcessing = true;
         if (this.user.name && this.user.name.length > 50) {
           Toast.fire({
             icon: "warning",
@@ -277,18 +279,22 @@ export default {
   display: flex;
   margin: 0 1rem 0 5px;
   justify-content: space-between;
-  .errorInfo {
+    #info {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
     color: #fc5a5a;
   }
-  .lengthInfo {
+
+    #length {
     font-weight: 500;
     font-size: 12px;
     line-height: 20px;
     color: #696974;
     text-align: right;
   }
+
 }
+
+
 </style>
