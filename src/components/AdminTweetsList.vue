@@ -12,7 +12,7 @@
       </div>
 
       <p>
-        {{ tweet.description }}
+        {{ tweet.description | tweetFilter }}
       </p>
     </div>
     <div class="list__icon">
@@ -81,12 +81,19 @@ export default {
   created() {
     this.fetchTweet();
   },
+  filters: {
+    tweetFilter(tweet) {
+      if(tweet.length > 50) {
+         return tweet.slice(0,50) + ' ......'
+      }
+     return tweet
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .tweets__list {
-  min-height: 120px;
   height: auto;
   display: flex;
   padding-bottom: 1rem;
