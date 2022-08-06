@@ -7,12 +7,12 @@
       <div class="info__title">
         <div class="title__name">{{ tweet.User.name }}</div>
         <div class="title__date">
-          @{{ tweet.User.text }} ‧ {{ tweet.createdAt |  fromNow }}
+          @{{ tweet.User.text }} ‧ {{ tweet.createdAt | fromNow }}
         </div>
       </div>
 
       <p>
-        {{ tweet.description }}
+        {{ tweet.description | tweetFilter }}
       </p>
     </div>
     <div class="list__icon">
@@ -26,11 +26,11 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { fromNowFilter } from './../utils/mixins'
+import { fromNowFilter } from "./../utils/mixins";
+import { DeleteAlert } from "../utils/helpers";
 export default {
   name: "AdminTweetsList",
-  mixins: [ fromNowFilter ],
+  mixins: [fromNowFilter],
   props: {
     tweetInfo: {
       type: Object,
@@ -54,8 +54,13 @@ export default {
     };
   },
   methods: {
-    handleDeleteButton(tweetId) {
-      this.$emit("after-delete-tweet", tweetId);
+    async handleDeleteButton(tweetId) {
+      DeleteAlert.fire().then((result) => {
+        console.log(result);
+        if (result.isConfirmed) {
+          this.$emit("after-delete-tweet", tweetId);
+        }
+      });
     },
     fetchTweet() {
       const { id, description, createdAt, updatedAt, User } = this.tweetInfo;
@@ -76,12 +81,19 @@ export default {
   created() {
     this.fetchTweet();
   },
+  filters: {
+    tweetFilter(tweet) {
+      if(tweet.length > 50) {
+         return tweet.slice(0,50) + ' ......'
+      }
+     return tweet
+    }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
 .tweets__list {
-  min-height: 120px;
   height: auto;
   display: flex;
   padding-bottom: 1rem;
