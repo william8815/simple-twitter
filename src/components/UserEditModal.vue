@@ -18,7 +18,12 @@
 
       <!-- 返回圖示、標題、儲存紐 -->
       <div class="edit__modal" v-show="isEdit">
-        <form action="" class="form" @submit.stop.prevent="handleSubmit">
+        <form
+          action=""
+          class="form"
+          @submit.stop.prevent="handleSubmit"
+          enctype="multipart/form-data"
+        >
           <div class="header">
             <img
               src="./../assets/img/橘叉叉.png"
@@ -28,7 +33,13 @@
             />
 
             <span class="header__title">編輯個人資料</span>
-            <button type="submit" class="header__save" :disabled="isNameOver || isInfoOver">儲存</button>
+            <button
+              type="submit"
+              class="header__save"
+              :disabled="isNameOver || isInfoOver"
+            >
+              儲存
+            </button>
           </div>
 
           <!-- 中間使用者背景和使用者頭像的部分 -->
@@ -46,7 +57,7 @@
               <input
                 type="file"
                 id="cover-input"
-                name="coverImg"
+                name="front_cover"
                 accept="image/*"
                 class="control__cover__input"
                 @change="handleChangeCover"
@@ -76,7 +87,7 @@
               <input
                 type="file"
                 id="self-input"
-                name="selfImg"
+                name="avatar"
                 @change="handleChangeAvatar"
               />
               <label for="self-input">
@@ -99,15 +110,14 @@
                   v-model="user.name"
                   type="text"
                   name="name"
-                  required
                 />
               </div>
 
-              <span class="text__name__alert" v-show="isNameOver">字數不能超過50字!</span>
-
-              <span class="text__name__count">
-                {{ nameLength }}/50</span
+              <span class="text__name__alert" v-show="isNameOver"
+                >字數不能超過50字!</span
               >
+
+              <span class="text__name__count"> {{ nameLength }}/50</span>
             </div>
 
             <!-- 修改自介 -->
@@ -116,18 +126,18 @@
                 <label for="" class="info__label">自我介紹</label>
                 <textarea
                   v-model="user.introduction"
-                  name="info"
+                  name="introduction"
                   cols="30"
                   rows="5"
                 />
               </div>
 
-              <span class="text__info__alert" v-show="isInfoOver">字數不能超過160字!</span>
+              <span class="text__info__alert" v-show="isInfoOver"
+                >字數不能超過160字!</span
+              >
 
               <span class="text__info__count"
-                >{{
-                  introductionLength
-                }}/160</span
+                >{{ introductionLength }}/160</span
               >
             </div>
           </div>
@@ -140,6 +150,7 @@
 
 
 <script>
+import { Toast } from "../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
 import { emptyBackgroundFilter } from "./../utils/mixins";
 
@@ -147,6 +158,11 @@ export default {
   mixins: [emptyImageFilter, emptyBackgroundFilter],
 
   props: {
+    initialIsedit: {
+      type: Boolean,
+      require: true,
+    },
+
     initialuser: {
       type: Object,
       require: true,
@@ -160,31 +176,35 @@ export default {
     };
   },
 
-  computed:{
-    nameLength(){
-      return this.user.name.length
+  computed: {
+    nameLength() {
+      return this.user.name.length;
     },
-    introductionLength(){
-      return this.user.introduction.length
-    }
+    introductionLength() {
+      return this.user.introduction.length;
+    },
   },
 
-  watch:{
-    "user.name": function(){      
-      if(this.user.name.length > 50){
-        this.isNameOver = true
-      }else{
-        this.isNameOver = false
+  watch: {
+    "user.name": function () {
+      if (this.user.name.length > 50) {
+        this.isNameOver = true;
+      } else {
+        this.isNameOver = false;
       }
     },
 
-    "user.introduction": function(){
-      if(this.user.introduction.length > 160){
-        this.isInfoOver = true
-      }else{
-        this.isInfoOver = false
+    "user.introduction": function () {
+      if (this.user.introduction.length > 160) {
+        this.isInfoOver = true;
+      } else {
+        this.isInfoOver = false;
       }
-    }
+    },
+
+    initialuser(newValue) {
+      this.user = newValue;
+    },
   },
 
   data() {
@@ -198,7 +218,7 @@ export default {
       },
       isEdit: false,
       isNameOver: false,
-      isInfoOver: false
+      isInfoOver: false,
     };
   },
 
@@ -212,12 +232,12 @@ export default {
 
       if (files.length === 0) {
         // 使用者沒有選擇上傳的檔案
-        this.user.front_cover = "";
-      } else {
-        // 否則產生預覽圖
-        const imageURL = window.URL.createObjectURL(files[0]);
-        this.user.front_cover = imageURL;
+        this.user.front_cover = this.initialuser.front_cover;
+        return;
       }
+      // 否則產生預覽圖
+      const imageURL = window.URL.createObjectURL(files[0]);
+      this.user.front_cover = imageURL;
     },
 
     handleChangeAvatar(e) {
@@ -225,27 +245,48 @@ export default {
 
       if (files.length === 0) {
         // 使用者沒有選擇上傳的檔案
-        this.user.avatar = "";
-      } else {
-        // 否則產生預覽圖
-        const imageURL = window.URL.createObjectURL(files[0]);
-        this.user.avatar = imageURL;
+        this.user.avatar = this.initialuserthis.avatar;
+        return;
       }
+      // 否則產生預覽圖
+      const imageURL = window.URL.createObjectURL(files[0]);
+      this.user.avatar = imageURL;
     },
 
     cancelCover() {
       this.user.front_cover = "";
     },
 
-    handleSubmit() {
-      const formData = this.user;
+    handleSubmit(e) {
+      if (this.user.name.trim().length === 0) {
+        Toast.fire({
+          icon: "error",
+          title: "名稱不能空白",
+        });
+        return;
+      }
+
+      if (this.user.introduction.trim().length === 0) {
+        Toast.fire({
+          icon: "error",
+          title: "自我介紹不能空白",
+        });
+        return;
+      }
+
+      // const formData = this.user;
+      const form = e.target;
+      const formData = new FormData(form);
+      console.log(form);
+      console.log(formData);
       this.$emit("after-submit", formData);
+      this.isEdit = false;
     },
 
     // overName(){
-      
+
     // }
-  },  
+  },
 };
 </script>
 

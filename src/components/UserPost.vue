@@ -35,7 +35,7 @@
             <img
               src="./../assets/img/喜歡人數.png"
               alt=""
-              class="post__info__icons__like__img"
+              class="post__info__icons__like__img"              
             />
             <span class="post__info__icons__like__span">{{
               usertweet.LikesCount
@@ -49,6 +49,7 @@
 
 <script>
 import usersAPI from "./../apis/users";
+
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
 import { fromNowFilter } from "./../utils/mixins";
@@ -110,6 +111,7 @@ export default {
         });
       }
     },
+
   },
 };
 </script>

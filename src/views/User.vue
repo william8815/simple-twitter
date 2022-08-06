@@ -13,7 +13,7 @@
             <img
               src="./../assets/img/左箭頭.png"
               alt=""
-              @click="$router.back(-1)"
+              @click="$router.back()"
             />
           </div>
           <div class="card__header__title">
@@ -33,7 +33,10 @@
 
         <!-- 若是當前使用者，則會出現編輯個人資料 -->
         <template v-if="isCurrentUser">
-          <UserEditModal  :initialuser="user" @after-submit="handleAfterSubmit"/>
+          <UserEditModal
+            :initialuser="user"
+            @after-submit="handleAfterSubmit"
+          />
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
         <div class="card__edit" v-else>
@@ -61,11 +64,25 @@
             />
           </button>
 
-          <div v-if="isFollowed">
-            <button type="button" class="card__edit__follow">正在跟隨</button>
+          <div v-if="user.isFollowed">
+            <button
+              type="button"
+              class="card__edit__follow"
+              @click.stop.prevent="deleteFollow"
+              :disabled="isProcessing"
+            >
+              正在跟隨
+            </button>
           </div>
           <div v-else>
-            <button type="button" class="card__edit__unfollow">跟隨</button>
+            <button
+              type="button"
+              class="card__edit__unfollow"
+              @click.stop.prevent="addFollow"
+              :disabled="isProcessing"
+            >
+              跟隨
+            </button>
           </div>
         </div>
         <!-- 使用者跟隨的數量 -->
@@ -76,13 +93,17 @@
 
           <div class="card__text__follow">
             <div>
-              <router-link to="" class="card__text__following"
+              <router-link
+                :to="{ name: 'following', params: { id: $route.params.id } }"
+                class="card__text__following"
                 ><span>{{ user.followingsCount }}</span
                 >跟隨中</router-link
               >
             </div>
             <div>
-              <router-link to="" class="card__text__followers"
+              <router-link
+                :to="{ name: 'followers', params: { id: $route.params.id } }"
+                class="card__text__followers"
                 ><span>{{ user.Followers.length }}</span
                 >跟隨者</router-link
               >
@@ -167,12 +188,13 @@ export default {
         avatar: "",
         followingsCount: "",
         Followers: "",
+        isFollowed: false,
       },
       isLoading: false,
       isCurrentUser: true,
       isSubscribing: false,
-      isFollowed: true,
-      isEdit: true,
+      isEdit: false,
+      isProcessing: false,
     };
   },
 
@@ -185,6 +207,13 @@ export default {
     // 先取得要渲染的使用者id
     const { id: userId } = this.$route.params;
     this.fetchUser(userId);
+  },
+
+  watch: {
+    "$route.params.id": function (id) {
+      // 可以試試看換user.id
+      this.fetchUser(id);
+    },
   },
 
   methods: {
@@ -201,6 +230,7 @@ export default {
           avatar,
           followingsCount,
           Followers,
+          isFollowed,
         } = data;
 
         this.user = {
@@ -212,6 +242,7 @@ export default {
           avatar,
           followingsCount,
           Followers,
+          isFollowed,
         };
 
         if (this.$store.state.currentUser.id === Number(userId)) {
@@ -230,37 +261,98 @@ export default {
       }
     },
 
-    async handleAfterSubmit(formData){
+    // 追蹤他人
+    async addFollow() {
       try {
+        this.isProcessing = true;
         const id = this.$route.params.id;
-        console.log(formData.name)
-        console.log(formData.introduction)
-        console.log(formData.front_cover)
-        console.log(formData.avatar)
+        const { data } = await usersAPI.addFollowing(id);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
 
-        const { data } = await usersAPI.editUser(id, {
-          name: formData.name,
-          introduction: formData.introduction,
-          front_cover: formData.front_cover,
-          avatar: formData.avatar,
-        });
         Toast.fire({
           icon: "success",
-          title: data.message,
+          title: "追蹤用戶成功",
         });
-        console.log(data.newData)
-        this.$store.commit("setCurrentUser", data.newData);
-       this.$router.push("/main");
-    
+
+        this.user.isFollowed = true;
+        this.isProcessing = false;
       } catch (error) {
-        console.log(error)
+        this.isProcessing = false;
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "追蹤用戶失敗",
+        });
+      }
+    },
+
+    // 取消追蹤他人
+    async deleteFollow() {
+      try {
+        this.isProcessing = true;
+        const id = this.$route.params.id;
+        const { data } = await usersAPI.deleteFollowing(id);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        Toast.fire({
+          icon: "success",
+          title: "已取消追蹤用戶",
+        });
+
+        this.user.isFollowed = false;
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消追蹤用戶失敗",
+        });
+      }
+    },
+
+    // 處理表單傳送事件
+    async handleAfterSubmit(formData) {
+      try {
+        this.isLoading = true;
+        const id = this.$route.params.id;
+
+        // const { data } = await usersAPI.editUser(id, {
+        //   name: formData.name,
+        //   introduction: formData.introduction,
+        //   front_cover: formData.front_cover,
+        //   avatar: formData.avatar,
+        // });
+        // Toast.fire({
+        //   icon: "success",
+        //   title: data.message,
+        // });
+        for (let [name, value] of formData.entries()) {
+          console.log(name + ": " + value);
+        }
+
+        const { data } = await usersAPI.editUser(id, { formData });
+        console.log(data);
+        this.$store.commit("setCurrentUser", data.newData);
+        this.isEdit = false;
+
+        this.fetchUser(id);
+        this.isLoading = false;
+        // this.$router.push(`/user/${id}`);
+      } catch (error) {
+        this.isLoading = false;
+        console.log(error);
 
         Toast.fire({
           icon: "error",
           title: "無法儲存個人資料，請稍後再試",
         });
       }
-    }
+    },
   },
 };
 </script>
