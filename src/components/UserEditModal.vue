@@ -21,7 +21,7 @@
         <form
           action=""
           class="form"
-          @submit.stop.prevent="handleSubmit"
+          @submit.prevent.stop="handleSubmit"
           enctype="multipart/form-data"
         >
           <div class="header">
@@ -150,6 +150,8 @@
 
 
 <script>
+import usersAPI from "./../apis/users";
+
 import { Toast } from "../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
 import { emptyBackgroundFilter } from "./../utils/mixins";
@@ -167,6 +169,11 @@ export default {
       type: Object,
       require: true,
     },
+
+    fetchUser:{
+      type: Function,
+      require: true,
+    }
   },
 
   created() {
@@ -178,13 +185,13 @@ export default {
 
   computed: {
     nameLength() {
-      return this.user.name.length ;
+      return this.user.name.length;
     },
     introductionLength() {
-      if(this.user.introduction.length === 0){
-        return 0
+      if (this.user.introduction.length === 0) {
+        return 0;
       }
-      return this.user.introduction.length ;
+      return this.user.introduction.length;
     },
   },
 
@@ -260,43 +267,48 @@ export default {
       this.user.front_cover = "";
     },
 
-    handleSubmit(e) {
-      if (this.user.name.trim().length === 0) {
+    async handleSubmit(e) {
+      try {
+        if (this.user.name.trim().length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "名稱不能空白",
+          });
+          return;
+        }
+
+        if (this.user.introduction.trim().length === 0) {
+          Toast.fire({
+            icon: "error",
+            title: "自我介紹不能空白",
+          });
+          return;
+        }
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const id = this.$route.params.id;
+
+        const { data } = await usersAPI.editUser(id, formData);
+
+        if (data.status !== "success") {
+          console.log(data.message);
+        }
+
+        this.$store.commit("setCurrentUser", data.newData);
+
+        this.fetchUser(id)
+
+        this.isEdit = false;
+        
+      } catch (error) {
+        console.log(error);
         Toast.fire({
           icon: "error",
-          title: "名稱不能空白",
+          title: "無法編輯使用者資料，請稍後再試",
         });
-        return;
       }
-
-      if (this.user.introduction.trim().length === 0) {
-        Toast.fire({
-          icon: "error",
-          title: "自我介紹不能空白",
-        });
-        return;
-      }
-
-      // const formData = this.user;
-      const form = e.target;
-      const formData = new FormData(form);
-      
-      console.log(formData.get('name'));
-      console.log(formData.get('introduction'));
-      console.log(formData.get('avatar'));
-      console.log(formData.get('front_cover'));
-
-      // for (let [name, value] of formData.entries()) {
-      //     console.log(name + ": " + value);
-      //   }
-
-      this.$emit("after-submit", formData);
-      this.isEdit = false;
     },
-
-    // overName(){
-
-    // }
   },
 };
 </script>
@@ -335,7 +347,7 @@ textarea {
     color: var(--main-color);
     border: 1px solid var(--main-color);
     border-radius: 50px;
-    cursor: pointer
+    cursor: pointer;
   }
 }
 
@@ -374,7 +386,7 @@ textarea {
     width: 15px;
     height: 15px;
     margin-left: 20px;
-    cursor: pointer
+    cursor: pointer;
   }
 
   &__title {
@@ -392,7 +404,7 @@ textarea {
     color: #fff;
     font-size: 16px;
     border-radius: 50px;
-    cursor: pointer
+    cursor: pointer;
   }
 }
 
@@ -426,7 +438,7 @@ textarea {
       left: 78px;
       transform: translateY(-50%);
       border-radius: 50% 50%;
-      cursor: pointer
+      cursor: pointer;
     }
   }
 }
@@ -450,7 +462,7 @@ textarea {
   &__cross {
     width: 20px;
     height: 20px;
-    cursor: pointer
+    cursor: pointer;
   }
 
   &__camera {
@@ -485,6 +497,10 @@ textarea {
     background-color: #f5f8fa;
     border-bottom: 2px solid #657786;
     padding: 0 15px;
+
+    &:hover , &:focus{
+      border-bottom: 2px solid #50b5ff;
+    }
 
     & label {
       font-size: 14px;

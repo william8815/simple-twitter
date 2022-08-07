@@ -35,8 +35,9 @@
             <img
               src="./../assets/img/喜歡人數.png"
               alt=""
-              class="post__info__icons__like__img"              
+              class="post__info__icons__like__img"
             />
+
             <span class="post__info__icons__like__span">{{
               usertweet.LikesCount
             }}</span>
@@ -71,6 +72,7 @@ export default {
           description: "",
           RepliesCount: 0,
           LikesCount: 0,
+          isLiked: false,
         },
       ],
       isLoading: false,
@@ -111,7 +113,6 @@ export default {
         });
       }
     },
-
   },
 };
 </script>

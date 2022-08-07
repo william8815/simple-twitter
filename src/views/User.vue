@@ -33,10 +33,7 @@
 
         <!-- 若是當前使用者，則會出現編輯個人資料 -->
         <template v-if="isCurrentUser">
-          <UserEditModal
-            :initialuser="user"
-            @after-submit="handleAfterSubmit"
-          />
+          <UserEditModal :initialuser="user" :fetchUser="fetchUser"/>
         </template>
         <!-- 非當前使用者則是出現三個圖式 -->
         <div class="card__edit" v-else>
@@ -214,6 +211,7 @@ export default {
       // 可以試試看換user.id
       this.fetchUser(id);
     },
+    
   },
 
   methods: {
@@ -312,45 +310,6 @@ export default {
         Toast.fire({
           icon: "error",
           title: "取消追蹤用戶失敗",
-        });
-      }
-    },
-
-    // 處理表單傳送事件
-    async handleAfterSubmit(formData) {
-      try {
-        this.isLoading = true;
-        const id = this.$route.params.id;
-
-        // const { data } = await usersAPI.editUser(id, {
-        //   name: formData.name,
-        //   introduction: formData.introduction,
-        //   front_cover: formData.front_cover,
-        //   avatar: formData.avatar,
-        // });
-        // Toast.fire({
-        //   icon: "success",
-        //   title: data.message,
-        // });
-        // for (let [name, value] of formData.entries()) {
-        //   console.log(name + ": " + value);
-        // }
-
-        const { data } = await usersAPI.editUser(id, formData);
-        // console.log(data);
-        this.$store.commit("setCurrentUser", data.newData);
-        this.isEdit = false;
-
-        this.fetchUser(id);
-        this.isLoading = false;
-        // this.$router.push(`/user/${id}`);
-      } catch (error) {
-        this.isLoading = false;
-        console.log(error);
-
-        Toast.fire({
-          icon: "error",
-          title: "無法儲存個人資料，請稍後再試",
         });
       }
     },
