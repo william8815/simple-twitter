@@ -33,9 +33,21 @@
 
           <div class="post__info__icons__like">
             <img
+              v-if="!usertweet.isLiked"
               src="./../assets/img/喜歡人數.png"
               alt=""
               class="post__info__icons__like__img"
+              :class="{ disabled: isProcessing }"
+              @click.stop.prevent="addLike(usertweet.id)"
+            />
+
+            <img
+              v-else
+              src="./../assets/img/紅愛心.png"
+              alt=""
+              class="post__info__icons__like__img"
+              :class="{ disabled: isProcessing }"
+              @click.stop.prevent="deleteLike(usertweet.id)"
             />
 
             <span class="post__info__icons__like__span">{{
@@ -50,6 +62,7 @@
 
 <script>
 import usersAPI from "./../apis/users";
+import tweetsAPI from "./../apis/tweet";
 
 import { Toast } from "./../utils/helpers";
 import { emptyImageFilter } from "./../utils/mixins";
@@ -75,6 +88,7 @@ export default {
           isLiked: false,
         },
       ],
+      isProcessing: false,
       isLoading: false,
     };
   },
@@ -94,22 +108,89 @@ export default {
   },
 
   methods: {
+    // 取得特定使用者的所有貼文
     async getUserTweets(userId) {
       try {
-        this.isLoading = true;
-        // 取得特定使用者的所有貼文
+        this.isProcessing = true;
         const { data } = await usersAPI.getUserTweets(userId);
 
         const usertweets = { data };
         // 將取得的資料解構附值至data中
         this.usertweets = usertweets.data;
 
-        this.isLoading = false;
+        this.isProcessing = false;
       } catch (error) {
-        this.isLoading = false;
+        this.isProcessing = false;
         Toast.fire({
           icon: "error",
           title: "無法取得個人推文，請稍後再試",
+        });
+
+        this.$router.push("/main");
+      }
+    },
+
+    // 新增喜歡
+    async addLike(tweetId) {
+      try {
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.addTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.usertweets = this.usertweets.map((usertweet) => {
+          if (usertweet.id === tweetId) {
+            return {
+              ...usertweet,
+              isLiked: true,
+              LikesCount: usertweet.LikesCount + 1,
+            };
+          }
+          return usertweet;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "已喜歡該推文",
+        });
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "喜歡該貼文失敗",
+        });
+      }
+    },
+    // 移除喜歡
+    async deleteLike(tweetId) {
+      try {
+        this.isProcessing = true;
+        const { data } = await tweetsAPI.cancelTweetLike(tweetId);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+        this.usertweets = this.usertweets.map((usertweet) => {
+          if (usertweet.id === tweetId) {
+            return {
+              ...usertweet,
+              isLiked: false,
+              LikesCount: usertweet.LikesCount - 1,
+            };
+          }
+          return usertweet;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "已取消喜歡該推文",
+        });
+        this.isProcessing = false;
+      } catch (error) {
+        this.isProcessing = false;
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "取消喜歡該推文失敗",
         });
       }
     },
@@ -173,7 +254,8 @@ export default {
 
       &__img {
         height: 14px;
-        width: 14px;
+        width: 14px;   
+        cursor: pointer;     
       }
 
       &__span {
@@ -186,6 +268,11 @@ export default {
       &__img {
         height: 14px;
         width: 14px;
+        cursor: pointer;
+
+        &.disabled {
+          pointer-events: none;
+        }
       }
 
       &__span {

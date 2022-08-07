@@ -110,6 +110,7 @@
                   v-model="user.name"
                   type="text"
                   name="name"
+                  maxlength="51"
                 />
               </div>
 
@@ -129,6 +130,7 @@
                   name="introduction"
                   cols="30"
                   rows="5"
+                  maxlength="161"
                 />
               </div>
 
