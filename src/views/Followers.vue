@@ -52,7 +52,12 @@
               </router-link>
               <div class="user">
                 <div class="user__info">
-                  <router-link :to="{ name: 'user-post', params: { id: follower.followerId } }">
+                  <router-link
+                    :to="{
+                      name: 'user-post',
+                      params: { id: follower.followerId },
+                    }"
+                  >
                     <span class="user__name">{{ follower.followerName }}</span>
                   </router-link>
                   <button
@@ -73,7 +78,7 @@
                   </button>
                 </div>
                 <div class="user__post">
-                  {{ follower.post }}
+                  {{ follower.followerIntroduction }}
                 </div>
               </div>
             </li>
@@ -140,10 +145,12 @@ export default {
       try {
         this.isLoading = true;
         const { data } = await userAPI.getUserFollowers(userId);
+        console.log(data);
         this.followers = data;
-        this.followers = this.followers.filter((follower) => {
-          return this.currentUser.id !== follower.followerId;
-        });
+        console.log(this.followers);
+        // this.followers = this.followers.filter((follower) => {
+        //   return this.currentUser.id !== follower.followerId;
+        // });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
@@ -170,6 +177,10 @@ export default {
           }
           return follower;
         });
+        Toast.fire({
+          icon: "success",
+          title: "成功追蹤用戶",
+        });
         this.isProcessing = false;
       } catch (error) {
         this.isProcessing = false;
@@ -195,6 +206,10 @@ export default {
             };
           }
           return follower;
+        });
+        Toast.fire({
+          icon: "success",
+          title: "取消追蹤用戶",
         });
         this.isProcessing = false;
       } catch (error) {

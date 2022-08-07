@@ -1,8 +1,9 @@
 import { apiHelper } from "../utils/helpers";
 export default {
   // 追蹤人數多排到少，若相同則按照姓名正向排序
-  getRecommendUsers() {
-    return apiHelper.get(`/users`,)
+  getRecommendUsers({ limit }) {
+    const searchParams = new URLSearchParams({ limit })
+    return apiHelper.get(`/users?${searchParams.toString()}`)
   },
   // 追蹤用戶
   addFollowing(id) {
@@ -30,7 +31,7 @@ export default {
 
   // 編輯使用者
   editUser(id, data) {
-    return apiHelper.put(`/users/${id} `, data )
+    return apiHelper.put(`/users/${id} `, data)
   },
   // 查詢特定使用者的所有推文
   getUserTweets(id) {
