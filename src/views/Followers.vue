@@ -145,7 +145,6 @@ export default {
       try {
         this.isLoading = true;
         const { data } = await userAPI.getUserFollowers(userId);
-        console.log(data);
         this.followers = data;
         console.log(this.followers);
         this.isLoading = false;
@@ -166,7 +165,6 @@ export default {
           throw new Error(data.message);
         }
         this.followers = this.followers.map((follower) => {
-          console.log(follower.followerId, followerId);
           if (follower.followerId === followerId) {
             return {
               ...follower,
