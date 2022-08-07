@@ -28,7 +28,9 @@
             </router-link>
             <div class="tweet__post">
               <div class="post">
-                {{ tweet.description }}
+                <span style="white-space: pre-wrap">{{
+                  tweet.description
+                }}</span>
               </div>
               <div class="post-time">{{ changeTime }}</div>
             </div>
