@@ -8,7 +8,7 @@
         <img :src="user.avatar" alt="" />
       </div>
       <div class="card__body">
-        <div class="card__title">{{ user.name }}</div>
+        <div class="card__title">{{ user.name | nameLengthFilter }}</div>
         <p class="card__text">@{{ user.account }}</p>
         <div class="click__panel">
           <div class="click__icon">
@@ -104,6 +104,12 @@ export default {
         return Math.round(count / 10000).toLocaleString() + " W";
       } else return count.toLocaleString();
     },
+    nameLengthFilter(name){
+      if(name.length > 16) {
+        return name.slice(0,16) + '...'
+      }
+      return name
+    }
   },
 };
 </script>
@@ -112,6 +118,7 @@ export default {
 .container {
   position: relative;
   width: 249px;
+  height: 314px;
   margin: 0 0 1rem 1rem;
   padding: 0;
 }
