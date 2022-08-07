@@ -473,14 +473,26 @@ button {
   }
 }
 
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .group {
+  position: relative;
+  height: calc(100vh - 430px);
   margin-top: 16px;
-  height: 52px;
+  // height: 52px;
+  overflow-y: scroll;
 }
 
 .nav {
+  position: sticky;
+  top: 0;
   display: flex;
-  height: 100%;
+  // height: 100%;
+  background-color: #fff;
 
   &__item {
     width: 130px;
@@ -504,5 +516,8 @@ button {
       color: var(--main-color);
     }
   }
+}
+.list {
+  height: calc(100% - 52px);
 }
 </style>

@@ -134,6 +134,7 @@ export default {
             icon: "warning",
             title: "請確認已填寫所有欄位",
           });
+          this.isProcessing = false;
           return;
         }
         if (this.name && this.name.length > 50) {
@@ -141,6 +142,7 @@ export default {
             icon: "warning",
             title: "名稱字數不能超過 50 ",
           });
+          this.isProcessing = false;
           return;
         }
         if (this.password.length < 4) {
@@ -150,6 +152,7 @@ export default {
           });
           this.password = "";
           this.checkPassword = "";
+          this.isProcessing = false;
           return;
         }
         if (this.password !== this.checkPassword) {
@@ -159,6 +162,7 @@ export default {
           });
           this.password = "";
           this.checkPassword = "";
+          this.isProcessing = false;
           return;
         }
         const { data } = await authorizationAPI.signUp({
