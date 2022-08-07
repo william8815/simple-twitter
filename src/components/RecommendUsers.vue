@@ -67,7 +67,7 @@ export default {
     ...mapState(["currentUser"]),
   },
   created() {
-    this.fetchUser({ limit: 10 });
+    this.fetchUser({ limit: 11 });
   },
   methods: {
     async fetchUser({ limit }) {

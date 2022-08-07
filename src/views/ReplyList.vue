@@ -130,8 +130,10 @@
                     <span>回覆&nbsp;&nbsp;</span>
                     <span class="sent-account">@{{ tweet.User.account }}</span>
                   </div>
-                  <div class="user__post" style="white-space: pre-wrap">
-                    {{ reply.comment }}
+                  <div class="user__post">
+                    <span style="white-space: pre-wrap">{{
+                      reply.comment
+                    }}</span>
                   </div>
                 </div>
               </li>
