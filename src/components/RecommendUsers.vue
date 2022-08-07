@@ -75,32 +75,9 @@ export default {
         this.isLoading = true;
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
-        this.recommendUsers = users.filter((user) => {
-          if (user.Followers.length !== 0 && user.id !== this.currentUser.id) {
-            for (let usesrSelf of user.Followers) {
-              if (usesrSelf.id !== this.currentUser.id) {
-                return {
-                  id: user.id,
-                  name: user.name,
-                  account: user.account,
-                  avatar: user.avatar,
-                  followersCount: user.followersCount,
-                };
-              }
-            }
-          } else if (
-            user.Followers.length !== 0 &&
-            user.id !== this.currentUser.id
-          ) {
-            return {
-              id: user.id,
-              name: user.name,
-              account: user.account,
-              avatar: user.avatar,
-              followersCount: user.followersCount,
-            };
-          }
-        });
+        this.recommendUsers = users.filter(
+          (user) => user.id !== this.currentUser.id
+        );
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
