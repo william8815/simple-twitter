@@ -76,7 +76,7 @@ export default {
         const { data } = await userAPI.getRecommendUsers();
         const { users } = data;
         this.recommendUsers = users.filter((user) => {
-          if (user.Followers.length !== 0 || user.id === this.currentUser.id) {
+          if (user.Followers.length !== 0 && user.id !== this.currentUser.id) {
             for (let usesrSelf of user.Followers) {
               if (usesrSelf.id !== this.currentUser.id) {
                 return {
@@ -88,7 +88,10 @@ export default {
                 };
               }
             }
-          } else {
+          } else if (
+            user.Followers.length !== 0 &&
+            user.id !== this.currentUser.id
+          ) {
             return {
               id: user.id,
               name: user.name,

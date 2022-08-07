@@ -237,7 +237,7 @@ export default {
           name,
           tweetsCount,
           account,
-          introduction: introduction? introduction : "大家好",
+          introduction: introduction ? introduction : "大家好",
           front_cover,
           avatar,
           followingsCount,
@@ -261,10 +261,8 @@ export default {
       }
     },
 
-
     // 追蹤他人
     async addFollow() {
-
       try {
         this.isProcessing = true;
         const id = this.$route.params.id;
@@ -273,7 +271,6 @@ export default {
         if (data.status !== "success") {
           throw new Error(data.message);
         }
-
 
         Toast.fire({
           icon: "success",
@@ -339,7 +336,7 @@ export default {
         //   console.log(name + ": " + value);
         // }
 
-        const { data } = await usersAPI.editUser(id, formData );
+        const { data } = await usersAPI.editUser(id, formData);
         // console.log(data);
         this.$store.commit("setCurrentUser", data.newData);
         this.isEdit = false;
@@ -405,7 +402,7 @@ button {
     img {
       width: 17px;
       height: 14px;
-      cursor: pointer
+      cursor: pointer;
     }
   }
 
@@ -517,14 +514,26 @@ button {
   }
 }
 
+// 取消滾輪
+::-webkit-scrollbar {
+  /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
+}
 .group {
+  position: relative;
+  height: calc(100vh - 430px);
   margin-top: 16px;
-  height: 52px;
+  // height: 52px;
+  overflow-y: scroll;
 }
 
 .nav {
+  position: sticky;
+  top: 0;
   display: flex;
-  height: 100%;
+  // height: 100%;
+  background-color: #fff;
 
   &__item {
     width: 130px;
@@ -548,5 +557,8 @@ button {
       color: var(--main-color);
     }
   }
+}
+.list {
+  height: calc(100% - 52px);
 }
 </style>

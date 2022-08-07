@@ -27,20 +27,16 @@
           </li>
           <li>
             <router-link
-
               :to="{
                 name: 'user-post',
                 params: { id: currentUser.id },
               }"
-
               class="tag"
             >
               <!-- <img :src="tab.icon" alt="" class="icon" /> -->
               <svg
                 class="icon"
-
                 :class="{ focus: $route.name === 'user-post' }"
-
                 viewBox="0 0 24 24"
                 fill="#fff"
                 stroke="#44444F"
@@ -55,10 +51,7 @@
                   fill="#fff"
                 />
               </svg>
-              <h5 :class="{ focus: $route.name === 'user-post' }">
-
-                個人資料
-              </h5>
+              <h5 :class="{ focus: $route.name === 'user-post' }">個人資料</h5>
             </router-link>
           </li>
           <li>
@@ -251,6 +244,7 @@ export default {
         this.$emit("submit-tweet", {
           description: this.text,
         });
+        this.text = "";
         this.cancelModel();
         Toast.fire({
           icon: "success",
@@ -408,6 +402,7 @@ img {
     font-size: 16px;
     font-weight: 400;
     max-height: 60vh;
+    max-width: 500px;
     color: #6c757d;
   }
   #dummy {
