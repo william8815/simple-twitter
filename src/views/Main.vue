@@ -445,6 +445,7 @@ export default {
         font-weight: 400;
         max-height: 60vh;
         color: #6c757d;
+        width: 500px;
       }
       #dummy {
         visibility: hidden;
@@ -462,7 +463,6 @@ export default {
         left: 0;
         right: 0;
         bottom: 0;
-        width: 100%;
         resize: none;
         font: inherit;
         padding-top: 12px;
@@ -490,7 +490,7 @@ export default {
         border-radius: 50px;
         padding: 8px 16px;
         font-size: 16px;
-        cursor: pointer
+        cursor: pointer;
       }
     }
     &__otherUser {
