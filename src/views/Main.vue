@@ -334,7 +334,7 @@ export default {
     },
     // 新增貼文
     async submitTweet() {
-      if (this.content.length === 0) {
+      if (this.content.trim() === "") {
         Toast.fire({
           icon: "error",
           title: "推文內容請勿空白",

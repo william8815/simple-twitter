@@ -221,7 +221,7 @@ export default {
       this.$router.push("/login");
     },
     async handleSubmit() {
-      if (this.text.length === 0) {
+      if (this.text.trim() === "") {
         Toast.fire({
           icon: "error",
           title: "推文內容請勿空白",
