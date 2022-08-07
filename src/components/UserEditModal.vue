@@ -118,7 +118,12 @@
                 >字數不能超過50字!</span
               >
 
-              <span class="text__name__count"> {{ nameLength }}/50</span>
+              <span
+                class="text__name__count"
+                :class="{ red: user.name.length > 50 }"
+              >
+                {{ nameLength }}/50</span
+              >
             </div>
 
             <!-- 修改自介 -->
@@ -138,7 +143,9 @@
                 >字數不能超過160字!</span
               >
 
-              <span class="text__info__count"
+              <span
+                class="text__info__count"
+                :class="{ red: user.introduction.length > 160 }"
                 >{{ introductionLength }}/160</span
               >
             </div>
@@ -172,10 +179,10 @@ export default {
       require: true,
     },
 
-    fetchUser:{
+    fetchUser: {
       type: Function,
       require: true,
-    }
+    },
   },
 
   created() {
@@ -299,10 +306,9 @@ export default {
 
         this.$store.commit("setCurrentUser", data.newData);
 
-        this.fetchUser(id)
+        this.fetchUser(id);
 
         this.isEdit = false;
-        
       } catch (error) {
         console.log(error);
         Toast.fire({
@@ -500,7 +506,8 @@ textarea {
     border-bottom: 2px solid #657786;
     padding: 0 15px;
 
-    &:hover , &:focus{
+    &:hover,
+    &:focus {
       border-bottom: 2px solid #50b5ff;
     }
 
@@ -521,6 +528,10 @@ textarea {
     margin-left: auto;
     font-size: 12px;
     color: #696974;
+
+    &.red {
+      color: #fc5a5a;
+    }
   }
 
   &__alert {
@@ -528,7 +539,7 @@ textarea {
     position: absolute;
     bottom: 0%;
     font-size: 12px;
-    color: red;
+    color: #fc5a5a;
   }
 }
 
@@ -559,6 +570,10 @@ textarea {
     margin-left: auto;
     font-size: 12px;
     color: #696974;
+
+    &.red {
+      color: #fc5a5a;
+    }
   }
 
   &__alert {
@@ -566,7 +581,7 @@ textarea {
     position: absolute;
     bottom: 0%;
     font-size: 12px;
-    color: red;
+    color: fc5a5a;
   }
 }
 </style>
