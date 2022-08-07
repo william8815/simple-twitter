@@ -148,9 +148,6 @@ export default {
         console.log(data);
         this.followers = data;
         console.log(this.followers);
-        // this.followers = this.followers.filter((follower) => {
-        //   return this.currentUser.id !== follower.followerId;
-        // });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
@@ -169,6 +166,7 @@ export default {
           throw new Error(data.message);
         }
         this.followers = this.followers.map((follower) => {
+          console.log(follower.followerId, followerId);
           if (follower.followerId === followerId) {
             return {
               ...follower,
@@ -339,6 +337,7 @@ img {
     font-size: 16px;
     height: 40px;
     border-radius: 50px;
+    cursor: pointer;
   }
   .followed-btn {
     width: 96px;
