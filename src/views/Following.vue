@@ -152,9 +152,9 @@ export default {
         this.isLoading = true;
         const { data } = await userAPI.getUserFollowing(userId);
         this.followings = data;
-        this.followings = this.followings.filter((following) => {
-          return this.currentUser.id !== following.followingId;
-        });
+        // this.followings = this.followings.filter((following) => {
+        //   return this.currentUser.id !== following.followingId;
+        // });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
@@ -348,6 +348,7 @@ img {
     font-size: 16px;
     height: 40px;
     border-radius: 50px;
+    cursor: pointer;
   }
   .followed-btn {
     width: 96px;

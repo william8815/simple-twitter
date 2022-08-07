@@ -89,10 +89,10 @@
                   </div>
                   <div class="post">
                     <router-link
+                      style="white-space: pre-wrap"
                       :to="{ name: 'replylist', params: { id: tweet.id } }"
+                      >{{ tweet.description }}</router-link
                     >
-                      {{ tweet.description }}
-                    </router-link>
                   </div>
                   <div class="extra-info">
                     <div class="btn comment">
@@ -215,6 +215,7 @@ export default {
           limit,
         });
         this.tweets = data;
+        console.log(this.tweets);
         this.tweets = this.tweets.map((tweet) => ({
           ...tweet,
           replyState: false,

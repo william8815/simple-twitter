@@ -67,13 +67,13 @@ export default {
     ...mapState(["currentUser"]),
   },
   created() {
-    this.fetchUser();
+    this.fetchUser({ limit: 10 });
   },
   methods: {
-    async fetchUser() {
+    async fetchUser({ limit }) {
       try {
         this.isLoading = true;
-        const { data } = await userAPI.getRecommendUsers();
+        const { data } = await userAPI.getRecommendUsers({ limit });
         const { users } = data;
         this.recommendUsers = users.filter(
           (user) => user.id !== this.currentUser.id
