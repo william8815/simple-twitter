@@ -250,12 +250,14 @@ export default {
         }
 
         this.isLoading = false;
-      } catch (error) {
-        // STEP 6: 透過 restaurantsAPI 取得餐廳資訊
+      } catch (error) {       
         Toast.fire({
           icon: "error",
           title: "無法取得個人資料，請稍後再試",
         });
+
+        this.$router.push("/main");
+        this.isLoading = false;
       }
     },
 

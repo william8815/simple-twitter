@@ -39,6 +39,8 @@
               alt=""
               class="favorite__info__icons__like__img"
             />
+
+
             <span class="favorite__info__icons__like__span">{{
               usertweet.likesCount
             }}</span>
