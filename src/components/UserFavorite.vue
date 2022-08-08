@@ -8,11 +8,26 @@
       :key="usertweet.TweetId"
     >
       <div>
-        <img :src="usertweet.selfImg | emptyImage" alt="" class="favorite__avatar" />
+        <router-link
+          :to="{ name: 'user-post', params: { id: usertweet.tweetUserId } }"
+        >
+          <img
+            :src="usertweet.userAvatarOfLikedTweet | emptyImage"
+            alt=""
+            class="favorite__avatar"
+          />
+        </router-link>
       </div>
       <div class="favorite__info">
         <div class="favorite__info__header">
-          <span class="header__user">{{ usertweet.userNameOfLikedTweet }}</span>
+          <router-link
+            :to="{ name: 'user-post', params: { id: usertweet.tweetUserId } }"
+          >
+            <span class="header__user">{{
+              usertweet.userNameOfLikedTweet
+            }}</span>
+          </router-link>
+
           <span class="header__account"
             >@{{ usertweet.userAccountOfLikedTweet }}</span
           >
@@ -39,7 +54,6 @@
               alt=""
               class="favorite__info__icons__like__img"
             />
-
 
             <span class="favorite__info__icons__like__span">{{
               usertweet.likesCount
@@ -82,6 +96,7 @@ export default {
           userAvatarOfLikedTweet: "",
           repliedCount: 0,
           likesCount: 0,
+          tweetUserId: 0,
         },
       ],
       isLoading: false,
