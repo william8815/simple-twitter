@@ -215,7 +215,6 @@ export default {
           limit,
         });
         this.tweets = data;
-        console.log(this.tweets);
         this.tweets = this.tweets.map((tweet) => ({
           ...tweet,
           replyState: false,
