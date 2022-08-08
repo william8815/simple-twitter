@@ -118,10 +118,8 @@ export default {
         replyCount,
         replyState,
       };
-      // this.tweetContent = this.initial_tweet;
     },
     cancelModal() {
-      // this.replyState = false;
       this.$emit("handleReplyState", this.initial_tweet.id);
     },
     async handleSubmit() {

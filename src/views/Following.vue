@@ -152,9 +152,6 @@ export default {
         this.isLoading = true;
         const { data } = await userAPI.getUserFollowing(userId);
         this.followings = data;
-        // this.followings = this.followings.filter((following) => {
-        //   return this.currentUser.id !== following.followingId;
-        // });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
